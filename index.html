@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>MyRepublic Cabang Sragen | Internet Cepat & Stabil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --mr-purple: #6c2d91;
+            --mr-purple-dark: #562475;
+            --mr-yellow: #ffcc00;
+            --mr-light: #f4f4f9;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            color: #333; 
+            background-color: var(--mr-light);
+        }
+        
+        .navbar { 
+            background-color: var(--mr-purple); 
+            border-bottom: 4px solid var(--mr-yellow); 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            padding: 10px 0;
+        }
+        .navbar-brand img {
+            max-height: 45px;
+            width: auto;
+            object-fit: contain;
+        }
+        
+        .slogan-text { color: var(--mr-yellow); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; line-height: 1; margin-top: 4px; }
+        
+        .hero-section { 
+            background: linear-gradient(135deg, rgba(108, 45, 145, 0.9), rgba(60, 20, 90, 0.95)), url('https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            border-bottom-right-radius: 80px;
+        }
+
+        .btn-primary { 
+            background-color: var(--mr-purple) !important; 
+            border: none; 
+            padding: 12px 30px; 
+            font-weight: 700; 
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover { background-color: var(--mr-purple-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(108, 45, 145, 0.4); }
+        
+        .promo-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .featured-card {
+            animation: float 4s ease-in-out infinite;
+            border: 2px solid var(--mr-yellow);
+            box-shadow: 0 0 20px rgba(108, 45, 145, 0.2);
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+            50% { transform: translateY(-15px); box-shadow: 0 25px 40px rgba(108, 45, 145, 0.3); }
+            100% { transform: translateY(0px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        }
+
+        .card-header-purple {
+            background: var(--mr-purple);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .best-seller-badge {
+            position: absolute;
+            top: 18px;
+            right: -35px;
+            background: var(--mr-yellow);
+            color: var(--mr-purple);
+            padding: 6px 45px;
+            transform: rotate(45deg);
+            font-weight: 800;
+            font-size: 0.65rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        .price-table-container {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .table { font-size: 0.85rem; }
+        .table thead th {
+            background: var(--mr-purple);
+            color: white;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            padding: 12px 15px;
+        }
+        .table tbody td { padding: 12px 15px; vertical-align: middle; }
+        
+        .cell-stack { display: flex; flex-direction: column; line-height: 1.2; }
+        .cell-stack .top-text { font-weight: 700; font-size: 0.9rem; color: #333; }
+        .cell-stack .bottom-text { font-weight: 800; font-size: 0.95rem; color: #6c2d91; }
+
+        .badge-speed-table { font-size: 0.7rem; padding: 4px 10px; }
+
+        #paket-container {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+        #paket-container.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        footer { background-color: #1a1a1a; color: #f8f9fa; padding: 60px 0 30px; }
+        footer h5 { color: white; font-weight: 700; margin-bottom: 20px; font-size: 1rem; }
+        
+        /* CHAT STYLES */
+        .chat-container {
+            width: 100%; max-width: 400px; height: 80vh; position: fixed; bottom: 0; right: 0;
+            display: none; flex-direction: column; background: white; z-index: 10000;
+            box-shadow: 0 -5px 40px rgba(0,0,0,0.2); border-top-left-radius: 25px; border-top-right-radius: 25px; overflow: hidden;
+        }
+        @media (min-width: 640px) {
+            .chat-container { width: 350px; right: 25px; bottom: 25px; height: 550px; border-radius: 25px; }
+        }
+        
+        .chat-header {
+            background: var(--mr-purple); padding: 15px; color: white;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 3px solid var(--mr-yellow);
+        }
+
+        #chat-content {
+            flex: 1; padding: 15px; overflow-y: auto; background-color: #f8f9fa;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+
+        .bubble { max-width: 80%; padding: 10px 14px; font-size: 0.85rem; line-height: 1.4; position: relative; word-wrap: break-word; }
+        .bubble-admin { background: white; color: #333; align-self: flex-start; border-radius: 18px 18px 18px 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .bubble-user { background: var(--mr-purple); color: white; align-self: flex-end; border-radius: 18px 18px 4px 18px; }
+
+        .chat-timestamp { font-size: 0.65rem; opacity: 0.6; margin-top: 4px; display: block; text-align: right; }
+        .bubble-admin .chat-timestamp { text-align: left; }
+
+        #chat-form-overlay { position: absolute; inset: 0; background: white; z-index: 100; padding: 30px 20px; display: flex; flex-direction: column; justify-content: center; }
+
+        .chat-input-area { padding: 12px; border-top: 1px solid #eee; background: white; display: flex; align-items: center; gap: 10px; }
+        .chat-input-area input { flex: 1; border: none; background: #f1f3f4; padding: 10px 15px; border-radius: 25px; font-size: 0.85rem; outline: none; }
+        .chat-ended-notify { font-size: 10px; text-align: center; background: #fee2e2; color: #b91c1c; padding: 8px; border-radius: 10px; margin: 10px 0; font-weight: 700; }
+        
+        /* Blocked UI State */
+        .blocked-overlay {
+            position: absolute; inset: 0; background: rgba(255,255,255,0.95);
+            z-index: 200; display: none; flex-direction: column; items: center; 
+            justify-content: center; text-align: center; padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar sticky-top">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand d-flex flex-column align-items-center" href="#">
+                <img src="logo.png" alt="MyRepublic Logo">
+                <span class="slogan-text">Internet Rocket Sragen</span>
+            </a>
+            <div class="d-none d-md-block">
+                <span class="badge bg-white text-purple-900 p-2 rounded-pill border fw-bold" style="color: #6c2d91; font-size: 0.7rem;">📍 Sragen City Service</span>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-5 fw-bold mb-3">Warga Sragen,<br>Saatnya Ganti ke Fiber!</h1>
+            <p class="mb-5 opacity-90 text-sm md:text-base">Nikmati Streaming & Gaming Tanpa Batas Kuota (FUP) dengan Jaringan Fiber Optic 100%.</p>
+            
+            <div class="row justify-content-center mb-5">
+                <div class="col-11 col-md-5 col-lg-4">
+                    <div class="promo-card featured-card text-center">
+                        <div class="best-seller-badge">PROMO TERLARIS</div>
+                        <div class="card-header-purple p-3">
+                            <h3 class="fw-bold m-0 h5">10Ring Mbps</h3>
+                        </div>
+                        <div class="p-4">
+                            <div class="mb-3 text-dark">
+                                <span class="text-muted text-decoration-line-through text-xs">Rp 150.000</span><br>
+                                <span class="h3 fw-bold" style="color: #d91b5c;">Rp 110.000</span>
+                                <p class="small text-muted mb-0" style="font-size: 0.7rem;">/ Bulan (Inc. PPN)</p>
+                            </div>
+                            <ul class="text-start mb-4 space-y-1 text-xs text-dark">
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Unlimited Tanpa FUP</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Full Fiber Optic</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Gratis Instalasi*</li>
+                            </ul>
+                            <button onclick="openRegistrationModal('10Ring')" class="btn btn-primary w-100 py-2 text-sm shadow-md">Daftar Sekarang</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="togglePaket()" class="btn btn-warning btn-md px-5 py-3 fw-bold shadow-lg rounded-pill" style="background-color: #ffcc00; border: none; color: #6c2d91;">
+                Lihat Semua Paket Lainnya ↓
+            </button>
+        </div>
+    </header>
+
+    <div id="paket-container">
+        <section class="py-5 bg-light">
+            <div class="container">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold h4" style="color: #6c2d91;">Daftar Harga Lengkap</h2>
+                    <p class="text-muted text-xs">Pilihan paket internet terbaik untuk setiap kebutuhan Anda</p>
+                </div>
+                
+                <div class="price-table-container">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>PAKET & HARGA</th>
+                                    <th class="text-center">SPEED (EST)</th>
+                                    <th class="text-center">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">10Ring</span><span class="bottom-text">Rp 110.000</span></div></td><td class="text-center"><span class="badge bg-secondary rounded-pill badge-speed-table">10 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('10Ring')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Eco15</span><span class="bottom-text">Rp 166.500</span></div></td><td class="text-center"><span class="badge bg-secondary rounded-pill badge-speed-table">15 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Eco15')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Jet20</span><span class="bottom-text">Rp 205.350</span></div></td><td class="text-center"><span class="badge bg-primary rounded-pill badge-speed-table">20 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Jet20')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">30ValueLite</span><span class="bottom-text">Rp 233.100</span></div></td><td class="text-center"><span class="badge bg-primary rounded-pill badge-speed-table">30 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('30ValueLite')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Neo100</span><span class="bottom-text">Rp 233.100</span></div></td><td class="text-center"><span class="badge bg-info text-dark rounded-pill badge-speed-table">100 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Neo100')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Value30</span><span class="bottom-text">Rp 260.000</span></div></td><td class="text-center"><span class="badge bg-primary rounded-pill badge-speed-table">30 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Value30')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Fast50</span><span class="bottom-text">Rp 277.500</span></div></td><td class="text-center"><span class="badge bg-info text-dark rounded-pill badge-speed-table">50 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Fast50')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Velo150</span><span class="bottom-text">Rp 277.500</span></div></td><td class="text-center"><span class="badge bg-danger rounded-pill badge-speed-table">150 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Velo150')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Nova100</span><span class="bottom-text">Rp 333.000</span></div></td><td class="text-center"><span class="badge bg-info text-dark rounded-pill badge-speed-table">100 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Nova100')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Nexus300</span><span class="bottom-text">Rp 333.000</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">300 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Nexus300')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Gamer250</span><span class="bottom-text">Rp 444.000</span></div></td><td class="text-center"><span class="badge bg-danger rounded-pill badge-speed-table">250 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Gamer250')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Prime500</span><span class="bottom-text">Rp 555.000</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">500 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Prime500')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Gamer500</span><span class="bottom-text">Rp 610.500</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">500 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Gamer500')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Wonder750</span><span class="bottom-text">Rp 721.500</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">750 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Wonder750')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Gamer750</span><span class="bottom-text">Rp 777.000</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">750 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Gamer750')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Ultra1Gbps</span><span class="bottom-text">Rp 943.500</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">1 Gbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Ultra1Gbps')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Gamer1Gbps</span><span class="bottom-text">Rp 999.000</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">1 Gbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Gamer1Gbps')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="row g-4 text-xs md:text-sm">
+                <div class="col-lg-5">
+                    <h5 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Tentang Kami</h5>
+                    <div class="text-gray-400 mt-3 mb-4 space-y-3">
+                        <p><strong>MyRepublic Sragen</strong> merupakan penyedia layanan internet (ISP) terkemuka yang hadir untuk menjawab kebutuhan konektivitas tinggi bagi masyarakat Sragen. Kami menggunakan teknologi <strong>Full Fiber Optic</strong> murni hingga ke dalam rumah Anda, menjamin stabilitas tanpa gangguan cuaca.</p>
+                        <p>Mengapa memilih kami? Kami percaya bahwa internet berkualitas tidak harus mahal. Dengan sistem <strong>Tanpa FUP (Fair Usage Policy)</strong>, Anda bebas melakukan streaming 4K, gaming online dengan ping rendah, hingga WFH tanpa takut kecepatan menurun di tengah bulan.</p>
+                        <p>Komitmen kami adalah memberikan pelayanan purna jual terbaik dengan tim teknisi lokal yang siap siaga, memastikan warga Sragen tetap terhubung dengan dunia digital tanpa batas.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <h5 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Kenapa MyRepublic?</h5>
+                    <ul class="list-unstyled text-gray-400 mt-3 space-y-2">
+                        <li>🚀 Speed Simetris 1:1</li>
+                        <li>🎮 Optimasi Latency Gaming</li>
+                        <li>🎬 Streaming Lancar Jaya</li>
+                        <li>💰 Harga Flat Selamanya</li>
+                        <li>🛠️ CS Responsif 24 Jam</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h5 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Kontak Sragen</h5>
+                    <ul class="list-unstyled text-gray-400 mt-3">
+                        <li class="mb-2">📍 <strong>Area Layanan:</strong> Sragen Kulon, Sragen Wetan, Sragen Tengah, Karangmalang, Sidoharjo, Ngrampal, Bener, Ngarum, Tanon, Gondang, dan sekitarnya.</li>
+                        <li class="mb-2">📞 <strong>CS WhatsApp:</strong> Layanan Pendaftaran & Konsultasi 24/7</li>
+                        <li class="mb-2">🏢 <strong>Kantor:</strong> Sragen, Jawa Tengah</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="mt-5 mb-4 border-gray-700">
+            <div class="text-center text-gray-500 text-[10px]">
+                © 2026 MyRepublic Sragen. All Rights Reserved. Internet Cepat, Harga Sahabat.
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="modalDaftar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-2xl">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-sm">Form Registrasi Cepat</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 relative">
+                    <div id="reg-blocked-overlay" class="blocked-overlay rounded">
+                        <span class="text-4xl mb-2">🚫</span>
+                        <h4 class="font-bold text-red-600 text-sm">Akses Terbatas</h4>
+                        <p class="text-[10px] text-gray-500">Anda sudah melakukan percobaan pendaftaran terlalu banyak. Hubungi admin via WhatsApp untuk bantuan manual.</p>
+                    </div>
+
+                    <div class="mb-3 text-sm">
+                        <label class="form-label fw-semibold">Nama Lengkap</label>
+                        <input type="text" id="reg-nama" class="form-control rounded-pill text-sm" placeholder="Nama sesuai KTP">
+                    </div>
+                    <div class="mb-3 text-sm">
+                        <label class="form-label fw-semibold">Nomor WhatsApp</label>
+                        <input type="number" id="reg-wa" class="form-control rounded-pill text-sm" placeholder="08xxxxxxxxxx">
+                    </div>
+                    <div class="mb-3 text-sm">
+                        <label class="form-label fw-semibold">Paket yang Dipilih</label>
+                        <input type="text" id="reg-paket" class="form-control bg-light rounded-pill fw-bold text-sm" readonly>
+                    </div>
+                    <div class="mb-3 text-sm">
+                        <label class="form-label fw-semibold">Alamat Pemasangan</label>
+                        <textarea id="reg-alamat" class="form-control text-sm" rows="3" placeholder="Contoh: Jl. Raya Sukowati No. 1..."></textarea>
+                    </div>
+                    <button onclick="submitRegistrationToBot()" id="btn-submit-reg" class="btn btn-primary w-100 py-2 mt-2 shadow-lg text-sm">Kirim Data Pendaftaran</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="chat-toggle-btn" onclick="toggleChat()" class="fixed bottom-6 right-6 bg-purple-600 p-4 rounded-full shadow-2xl z-[9999] hover:scale-110 transition-transform bg-[#6c2d91]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+    </button>
+
+    <div id="chat-widget" class="chat-container">
+        <div id="chat-blocked-overlay" class="blocked-overlay">
+            <span class="text-4xl mb-2">⏳</span>
+            <h4 class="font-bold text-purple-900 text-sm">Sesi Diblokir Sementara</h4>
+            <p class="text-[10px] text-gray-500 px-4">Terlalu banyak pesan dikirim tanpa balasan admin. Tunggu admin membalas atau buka blokir untuk melanjutkan.</p>
+            <button onclick="toggleChat()" class="mt-4 text-xs underline text-purple-600">Tutup</button>
+        </div>
+
+        <div id="chat-form-overlay">
+            <div class="text-center mb-6">
+                <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><span class="text-xl">👋</span></div>
+                <h4 class="font-bold text-purple-900 text-sm">Konsultasi Gratis</h4>
+                <p class="text-[10px] text-gray-500">Isi data untuk mulai berbicara dengan Admin</p>
+            </div>
+            <div class="space-y-3">
+                <input type="text" id="chat-reg-nama" placeholder="Nama Lengkap" class="w-full border p-2 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 outline-none">
+                <input type="email" id="chat-reg-email" placeholder="Alamat Email" class="w-full border p-2 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 outline-none">
+                <input type="number" id="chat-reg-wa" placeholder="No WhatsApp (Aktif)" class="w-full border p-2 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 outline-none">
+                <button onclick="submitChatForm()" class="w-full bg-[#6c2d91] text-white font-bold py-3 rounded-xl text-xs shadow-lg">Mulai Chat Sekarang</button>
+            </div>
+        </div>
+
+        <div class="chat-header">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold">MR</div>
+                <div>
+                    <h3 class="font-bold text-xs leading-none">CS MyRepublic Sragen</h3>
+                    <p class="text-[9px] opacity-80 mt-1">● Online (Biasanya membalas cepat)</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-1">
+                <button onclick="toggleChat()" class="hover:bg-white/10 p-2 rounded-full" title="Sembunyikan"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg></button>
+                <button onclick="clearChatSessionPrompt()" class="hover:bg-white/10 p-2 rounded-full" title="Tutup Sesi"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+            </div>
+        </div>
+
+        <div id="chat-content"></div>
+
+        <div class="chat-input-area" id="input-container-chat">
+            <input type="text" id="user-input" placeholder="Tulis pesan..." onkeypress="if(event.key === 'Enter') sendMessage()">
+            <button onclick="sendMessage()" class="bg-[#6c2d91] text-white p-2 rounded-full shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-90" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
+            </button>
+        </div>
+        <div id="reset-session-area" class="hidden p-2 text-center">
+            <button onclick="clearChatSession()" class="text-[9px] text-gray-400 underline italic">Klik di sini untuk memulai percakapan baru</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const BOT_TOKEN = '8330506170:AAGibEbDqetkYsw5zzY1YS03--jbCnV5iww'; 
+        const CHAT_ID = '836686436';
+        
+        const STORAGE_KEY = 'chat_history_sragen';
+        const USER_DATA_KEY = 'user_registered_chat';
+        const SESSION_STATUS_KEY = 'chat_session_active';
+        const LAST_UPDATE_KEY = 'last_update_id_sragen';
+        
+        // Anti Spam Keys
+        const MSG_COUNT_KEY = 'chat_msg_count';
+        const REG_COUNT_KEY = 'chat_reg_count';
+        const IS_BLOCKED_KEY = 'is_user_blocked';
+
+        let lastUpdateId = parseInt(localStorage.getItem(LAST_UPDATE_KEY)) || 0;
+        let globalCoordsText = "Lokasi tidak diizinkan";
+        let isProcessingPolling = false;
+
+        function isValidEmail(email) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email); }
+        function isValidWhatsApp(wa) { return /^(08|628)[0-9]{8,13}$/.test(wa); }
+
+        function initGPS() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    globalCoordsText = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                }, null, { enableHighAccuracy: true });
+            }
+        }
+
+        function checkBlockStatus() {
+            const isBlocked = localStorage.getItem(IS_BLOCKED_KEY) === 'true';
+            document.getElementById('chat-blocked-overlay').style.display = isBlocked ? 'flex' : 'none';
+            document.getElementById('reg-blocked-overlay').style.display = isBlocked ? 'flex' : 'none';
+            return isBlocked;
+        }
+
+        function toggleChat() {
+            const chat = document.getElementById('chat-widget');
+            const btn = document.getElementById('chat-toggle-btn');
+            if (chat.style.display === 'flex') {
+                chat.style.display = 'none';
+                btn.style.display = 'block';
+            } else {
+                chat.style.display = 'flex';
+                btn.style.display = 'none';
+                if(localStorage.getItem(USER_DATA_KEY)) {
+                    document.getElementById('chat-form-overlay').style.display = 'none';
+                }
+                checkSessionStatus();
+                checkBlockStatus();
+                scrollBottom();
+            }
+        }
+
+        async function submitChatForm() {
+            if(checkBlockStatus()) return;
+
+            const nama = document.getElementById('chat-reg-nama').value.trim();
+            const email = document.getElementById('chat-reg-email').value.trim();
+            const wa = document.getElementById('chat-reg-wa').value.trim();
+            
+            if(!nama) { alert("Nama lengkap wajib diisi."); return; }
+            if(!isValidEmail(email)) { alert("Email tidak valid."); return; }
+            if(!isValidWhatsApp(wa)) { alert("Nomor WhatsApp tidak valid."); return; }
+            
+            localStorage.setItem(USER_DATA_KEY, JSON.stringify({ nama, email, wa }));
+            localStorage.setItem(SESSION_STATUS_KEY, 'active');
+            localStorage.setItem(MSG_COUNT_KEY, '0');
+            localStorage.setItem(REG_COUNT_KEY, '0');
+            document.getElementById('chat-form-overlay').style.display = 'none';
+            
+            const introMsg = `👤 *USER CHAT BARU*\n📛: ${nama}\n📧: ${email}\n📱: ${wa}\n📍: ${globalCoordsText}`;
+            await telegramFetch(introMsg);
+            
+            addMessageToUI('admin', `Halo Pak/Bu ${nama}! 👋 Admin Sragen sudah menerima data Anda. Ada yang bisa kami bantu?`, true);
+        }
+
+        async function sendMessage() {
+            if(localStorage.getItem(SESSION_STATUS_KEY) === 'ended' || checkBlockStatus()) return;
+
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            // Logika Blokir: Pesan > 5
+            let count = parseInt(localStorage.getItem(MSG_COUNT_KEY)) || 0;
+            count++;
+            localStorage.setItem(MSG_COUNT_KEY, count);
+
+            if(count > 5) {
+                localStorage.setItem(IS_BLOCKED_KEY, 'true');
+                checkBlockStatus();
+                await telegramFetch(`🚫 *USER DIBLOKIR OTOMATIS* karena spam pesan (>5 tanpa balasan).`);
+                return;
+            }
+
+            const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY));
+            addMessageToUI('user', text, true); 
+            input.value = '';
+
+            const msgToBot = `💬 *DARI ${userData.nama.toUpperCase()}*:\n${text}`;
+            await telegramFetch(msgToBot);
+        }
+
+        async function telegramFetch(text) {
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'Markdown' })
+                });
+                const resData = await response.json();
+                if(resData.ok) {
+                    lastUpdateId = Math.max(lastUpdateId, resData.result.message_id);
+                    localStorage.setItem(LAST_UPDATE_KEY, lastUpdateId);
+                }
+                return resData;
+            } catch (e) { return { ok: false }; }
+        }
+
+        function addMessageToUI(sender, text, shouldSave = false) {
+            const container = document.getElementById('chat-content');
+            const lastMsg = container.lastElementChild;
+            if (lastMsg && lastMsg.innerText.includes(text)) return;
+
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const div = document.createElement('div');
+            div.className = `bubble ${sender === 'user' ? 'bubble-user' : 'bubble-admin'}`;
+            div.innerHTML = `${text} <span class="chat-timestamp">${time}</span>`;
+            
+            container.appendChild(div);
+            scrollBottom();
+            
+            if(shouldSave) {
+                const history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                history.push({ sender, text, time });
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            }
+        }
+
+        function scrollBottom() {
+            const container = document.getElementById('chat-content');
+            if(container) container.scrollTop = container.scrollHeight;
+        }
+
+        async function startPolling() {
+            setInterval(async () => {
+                if(isProcessingPolling) return;
+                
+                isProcessingPolling = true;
+                try {
+                    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`);
+                    const data = await res.json();
+                    
+                    if (data.ok && data.result.length > 0) {
+                        for (let update of data.result) {
+                            lastUpdateId = update.update_id;
+                            localStorage.setItem(LAST_UPDATE_KEY, lastUpdateId);
+
+                            if (update.message && update.message.chat.id.toString() === CHAT_ID) {
+                                const replyText = update.message.text;
+                                if (!replyText) continue;
+
+                                const lowerText = replyText.toLowerCase();
+
+                                // FITUR BUKA BLOKIR DARI SERVER
+                                if(lowerText === "buka blokir" || lowerText === "/unblock") {
+                                    localStorage.removeItem(IS_BLOCKED_KEY);
+                                    localStorage.setItem(MSG_COUNT_KEY, '0');
+                                    localStorage.setItem(REG_COUNT_KEY, '0');
+                                    checkBlockStatus();
+                                    addMessageToUI('admin', "🔓 Blokir Anda telah dibuka oleh Admin. Silakan berkonsultasi kembali.", true);
+                                    continue;
+                                }
+
+                                if (lowerText === "/endchat" || lowerText === "selesai") {
+                                    endSessionByServer();
+                                    continue;
+                                }
+
+                                const isSystemLog = replyText.includes("💬 *DARI") || 
+                                                  replyText.includes("👤 *USER") || 
+                                                  replyText.includes("🚀 *PENDAFTARAN") ||
+                                                  replyText.includes("🚫 *USER");
+                                
+                                if (!isSystemLog) {
+                                    // Reset counter jika admin membalas
+                                    localStorage.setItem(MSG_COUNT_KEY, '0');
+                                    localStorage.setItem(REG_COUNT_KEY, '0');
+                                    addMessageToUI('admin', replyText, true);
+                                }
+                            }
+                        }
+                    }
+                } catch (e) { }
+                isProcessingPolling = false;
+            }, 3000);
+        }
+
+        function endSessionByServer() {
+            if(localStorage.getItem(SESSION_STATUS_KEY) === 'ended') return;
+            localStorage.setItem(SESSION_STATUS_KEY, 'ended');
+            const container = document.getElementById('chat-content');
+            const div = document.createElement('div');
+            div.className = "chat-ended-notify";
+            div.innerText = "Sesi konsultasi telah diakhiri oleh Admin.";
+            container.appendChild(div);
+            checkSessionStatus();
+            scrollBottom();
+        }
+
+        function checkSessionStatus() {
+            const isEnded = localStorage.getItem(SESSION_STATUS_KEY) === 'ended';
+            const inputArea = document.getElementById('input-container-chat');
+            const resetArea = document.getElementById('reset-session-area');
+            
+            if(isEnded) {
+                inputArea.style.opacity = "0.5";
+                inputArea.querySelector('input').disabled = true;
+                resetArea.classList.remove('hidden');
+            } else {
+                inputArea.style.opacity = "1";
+                inputArea.querySelector('input').disabled = false;
+                resetArea.classList.add('hidden');
+            }
+        }
+
+        function clearChatSessionPrompt() {
+            if(confirm("Hapus riwayat dan tutup percakapan?")) { clearChatSession(); }
+        }
+
+        function clearChatSession() {
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(USER_DATA_KEY);
+            localStorage.removeItem(SESSION_STATUS_KEY);
+            localStorage.removeItem(MSG_COUNT_KEY);
+            localStorage.removeItem(REG_COUNT_KEY);
+            localStorage.removeItem(IS_BLOCKED_KEY);
+            location.reload();
+        }
+
+        function togglePaket() {
+            const container = document.getElementById('paket-container');
+            container.classList.toggle('show');
+            if(container.classList.contains('show')) {
+                setTimeout(() => container.scrollIntoView({ behavior: 'smooth' }), 100);
+            }
+        }
+
+        function openRegistrationModal(paket) {
+            checkBlockStatus();
+            document.getElementById('reg-paket').value = paket;
+            new bootstrap.Modal(document.getElementById('modalDaftar')).show();
+        }
+
+        async function submitRegistrationToBot() {
+            if(checkBlockStatus()) return;
+
+            // Logika Blokir: Daftar > 3
+            let regCount = parseInt(localStorage.getItem(REG_COUNT_KEY)) || 0;
+            regCount++;
+            localStorage.setItem(REG_COUNT_KEY, regCount);
+
+            if(regCount > 3) {
+                localStorage.setItem(IS_BLOCKED_KEY, 'true');
+                checkBlockStatus();
+                await telegramFetch(`🚫 *USER DIBLOKIR OTOMATIS* karena spam pendaftaran (>3 kali).`);
+                return;
+            }
+
+            const btn = document.getElementById('btn-submit-reg');
+            const data = {
+                nama: document.getElementById('reg-nama').value.trim(),
+                wa: document.getElementById('reg-wa').value.trim(),
+                paket: document.getElementById('reg-paket').value,
+                alamat: document.getElementById('reg-alamat').value.trim()
+            };
+
+            if(!data.nama || !data.wa || !data.alamat) { alert("Lengkapi data!"); return; }
+            btn.disabled = true; btn.textContent = "Mengirim...";
+
+            const msg = `🚀 *PENDAFTARAN BARU (WEB)*\n👤: ${data.nama}\n📱: ${data.wa}\n📦: ${data.paket}\n🏠: ${data.alamat}\n📍: ${globalCoordsText}`;
+            const res = await telegramFetch(msg);
+            if(res && res.ok) {
+                alert("Berhasil! Tim kami akan segera menghubungi Anda.");
+                bootstrap.Modal.getInstance(document.getElementById('modalDaftar')).hide();
+            } else { alert("Gagal mengirim data."); }
+            btn.disabled = false; btn.textContent = "Kirim Data Pendaftaran";
+        }
+
+        window.onload = () => {
+            initGPS();
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            const container = document.getElementById('chat-content');
+            if(container) {
+                container.innerHTML = '';
+                history.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = `bubble ${item.sender === 'user' ? 'bubble-user' : 'bubble-admin'}`;
+                    div.innerHTML = `${item.text} <span class="chat-timestamp">${item.time || ''}</span>`;
+                    container.appendChild(div);
+                });
+            }
+            checkSessionStatus();
+            checkBlockStatus();
+            scrollBottom();
+            startPolling();
+        };
+    </script>
+</body>
+</html>
