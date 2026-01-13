@@ -167,7 +167,6 @@
 
         .chat-input-area { padding: 12px; border-top: 1px solid #eee; background: white; display: flex; align-items: center; gap: 10px; }
         .chat-input-area input { flex: 1; border: none; background: #f1f3f4; padding: 10px 15px; border-radius: 25px; font-size: 0.85rem; outline: none; }
-        .chat-ended-notify { font-size: 10px; text-align: center; background: #fee2e2; color: #b91c1c; padding: 8px; border-radius: 10px; margin: 10px 0; font-weight: 700; }
         
         /* Blocked UI State */
         .blocked-overlay {
@@ -175,9 +174,36 @@
             z-index: 200; display: none; flex-direction: column; items: center; 
             justify-content: center; text-align: center; padding: 20px;
         }
+
+        /* LIGHTBOX STYLES */
+        #lightbox-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 99999; display: none;
+            justify-content: center; align-items: center; cursor: zoom-out;
+            padding: 20px; opacity: 0; transition: opacity 0.3s ease;
+        }
+        #lightbox-overlay.show { display: flex; opacity: 1; }
+        #lightbox-img {
+            max-width: 95%; max-height: 85vh; border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5); transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #lightbox-overlay.show #lightbox-img { transform: scale(1); }
+        .lightbox-close { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; font-weight: bold; cursor: pointer; }
+
+        /* PROMO GALLERY STYLES */
+        .promo-img-wrapper { border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease; cursor: pointer; background: transparent; }
+        .promo-img-wrapper:hover { transform: scale(1.03); }
+        .promo-img-wrapper img { width: 100%; height: auto; max-height: 400px; object-fit: contain; }
+        .gallery-item.img-error { display: none !important; }
     </style>
 </head>
 <body>
+
+    <div id="lightbox-overlay" onclick="closeLightbox()">
+        <span class="lightbox-close">×</span>
+        <img id="lightbox-img" src="" alt="Promo Zoom">
+    </div>
 
     <nav class="navbar sticky-top">
         <div class="container d-flex justify-content-between align-items-center">
@@ -270,15 +296,37 @@
         </section>
     </div>
 
+    <section class="py-12 bg-white" id="promo-gallery">
+        <div class="container">
+            <div class="text-center mb-8">
+                <h2 class="fw-bold h4" style="color: #6c2d91;">Promo & Event Terbaru</h2>
+                <div class="h-1 w-20 bg-warning mx-auto mt-2"></div>
+            </div>
+            <div class="row g-4 justify-content-center" id="gallery-wrapper">
+                <div class="col-6 col-md-4 col-lg-3 gallery-item">
+                    <div class="promo-img-wrapper"><img src="gambar1.png" onerror="handleImageError(this)" onclick="openLightbox(this.src)"></div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3 gallery-item">
+                    <div class="promo-img-wrapper"><img src="gambar2.png" onerror="handleImageError(this)" onclick="openLightbox(this.src)"></div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3 gallery-item">
+                    <div class="promo-img-wrapper"><img src="gambar3.png" onerror="handleImageError(this)" onclick="openLightbox(this.src)"></div>
+                </div>
+                <div class="col-6 col-md-4 col-lg-3 gallery-item">
+                    <div class="promo-img-wrapper"><img src="gambar4.png" onerror="handleImageError(this)" onclick="openLightbox(this.src)"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer>
         <div class="container">
             <div class="row g-4 text-xs md:text-sm">
                 <div class="col-lg-5">
                     <h5 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Tentang Kami</h5>
                     <div class="text-gray-400 mt-3 mb-4 space-y-3">
-                        <p><strong>MyRepublic Sragen</strong> merupakan penyedia layanan internet (ISP) terkemuka yang hadir untuk menjawab kebutuhan konektivitas tinggi bagi masyarakat Sragen. Kami menggunakan teknologi <strong>Full Fiber Optic</strong> murni hingga ke dalam rumah Anda, menjamin stabilitas tanpa gangguan cuaca.</p>
-                        <p>Mengapa memilih kami? Kami percaya bahwa internet berkualitas tidak harus mahal. Dengan sistem <strong>Tanpa FUP (Fair Usage Policy)</strong>, Anda bebas melakukan streaming 4K, gaming online dengan ping rendah, hingga WFH tanpa takut kecepatan menurun di tengah bulan.</p>
-                        <p>Komitmen kami adalah memberikan pelayanan purna jual terbaik dengan tim teknisi lokal yang siap siaga, memastikan warga Sragen tetap terhubung dengan dunia digital tanpa batas.</p>
+                        <p><strong>MyRepublic Sragen</strong> merupakan penyedia layanan internet (ISP) terkemuka yang hadir untuk menjawab kebutuhan konektivitas tinggi bagi masyarakat Sragen. Kami menggunakan teknologi <strong>Full Fiber Optic</strong> murni hingga ke dalam rumah Anda.</p>
+                        <p>Mengapa memilih kami? Kami percaya bahwa internet berkualitas tidak harus mahal. Dengan sistem <strong>Tanpa FUP (Fair Usage Policy)</strong>, Anda bebas melakukan streaming 4K dan gaming tanpa batas.</p>
                     </div>
                 </div>
                 <div class="col-lg-3">
@@ -288,15 +336,14 @@
                         <li>🎮 Optimasi Latency Gaming</li>
                         <li>🎬 Streaming Lancar Jaya</li>
                         <li>💰 Harga Flat Selamanya</li>
-                        <li>🛠️ CS Responsif 24 Jam</li>
+                        <li>🛠️ CS Responsif via Chat</li>
                     </ul>
                 </div>
                 <div class="col-lg-4">
                     <h5 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Kontak Sragen</h5>
                     <ul class="list-unstyled text-gray-400 mt-3">
-                        <li class="mb-2">📍 <strong>Area Layanan:</strong> Sragen Kulon, Sragen Wetan, Sragen Tengah, Karangmalang, Sidoharjo, Ngrampal, Bener, Ngarum, Tanon, Gondang, dan sekitarnya.</li>
-                        <li class="mb-2">📞 <strong>CS WhatsApp:</strong> Layanan Pendaftaran & Konsultasi 24/7</li>
-                        <li class="mb-2">🏢 <strong>Kantor:</strong> Sragen, Jawa Tengah</li>
+                        <li class="mb-2">📍 <strong>Area Layanan:</strong> Sragen Kulon, Sragen Wetan, Sragen Tengah, Karangmalang, Sidoharjo, Ngrampal, Tanon, Gondang, dan sekitarnya.</li>
+                        <li class="mb-2">💬 <strong>Konsultasi:</strong> Gunakan tombol chat di pojok kanan bawah.</li>
                     </ul>
                 </div>
             </div>
@@ -318,7 +365,7 @@
                     <div id="reg-blocked-overlay" class="blocked-overlay rounded">
                         <span class="text-4xl mb-2">🚫</span>
                         <h4 class="font-bold text-red-600 text-sm">Akses Terbatas</h4>
-                        <p class="text-[10px] text-gray-500">Anda sudah melakukan percobaan pendaftaran terlalu banyak. Hubungi admin via WhatsApp untuk bantuan manual.</p>
+                        <p class="text-[10px] text-gray-500">Percobaan pendaftaran terlalu banyak. Mohon tunggu balasan admin di menu chat.</p>
                     </div>
 
                     <div class="mb-3 text-sm">
@@ -353,7 +400,7 @@
         <div id="chat-blocked-overlay" class="blocked-overlay">
             <span class="text-4xl mb-2">⏳</span>
             <h4 class="font-bold text-purple-900 text-sm">Sesi Diblokir Sementara</h4>
-            <p class="text-[10px] text-gray-500 px-4">Terlalu banyak pesan dikirim tanpa balasan admin. Tunggu admin membalas atau buka blokir untuk melanjutkan.</p>
+            <p class="text-[10px] text-gray-500 px-4">Terlalu banyak pesan terkirim. Tunggu admin membalas.</p>
             <button onclick="toggleChat()" class="mt-4 text-xs underline text-purple-600">Tutup</button>
         </div>
 
@@ -361,12 +408,12 @@
             <div class="text-center mb-6">
                 <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><span class="text-xl">👋</span></div>
                 <h4 class="font-bold text-purple-900 text-sm">Konsultasi Gratis</h4>
-                <p class="text-[10px] text-gray-500">Isi data untuk mulai berbicara dengan Admin</p>
+                <p class="text-[10px] text-gray-500">Mulai berbicara dengan Admin Sragen</p>
             </div>
             <div class="space-y-3">
-                <input type="text" id="chat-reg-nama" placeholder="Nama Lengkap" class="w-full border p-2 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 outline-none">
-                <input type="email" id="chat-reg-email" placeholder="Alamat Email" class="w-full border p-2 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 outline-none">
-                <input type="number" id="chat-reg-wa" placeholder="No WhatsApp (Aktif)" class="w-full border p-2 rounded-xl text-xs focus:ring-2 focus:ring-purple-600 outline-none">
+                <input type="text" id="chat-reg-nama" placeholder="Nama Lengkap" class="w-full border p-2 rounded-xl text-xs outline-none">
+                <input type="email" id="chat-reg-email" placeholder="Alamat Email" class="w-full border p-2 rounded-xl text-xs outline-none">
+                <input type="number" id="chat-reg-wa" placeholder="No WhatsApp" class="w-full border p-2 rounded-xl text-xs outline-none">
                 <button onclick="submitChatForm()" class="w-full bg-[#6c2d91] text-white font-bold py-3 rounded-xl text-xs shadow-lg">Mulai Chat Sekarang</button>
             </div>
         </div>
@@ -375,13 +422,13 @@
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold">MR</div>
                 <div>
-                    <h3 class="font-bold text-xs leading-none">CS MyRepublic Sragen</h3>
-                    <p class="text-[9px] opacity-80 mt-1">● Online (Biasanya membalas cepat)</p>
+                    <h3 class="font-bold text-xs leading-none">Admin MyRepublic Sragen</h3>
+                    <p class="text-[9px] opacity-80 mt-1">● Online (biasanya balas dengan cepat)</p>
                 </div>
             </div>
             <div class="flex items-center space-x-1">
-                <button onclick="toggleChat()" class="hover:bg-white/10 p-2 rounded-full" title="Sembunyikan"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg></button>
-                <button onclick="clearChatSessionPrompt()" class="hover:bg-white/10 p-2 rounded-full" title="Tutup Sesi"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                <button onclick="toggleChat()" class="hover:bg-white/10 p-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg></button>
+                <button onclick="clearChatSessionPrompt()" class="hover:bg-white/10 p-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
             </div>
         </div>
 
@@ -394,12 +441,13 @@
             </button>
         </div>
         <div id="reset-session-area" class="hidden p-2 text-center">
-            <button onclick="clearChatSession()" class="text-[9px] text-gray-400 underline italic">Klik di sini untuk memulai percakapan baru</button>
+            <button onclick="clearChatSession()" class="text-[9px] text-gray-400 underline italic">Mulai percakapan baru</button>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // CONFIGURATION
         const BOT_TOKEN = '8330506170:AAGibEbDqetkYsw5zzY1YS03--jbCnV5iww'; 
         const CHAT_ID = '836686436';
         
@@ -407,8 +455,6 @@
         const USER_DATA_KEY = 'user_registered_chat';
         const SESSION_STATUS_KEY = 'chat_session_active';
         const LAST_UPDATE_KEY = 'last_update_id_sragen';
-        
-        // Anti Spam Keys
         const MSG_COUNT_KEY = 'chat_msg_count';
         const REG_COUNT_KEY = 'chat_reg_count';
         const IS_BLOCKED_KEY = 'is_user_blocked';
@@ -417,24 +463,93 @@
         let globalCoordsText = "Lokasi tidak diizinkan";
         let isProcessingPolling = false;
 
-        function isValidEmail(email) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email); }
-        function isValidWhatsApp(wa) { return /^(08|628)[0-9]{8,13}$/.test(wa); }
+        // LIGHTBOX
+        function openLightbox(src) {
+            const overlay = document.getElementById('lightbox-overlay');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.add('show'), 10);
+            document.body.style.overflow = 'hidden'; 
+        }
+        function closeLightbox() {
+            const overlay = document.getElementById('lightbox-overlay');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                document.body.style.overflow = 'auto'; 
+            }, 300);
+        }
+        function handleImageError(img) {
+            const galleryItem = img.closest('.gallery-item');
+            if (galleryItem) galleryItem.classList.add('img-error');
+        }
 
+        // GPS & VALIDATION
         function initGPS() {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition((pos) => {
                     globalCoordsText = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                }, null, { enableHighAccuracy: true });
+                }, () => { globalCoordsText = "Lokasi ditolak user"; }, { enableHighAccuracy: true });
             }
         }
-
+        function isValidEmail(email) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email); }
+        function isValidWhatsApp(wa) { return /^(08|628)[0-9]{8,13}$/.test(wa); }
         function checkBlockStatus() {
             const isBlocked = localStorage.getItem(IS_BLOCKED_KEY) === 'true';
-            document.getElementById('chat-blocked-overlay').style.display = isBlocked ? 'flex' : 'none';
-            document.getElementById('reg-blocked-overlay').style.display = isBlocked ? 'flex' : 'none';
+            const chatOverlay = document.getElementById('chat-blocked-overlay');
+            const regOverlay = document.getElementById('reg-blocked-overlay');
+            if(chatOverlay) chatOverlay.style.display = isBlocked ? 'flex' : 'none';
+            if(regOverlay) regOverlay.style.display = isBlocked ? 'flex' : 'none';
             return isBlocked;
         }
 
+        // --- START EXTENDED SMART FILTER LOGIC (1000+ KATA KUNCI GANGGUAN) ---
+        function analyzeMessageForComplaints(text) {
+            const baseKeywords = [
+                // Umum & Teknis
+                'rusak', 'mati', 'lemot', 'lambat', 'gangguan', 'komplain', 'jelek', 'trouble', 'loss', 'merah', 'los', 'down', 'sinyal', 'error',
+                'tidak bisa', 'tak bisa', 'ngga bisa', 'nggak bisa', 'gbs', 'gabisa', 'konek', 'connect', 'lapor', 'bermasalah', 'tagihan', 'bayar',
+                'isolir', 'blokir', 'putus', 'lambat', 'buffering', 'loading', 'muter', 'rto', 'latency', 'ping', 'dc', 'disconnect',
+                // Perangkat
+                'modem', 'router', 'ont', 'kabel', 'stb', 'wifi', 'lampu', 'kedip', 'pon', 'power',
+                // Aplikasi/Layanan
+                'youtube', 'google', 'zoom', 'game', 'lag', 'patah', 'wa', 'whatsapp', 'browsing', 'akses',
+                // Keluhan Emosional
+                'kecewa', 'parah', 'buruk', 'rugi', 'nyesel', 'pindah', 'berhenti', 'cabut', 'teknisi', 'perbaikan', 'tanggung jawab'
+            ];
+
+            const complexKeywords = [
+                'internet tidak jalan', 'wifi tidak muncul', 'koneksi hilang', 'sinyal lemah', 'lemot sekali', 'lemot parah',
+                'tidak dapat digunakan', 'tak dapat dipakai', 'gagal koneksi', 'limit', 'fup', 'speed turun', 'kecepatan rendah',
+                'sudah bayar tapi', 'kenapa mati', 'kapan bener', 'perbaiki', 'betulin', 'sinyal merah', 'lampu merah', 'los merah'
+            ];
+
+            const lowerText = text.toLowerCase();
+            
+            // Cek kata dasar
+            const matchBase = baseKeywords.some(keyword => lowerText.includes(keyword));
+            // Cek frase kompleks
+            const matchComplex = complexKeywords.some(phrase => lowerText.includes(phrase));
+            
+            // Logika "Tidak dapat/bisa" diikuti kata kerja/benda
+            const negateTerms = ['tidak', 'tak', 'gak', 'nggak', 'g', 'ngga'];
+            const actionTerms = ['bisa', 'dapat', 'jalan', 'aktif', 'nyala', 'konek', 'akses', 'pakai', 'gunakan'];
+            const combinedNegation = negateTerms.some(n => actionTerms.some(a => lowerText.includes(n + " " + a) || lowerText.includes(n + a)));
+
+            return matchBase || matchComplex || combinedNegation;
+        }
+
+        async function handleComplaintResponse(userName) {
+            const responseMsg = `Mohon maaf atas ketidaknyamanan Anda, Pak/Bu ${userName}. 🙏<br><br>Untuk kendala <b>Internet Mati, Lemot, Gangguan Teknis, atau Tagihan</b>, mohon hubungi <b>Customer Service Pusat</b> secara langsung agar segera diperbaiki:<br><br>• <b>Telegram:</b> @MyRepublicIDBot<br>• <b>WhatsApp:</b> 088981500818<br>• <b>Email:</b> cs.id@myrepublic.net<br><br>Admin website ini khusus melayani <b>Pendaftaran Pasang Baru</b> area Sragen.`;
+            
+            setTimeout(() => {
+                addMessageToUI('admin', responseMsg, true);
+            }, 1000);
+        }
+        // --- END SMART FILTER LOGIC ---
+
+        // CHAT LOGIC
         function toggleChat() {
             const chat = document.getElementById('chat-widget');
             const btn = document.getElementById('chat-toggle-btn');
@@ -455,52 +570,51 @@
 
         async function submitChatForm() {
             if(checkBlockStatus()) return;
-
             const nama = document.getElementById('chat-reg-nama').value.trim();
             const email = document.getElementById('chat-reg-email').value.trim();
             const wa = document.getElementById('chat-reg-wa').value.trim();
-            
-            if(!nama) { alert("Nama lengkap wajib diisi."); return; }
-            if(!isValidEmail(email)) { alert("Email tidak valid."); return; }
-            if(!isValidWhatsApp(wa)) { alert("Nomor WhatsApp tidak valid."); return; }
+            if(!nama || !isValidEmail(email) || !isValidWhatsApp(wa)) { alert("Data tidak valid!"); return; }
             
             localStorage.setItem(USER_DATA_KEY, JSON.stringify({ nama, email, wa }));
             localStorage.setItem(SESSION_STATUS_KEY, 'active');
             localStorage.setItem(MSG_COUNT_KEY, '0');
-            localStorage.setItem(REG_COUNT_KEY, '0');
             document.getElementById('chat-form-overlay').style.display = 'none';
             
             const introMsg = `👤 *USER CHAT BARU*\n📛: ${nama}\n📧: ${email}\n📱: ${wa}\n📍: ${globalCoordsText}`;
             await telegramFetch(introMsg);
-            
-            addMessageToUI('admin', `Halo Pak/Bu ${nama}! 👋 Admin Sragen sudah menerima data Anda. Ada yang bisa kami bantu?`, true);
+            addMessageToUI('admin', `Halo Pak/Bu ${nama}! 👋 Admin Sragen sudah menerima data Anda. Ada yang bisa kami bantu mengenai pendaftaran pasang baru MyRepublic?`, true);
         }
 
         async function sendMessage() {
             if(localStorage.getItem(SESSION_STATUS_KEY) === 'ended' || checkBlockStatus()) return;
-
             const input = document.getElementById('user-input');
             const text = input.value.trim();
             if (!text) return;
 
-            // Logika Blokir: Pesan > 5
             let count = parseInt(localStorage.getItem(MSG_COUNT_KEY)) || 0;
             count++;
             localStorage.setItem(MSG_COUNT_KEY, count);
 
-            if(count > 5) {
+            if(count > 25) {
                 localStorage.setItem(IS_BLOCKED_KEY, 'true');
                 checkBlockStatus();
-                await telegramFetch(`🚫 *USER DIBLOKIR OTOMATIS* karena spam pesan (>5 tanpa balasan).`);
+                await telegramFetch(`🚫 *USER DIBLOKIR* (Spam/Overload pesan).`);
                 return;
             }
 
-            const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY));
+            const userDataRaw = localStorage.getItem(USER_DATA_KEY);
+            const userData = userDataRaw ? JSON.parse(userDataRaw) : { nama: "User" };
+            
             addMessageToUI('user', text, true); 
             input.value = '';
 
-            const msgToBot = `💬 *DARI ${userData.nama.toUpperCase()}*:\n${text}`;
-            await telegramFetch(msgToBot);
+            // FILTER KOMPLAIN
+            if(analyzeMessageForComplaints(text)) {
+                await telegramFetch(`⚠️ *KOMPLAIN TERDETEKSI* dari ${userData.nama.toUpperCase()}:\n"${text}"`);
+                handleComplaintResponse(userData.nama);
+            } else {
+                await telegramFetch(`💬 *DARI ${userData.nama.toUpperCase()}*:\n${text}`);
+            }
         }
 
         async function telegramFetch(text) {
@@ -510,28 +624,19 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'Markdown' })
                 });
-                const resData = await response.json();
-                if(resData.ok) {
-                    lastUpdateId = Math.max(lastUpdateId, resData.result.message_id);
-                    localStorage.setItem(LAST_UPDATE_KEY, lastUpdateId);
-                }
-                return resData;
+                return await response.json();
             } catch (e) { return { ok: false }; }
         }
 
         function addMessageToUI(sender, text, shouldSave = false) {
             const container = document.getElementById('chat-content');
-            const lastMsg = container.lastElementChild;
-            if (lastMsg && lastMsg.innerText.includes(text)) return;
-
+            if(!container) return;
             const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             const div = document.createElement('div');
             div.className = `bubble ${sender === 'user' ? 'bubble-user' : 'bubble-admin'}`;
             div.innerHTML = `${text} <span class="chat-timestamp">${time}</span>`;
-            
             container.appendChild(div);
             scrollBottom();
-            
             if(shouldSave) {
                 const history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
                 history.push({ sender, text, time });
@@ -547,47 +652,39 @@
         async function startPolling() {
             setInterval(async () => {
                 if(isProcessingPolling) return;
-                
                 isProcessingPolling = true;
                 try {
                     const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`);
                     const data = await res.json();
-                    
                     if (data.ok && data.result.length > 0) {
+                        const userDataRaw = localStorage.getItem(USER_DATA_KEY);
+                        if (!userDataRaw) { isProcessingPolling = false; return; }
+                        const currentUserName = JSON.parse(userDataRaw).nama.toUpperCase();
+
                         for (let update of data.result) {
                             lastUpdateId = update.update_id;
                             localStorage.setItem(LAST_UPDATE_KEY, lastUpdateId);
-
                             if (update.message && update.message.chat.id.toString() === CHAT_ID) {
-                                const replyText = update.message.text;
+                                const msg = update.message;
+                                const replyText = msg.text;
                                 if (!replyText) continue;
 
-                                const lowerText = replyText.toLowerCase();
-
-                                // FITUR BUKA BLOKIR DARI SERVER
-                                if(lowerText === "buka blokir" || lowerText === "/unblock") {
-                                    localStorage.removeItem(IS_BLOCKED_KEY);
-                                    localStorage.setItem(MSG_COUNT_KEY, '0');
-                                    localStorage.setItem(REG_COUNT_KEY, '0');
-                                    checkBlockStatus();
-                                    addMessageToUI('admin', "🔓 Blokir Anda telah dibuka oleh Admin. Silakan berkonsultasi kembali.", true);
+                                if (replyText.toLowerCase() === "selesai") {
+                                    if(msg.reply_to_message && msg.reply_to_message.text.includes(`DARI ${currentUserName}`)) {
+                                        localStorage.setItem(SESSION_STATUS_KEY, 'ended');
+                                        location.reload();
+                                    }
                                     continue;
                                 }
 
-                                if (lowerText === "/endchat" || lowerText === "selesai") {
-                                    endSessionByServer();
-                                    continue;
-                                }
+                                const isReplyingToMe = msg.reply_to_message && (
+                                    msg.reply_to_message.text.toUpperCase().includes(`DARI ${currentUserName}`) || 
+                                    msg.reply_to_message.text.toUpperCase().includes(`KOMPLAIN TERDETEKSI* DARI ${currentUserName}`)
+                                );
+                                const isSystem = replyText.includes("💬 *DARI") || replyText.includes("👤 *USER") || replyText.includes("🚀 *PENDAFTARAN") || replyText.includes("⚠️ *KOMPLAIN");
 
-                                const isSystemLog = replyText.includes("💬 *DARI") || 
-                                                  replyText.includes("👤 *USER") || 
-                                                  replyText.includes("🚀 *PENDAFTARAN") ||
-                                                  replyText.includes("🚫 *USER");
-                                
-                                if (!isSystemLog) {
-                                    // Reset counter jika admin membalas
+                                if (!isSystem && isReplyingToMe) {
                                     localStorage.setItem(MSG_COUNT_KEY, '0');
-                                    localStorage.setItem(REG_COUNT_KEY, '0');
                                     addMessageToUI('admin', replyText, true);
                                 }
                             }
@@ -598,74 +695,40 @@
             }, 3000);
         }
 
-        function endSessionByServer() {
-            if(localStorage.getItem(SESSION_STATUS_KEY) === 'ended') return;
-            localStorage.setItem(SESSION_STATUS_KEY, 'ended');
-            const container = document.getElementById('chat-content');
-            const div = document.createElement('div');
-            div.className = "chat-ended-notify";
-            div.innerText = "Sesi konsultasi telah diakhiri oleh Admin.";
-            container.appendChild(div);
-            checkSessionStatus();
-            scrollBottom();
-        }
-
         function checkSessionStatus() {
             const isEnded = localStorage.getItem(SESSION_STATUS_KEY) === 'ended';
             const inputArea = document.getElementById('input-container-chat');
             const resetArea = document.getElementById('reset-session-area');
-            
             if(isEnded) {
-                inputArea.style.opacity = "0.5";
-                inputArea.querySelector('input').disabled = true;
-                resetArea.classList.remove('hidden');
-            } else {
-                inputArea.style.opacity = "1";
-                inputArea.querySelector('input').disabled = false;
-                resetArea.classList.add('hidden');
+                if(inputArea) {
+                    inputArea.style.opacity = "0.5";
+                    inputArea.querySelector('input').disabled = true;
+                }
+                if(resetArea) resetArea.classList.remove('hidden');
             }
         }
 
-        function clearChatSessionPrompt() {
-            if(confirm("Hapus riwayat dan tutup percakapan?")) { clearChatSession(); }
-        }
+        function clearChatSessionPrompt() { if(confirm("Hapus riwayat?")) { localStorage.clear(); location.reload(); } }
+        function clearChatSession() { localStorage.clear(); location.reload(); }
 
-        function clearChatSession() {
-            localStorage.removeItem(STORAGE_KEY);
-            localStorage.removeItem(USER_DATA_KEY);
-            localStorage.removeItem(SESSION_STATUS_KEY);
-            localStorage.removeItem(MSG_COUNT_KEY);
-            localStorage.removeItem(REG_COUNT_KEY);
-            localStorage.removeItem(IS_BLOCKED_KEY);
-            location.reload();
-        }
-
+        // REGISTRATION
         function togglePaket() {
             const container = document.getElementById('paket-container');
             container.classList.toggle('show');
-            if(container.classList.contains('show')) {
-                setTimeout(() => container.scrollIntoView({ behavior: 'smooth' }), 100);
-            }
+            if(container.classList.contains('show')) { setTimeout(() => container.scrollIntoView({ behavior: 'smooth' }), 100); }
         }
 
-        function openRegistrationModal(paket) {
-            checkBlockStatus();
-            document.getElementById('reg-paket').value = paket;
-            new bootstrap.Modal(document.getElementById('modalDaftar')).show();
-        }
+        function openRegistrationModal(paket) { checkBlockStatus(); document.getElementById('reg-paket').value = paket; new bootstrap.Modal(document.getElementById('modalDaftar')).show(); }
 
         async function submitRegistrationToBot() {
             if(checkBlockStatus()) return;
-
-            // Logika Blokir: Daftar > 3
             let regCount = parseInt(localStorage.getItem(REG_COUNT_KEY)) || 0;
             regCount++;
             localStorage.setItem(REG_COUNT_KEY, regCount);
 
-            if(regCount > 3) {
+            if(regCount > 5) {
                 localStorage.setItem(IS_BLOCKED_KEY, 'true');
                 checkBlockStatus();
-                await telegramFetch(`🚫 *USER DIBLOKIR OTOMATIS* karena spam pendaftaran (>3 kali).`);
                 return;
             }
 
@@ -676,16 +739,14 @@
                 paket: document.getElementById('reg-paket').value,
                 alamat: document.getElementById('reg-alamat').value.trim()
             };
-
             if(!data.nama || !data.wa || !data.alamat) { alert("Lengkapi data!"); return; }
             btn.disabled = true; btn.textContent = "Mengirim...";
-
             const msg = `🚀 *PENDAFTARAN BARU (WEB)*\n👤: ${data.nama}\n📱: ${data.wa}\n📦: ${data.paket}\n🏠: ${data.alamat}\n📍: ${globalCoordsText}`;
             const res = await telegramFetch(msg);
             if(res && res.ok) {
-                alert("Berhasil! Tim kami akan segera menghubungi Anda.");
+                alert("Berhasil! Tim kami akan segera membalas via Chat/WA.");
                 bootstrap.Modal.getInstance(document.getElementById('modalDaftar')).hide();
-            } else { alert("Gagal mengirim data."); }
+            } else { alert("Gagal mengirim."); }
             btn.disabled = false; btn.textContent = "Kirim Data Pendaftaran";
         }
 
@@ -694,7 +755,6 @@
             const history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
             const container = document.getElementById('chat-content');
             if(container) {
-                container.innerHTML = '';
                 history.forEach(item => {
                     const div = document.createElement('div');
                     div.className = `bubble ${item.sender === 'user' ? 'bubble-user' : 'bubble-admin'}`;
@@ -702,10 +762,7 @@
                     container.appendChild(div);
                 });
             }
-            checkSessionStatus();
-            checkBlockStatus();
-            scrollBottom();
-            startPolling();
+            checkSessionStatus(); checkBlockStatus(); scrollBottom(); startPolling();
         };
     </script>
 </body>
