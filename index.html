@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MyRepublic Cabang Sragen | Internet Cepat & Stabil</title>
     
+    <title>MyRepublic Cabang Sragen | Internet Fiber Cepat & Stabil</title>
+    <meta name="description" content="Layanan resmi MyRepublic Sragen. Nikmati internet fiber optic 100% tanpa batas kuota (FUP). Daftar sekarang untuk koneksi cepat dan stabil di Sragen.">
+    
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
     <link rel="icon" type="image/png" href="favicon.png">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -30,14 +36,13 @@
             width: 100%;
             margin: 0;
             padding: 0;
-            touch-action: pan-y; /* Hanya izinkan scroll vertikal */
+            touch-action: pan-y;
         }
 
         body { 
             font-family: 'Inter', sans-serif; 
             color: #333; 
             background-color: var(--mr-light);
-            /* Memastikan body bisa di-scroll saat keyboard aktif */
             min-height: 100vh;
         }
         
@@ -154,15 +159,14 @@
         }
 
         footer { background-color: #1a1a1a; color: #f8f9fa; padding: 60px 0 30px; }
-        footer h5 { color: white; font-weight: 700; margin-bottom: 20px; font-size: 1rem; }
+        footer h2 { color: white; font-weight: 700; margin-bottom: 20px; font-size: 1rem; }
         
-        /* ADJUSTED CHAT CONTAINER FOR MOBILE KEYBOARD */
         .chat-container {
             width: 100%; max-width: 400px; height: 80vh; 
             position: fixed; bottom: 0; right: 0;
             display: none; flex-direction: column; background: white; z-index: 10000;
             box-shadow: 0 -5px 40px rgba(0,0,0,0.2); border-top-left-radius: 25px; border-top-right-radius: 25px; overflow: hidden;
-            transition: height 0.3s ease;
+            transition: height 0.3s ease, bottom 0.3s ease;
         }
         @media (min-width: 640px) {
             .chat-container { width: 350px; right: 25px; bottom: 25px; height: 550px; border-radius: 25px; }
@@ -178,6 +182,7 @@
         #chat-content {
             flex: 1; padding: 15px; overflow-y: auto; background-color: #f8f9fa;
             display: flex; flex-direction: column; gap: 12px;
+            scroll-behavior: smooth;
         }
 
         .bubble { max-width: 80%; padding: 10px 14px; font-size: 0.85rem; line-height: 1.4; position: relative; word-wrap: break-word; }
@@ -239,17 +244,14 @@
         }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Status Styles */
         .status-blocked { pointer-events: none; opacity: 0.6; }
         #reg-success-note { display: none; background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
 
-        /* About Us Styles */
         .about-section { background-color: #fff; padding: 80px 0; }
         .about-icon-box { background: var(--mr-light); padding: 20px; border-radius: 20px; text-align: center; height: 100%; transition: all 0.3s ease; border: 1px solid #eee; }
         .about-icon-box:hover { border-color: var(--mr-purple); transform: translateY(-5px); }
         .about-icon { font-size: 2.5rem; margin-bottom: 15px; display: block; }
 
-        /* NEW STYLES FOR ADDRESS & REVIEWS */
         .address-card {
             background: white; border-radius: 30px; overflow: hidden;
             box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid #f0f0f0;
@@ -271,27 +273,37 @@
             font-weight: bold; font-size: 1.1rem;
         }
 
-        /* FIX UNTUK MODAL AGAR TIDAK KETUTUP KEYBOARD */
         .modal { overflow-y: auto !important; }
         .modal-dialog { margin-bottom: 50px; }
 
-        /* Review Container Transition */
         #review-container {
             transition: opacity 0.5s ease;
+        }
+
+        /* GPS Loading Spinner */
+        .gps-loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            vertical-align: text-bottom;
+            border: .2em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
         }
     </style>
 </head>
 <body>
 
-    <div id="lightbox-overlay" onclick="closeLightbox()">
+    <div id="lightbox-overlay" onclick="closeLightbox()" aria-hidden="true">
         <span class="lightbox-close">×</span>
-        <img id="lightbox-img" src="" alt="Promo Zoom">
+        <img id="lightbox-img" src="" alt="Promo Zoom View">
     </div>
 
-    <nav class="navbar sticky-top">
+    <nav class="navbar sticky-top" role="navigation">
         <div class="container d-flex justify-content-between align-items-center">
             <a class="navbar-brand d-flex flex-column align-items-center" href="#">
-                <img src="logo.png" alt="MyRepublic Logo">
+                <img src="logo.png" alt="MyRepublic Sragen" loading="lazy">
                 <span class="slogan-text">Internet Rocket Sragen</span>
             </a>
             <div class="d-none d-md-block">
@@ -307,10 +319,10 @@
             
             <div class="row justify-content-center mb-5">
                 <div class="col-11 col-md-5 col-lg-4">
-                    <div class="promo-card featured-card text-center">
+                    <article class="promo-card featured-card text-center">
                         <div class="best-seller-badge">PROMO TERLARIS</div>
                         <div class="card-header-purple p-3">
-                            <h3 class="fw-bold m-0 h5">10Ring Mbps</h3>
+                            <h2 class="fw-bold m-0 h5">10Ring Mbps</h2>
                         </div>
                         <div class="p-4">
                             <div class="mb-3 text-dark">
@@ -320,234 +332,234 @@
                             </div>
                             <ul class="text-start mb-4 space-y-1 text-xs text-dark">
                                 <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Unlimited Tanpa FUP</li>
-                                
                                 <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Daftar Sekarang pasang Sekarang</li>
-
                                 <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Full Fiber Optic</li>
                                 <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Gratis Instalasi.</li>
                             </ul>
                             <button onclick="openRegistrationModal('10Ring')" class="btn btn-primary w-100 py-2 text-sm shadow-md">Daftar Sekarang</button>
                         </div>
-                    </div>
+                    </article>
                 </div>
             </div>
 
-            <button onclick="togglePaket()" class="btn btn-warning btn-md px-5 py-3 fw-bold shadow-lg rounded-pill" style="background-color: #ffcc00; border: none; color: #6c2d91;">
+            <button onclick="togglePaket()" class="btn btn-warning btn-md px-5 py-3 fw-bold shadow-lg rounded-pill" style="background-color: #ffcc00; border: none; color: #6c2d91;" aria-label="Tampilkan Semua Paket Internet">
                 Lihat Semua Paket Lainnya ↓
             </button>
         </div>
     </header>
 
-    <div class="search-container">
-        <div class="search-box-auto" onclick="handleAutoGpsSearch()" id="main-search-btn">
-            <div class="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span class="location-text" id="status-gps-text">Cek Ketersediaan Area via GPS Otomatis</span>
-            </div>
-            <button id="btn-cek-lokasi" class="bg-[#6c2d91] text-white px-5 py-2 rounded-full text-xs font-bold transition-all active:scale-95 shadow-md">Cek Lokasi Saya</button>
-        </div>
-        <div id="search-result" class="search-result-box p-4 text-center text-sm font-semibold"></div>
-    </div>
-
-    <div id="paket-container">
-        <section class="py-5 bg-light" id="daftar-harga-section">
-            <div class="container">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold h4" style="color: #6c2d91;">Daftar Harga Lengkap</h2>
-                    <p class="text-muted text-xs">Pilihan paket internet terbaik untuk setiap kebutuhan Anda</p>
+    <main>
+        <div class="search-container">
+            <div class="search-box-auto" onclick="handleAutoGpsSearch()" id="main-search-btn" role="button" aria-label="Cek Ketersediaan Area via GPS">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span class="location-text" id="status-gps-text">Cek Ketersediaan Area via GPS Otomatis</span>
                 </div>
-                
-                <div class="price-table-container">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>PAKET & HARGA</th>
-                                    <th class="text-center">SPEED (EST)</th>
-                                    <th class="text-center">AKSI</th>
-                                </tr>
-                            </thead>
-                            <tbody id="price-table-body">
-                                <tr>
-                                    <td colspan="3" class="text-center py-4 text-muted">
-                                        <span class="spinner-border spinner-border-sm me-2"></span> Memuat Daftar Harga...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <button id="btn-cek-lokasi" class="bg-[#6c2d91] text-white px-5 py-2 rounded-full text-xs font-bold transition-all active:scale-95 shadow-md">Cek Lokasi Saya</button>
+            </div>
+            <div id="search-result" class="search-result-box p-4 text-center text-sm font-semibold" aria-live="polite"></div>
+        </div>
+
+        <div id="paket-container">
+            <section class="py-5 bg-light" id="daftar-harga-section">
+                <div class="container">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold h4" style="color: #6c2d91;">Daftar Harga Lengkap</h2>
+                        <p class="text-muted text-xs">Pilihan paket internet terbaik untuk setiap kebutuhan Anda</p>
+                    </div>
+                    
+                    <div class="price-table-container">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">PAKET & HARGA</th>
+                                        <th scope="col" class="text-center">SPEED (EST)</th>
+                                        <th scope="col" class="text-center">AKSI</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="price-table-body">
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4 text-muted">
+                                            <span class="spinner-border spinner-border-sm me-2"></span> Memuat Daftar Harga...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="py-12 bg-gray-50" id="promo-gallery">
+            <div class="container">
+                <div class="text-center mb-8">
+                    <h2 class="fw-bold h4" style="color: #6c2d91;">Promo & Event Terbaru</h2>
+                    <div class="h-1 w-20 bg-warning mx-auto mt-2"></div>
+                </div>
+                <div class="row g-4 justify-content-center" id="gallery-wrapper">
+                    <div class="col-12 text-center text-muted py-5" id="promo-loading">
+                        <span class="spinner-border spinner-border-sm me-2"></span> Memuat Promo Terbaru...
                     </div>
                 </div>
             </div>
         </section>
-    </div>
 
-    <section class="py-12 bg-gray-50" id="promo-gallery">
-        <div class="container">
-            <div class="text-center mb-8">
-                <h2 class="fw-bold h4" style="color: #6c2d91;">Promo & Event Terbaru</h2>
-                <div class="h-1 w-20 bg-warning mx-auto mt-2"></div>
-            </div>
-            <div class="row g-4 justify-content-center" id="gallery-wrapper">
-                <div class="col-12 text-center text-muted py-5" id="promo-loading">
-                    <span class="spinner-border spinner-border-sm me-2"></span> Memuat Promo Terbaru...
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="about-section">
-        <div class="container">
-            <div class="row align-items-center g-5">
-                <div class="col-lg-6">
-                    <h2 class="display-6 fw-bold mb-4" style="color: var(--mr-purple);">Tentang MyRepublic Sragen</h2>
-                    <p class="text-gray-600 mb-4 leading-relaxed">
-                        Kami adalah pelopor penyedia layanan internet <strong>Ultra-Fast Fiber Optic</strong> di Bumi Sukowati. Sejak hadir di Sragen, fokus utama kami adalah memberikan pengalaman berinternet yang belum pernah dirasakan sebelumnya: <strong>Cepat, Stabil, dan Tanpa Batas.</strong>
-                    </p>
-                    <p class="text-gray-600 mb-5 leading-relaxed">
-                        Berbeda dengan penyedia layanan lain, MyRepublic menggunakan teknologi <strong>Fiber-to-the-Home (FTTH)</strong> murni 100%. Ini berarti sinyal internet dikirimkan melalui cahaya, memastikan kecepatan yang Anda bayar adalah kecepatan yang Anda dapatkan, bahkan di jam sibuk sekalipun.
-                    </p>
-                    
-                    <div class="row g-4">
-                        <div class="col-6 col-md-4">
-                            <div class="text-center">
-                                <span class="block text-3xl font-bold text-purple-600">150+</span>
-                                <span class="text-xs text-gray-500 font-semibold uppercase">Cluster Area</span>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4">
-                            <div class="text-center">
-                                <span class="block text-3xl font-bold text-purple-600">24/7</span>
-                                <span class="text-xs text-gray-500 font-semibold uppercase">Customer Care</span>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-4">
-                            <div class="text-center">
-                                <span class="block text-3xl font-bold text-purple-600">0%</span>
-                                <span class="text-xs text-gray-500 font-semibold uppercase">Tanpa FUP</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="row g-3">
-                        <div class="col-sm-6">
-                            <div class="about-icon-box">
-                                <span class="about-icon">🚀</span>
-                                <h4 class="fw-bold mb-2">Speed Maksimal</h4>
-                                <p class="text-xs text-gray-500">Nikmati kecepatan hingga 1Gbps untuk download dan upload yang simetris.</p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="about-icon-box">
-                                <span class="about-icon">🎮</span>
-                                <h4 class="fw-bold mb-2">Low Latency</h4>
-                                <p class="text-xs text-gray-500">Optimasi khusus untuk gamer Sragen agar ping tetap hijau saat mabar.</p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="about-icon-box">
-                                <span class="about-icon">💎</span>
-                                <h4 class="fw-bold mb-2">Kualitas Premium</h4>
-                                <p class="text-xs text-gray-500">Hardware router terbaru (ONT) dengan jangkauan Wi-Fi lebih luas dan stabil.</p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="about-icon-box">
-                                <span class="about-icon">🏷️</span>
-                                <h4 class="fw-bold mb-2">Harga Transparan</h4>
-                                <p class="text-xs text-gray-500">Harga flat sesuai kontrak tanpa ada biaya tersembunyi atau kenaikan tiba-tiba.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-16 bg-white border-t border-gray-100">
-        <div class="container">
-            <div class="row align-items-center g-5">
-                <div class="col-lg-5">
-                    <div class="ps-lg-4">
-                        <span class="text-purple-600 font-bold uppercase tracking-widest text-xs mb-2 block">Lokasi Layanan</span>
-                        <h2 class="display-6 fw-bold mb-4" style="color: var(--mr-purple);">Peta Cakupan Fiber Sragen</h2>
-                        <p class="text-gray-600 mb-5">Klik pada area berwarna biru untuk melihat detail cakupan fiber optic kami. Area yang ditandai adalah wilayah yang sudah tersedia jaringan MyRepublic.</p>
+        <section class="about-section">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <h2 class="display-6 fw-bold mb-4" style="color: var(--mr-purple);">Tentang MyRepublic Sragen</h2>
+                        <p class="text-gray-600 mb-4 leading-relaxed">
+                            Kami adalah pelopor penyedia layanan internet <strong>Ultra-Fast Fiber Optic</strong> di Bumi Sukowati. Sejak hadir di Sragen, fokus utama kami adalah memberikan pengalaman berinternet yang belum pernah dirasakan sebelumnya: <strong>Cepat, Stabil, dan Tanpa Batas.</strong>
+                        </p>
+                        <p class="text-gray-600 mb-5 leading-relaxed">
+                            Berbeda dengan penyedia layanan lain, MyRepublic menggunakan teknologi <strong>Fiber-to-the-Home (FTTH)</strong> murni 100%. Ini berarti sinyal internet dikirimkan melalui cahaya, memastikan kecepatan yang Anda bayar adalah kecepatan yang Anda dapatkan, bahkan di jam sibuk sekalipun.
+                        </p>
                         
-                        <div class="space-y-6">
-                            <div class="flex items-start">
-                                <div class="bg-purple-100 p-3 rounded-2xl mr-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div class="row g-4">
+                            <div class="col-6 col-md-4">
+                                <div class="text-center">
+                                    <span class="block text-3xl font-bold text-purple-600">150+</span>
+                                    <span class="text-xs text-gray-500 font-semibold uppercase">Cluster Area</span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="text-center">
+                                    <span class="block text-3xl font-bold text-purple-600">24/7</span>
+                                    <span class="text-xs text-gray-500 font-semibold uppercase">Customer Care</span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="text-center">
+                                    <span class="block text-3xl font-bold text-purple-600">0%</span>
+                                    <span class="text-xs text-gray-500 font-semibold uppercase">Tanpa FUP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="about-icon-box">
+                                    <span class="about-icon" aria-hidden="true">🚀</span>
+                                    <h3 class="fw-bold mb-2 h5">Speed Maksimal</h3>
+                                    <p class="text-xs text-gray-500">Nikmati kecepatan hingga 1Gbps untuk download dan upload yang simetris.</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="about-icon-box">
+                                    <span class="about-icon" aria-hidden="true">🎮</span>
+                                    <h3 class="fw-bold mb-2 h5">Low Latency</h3>
+                                    <p class="text-xs text-gray-500">Optimasi khusus untuk gamer Sragen agar ping tetap hijau saat mabar.</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="about-icon-box">
+                                    <span class="about-icon" aria-hidden="true">💎</span>
+                                    <h3 class="fw-bold mb-2 h5">Kualitas Premium</h3>
+                                    <p class="text-xs text-gray-500">Hardware router terbaru (ONT) dengan jangkauan Wi-Fi lebih luas dan stabil.</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="about-icon-box">
+                                    <span class="about-icon" aria-hidden="true">🏷️</span>
+                                    <h3 class="fw-bold mb-2 h5">Harga Transparan</h3>
+                                    <p class="text-xs text-gray-500">Harga flat sesuai kontrak tanpa ada biaya tersembunyi atau kenaikan tiba-tiba.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-white border-t border-gray-100">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-5">
+                        <div class="ps-lg-4">
+                            <span class="text-purple-600 font-bold uppercase tracking-widest text-xs mb-2 block">Lokasi Layanan</span>
+                            <h2 class="display-6 fw-bold mb-4" style="color: var(--mr-purple);">Peta Cakupan Fiber Sragen</h2>
+                            <p class="text-gray-600 mb-5">Klik pada area berwarna biru untuk melihat detail cakupan fiber optic kami. Area yang ditandai adalah wilayah yang sudah tersedia jaringan MyRepublic.</p>
+                            
+                            <div class="space-y-6">
+                                <div class="flex items-start">
+                                    <div class="bg-purple-100 p-3 rounded-2xl mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="fw-bold mb-1 h6">Kantor Layanan</h3>
+                                        <p class="text-sm text-gray-500">Jl. Raya Sukowati No. 120, Sragen Tengah.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="bg-purple-100 p-3 rounded-2xl mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="fw-bold mb-1 h6">Status Area</h3>
+                                        <p class="text-sm text-gray-500">Biru = Tercover Fiber Optic<br>Merah = Area Maintenance</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="address-card">
+                            <div class="map-container">
+                                <div id="map-coverage" role="application" aria-label="Peta Cakupan Internet MyRepublic Sragen"></div>
+                            </div>
+                            <div class="p-4 bg-purple-900 text-white text-center">
+                                <p class="text-[10px] mb-2 opacity-80">Gunakan GPS di atas untuk cek otomatis di posisi Anda</p>
+                                <button id="btn-cek-lokasi-map" onclick="handleAutoGpsSearch()" class="text-sm font-bold flex items-center justify-center w-full bg-yellow-500 py-2 rounded-lg text-purple-900 shadow-lg transition-all active:scale-95">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
-                                </div>
-                                <div>
-                                    <h5 class="fw-bold mb-1">Kantor Layanan</h5>
-                                    <p class="text-sm text-gray-500">Jl. Raya Sukowati No. 120, Sragen Tengah.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start">
-                                <div class="bg-purple-100 p-3 rounded-2xl mr-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h5 class="fw-bold mb-1">Status Area</h5>
-                                    <p class="text-sm text-gray-500">Biru = Tercover Fiber Optic<br>Merah = Area Maintenance</p>
-                                </div>
+                                    <span id="btn-cek-lokasi-map-text">Cek Cover Area</span>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-7">
-                    <div class="address-card">
-                        <div class="map-container">
-                            <div id="map-coverage"></div>
-                        </div>
-                        <div class="p-4 bg-purple-900 text-white text-center">
-                            <p class="text-[10px] mb-2 opacity-80">Gunakan GPS di atas untuk cek otomatis di posisi Anda</p>
-                            <button id="btn-cek-lokasi-map" onclick="handleAutoGpsSearch()" class="text-sm font-bold flex items-center justify-center w-full bg-yellow-500 py-2 rounded-lg text-purple-900 shadow-lg transition-all active:scale-95">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                </svg>
-                                <span id="btn-cek-lokasi-map-text">Cek Cover Area</span>
-                            </button>
-                        </div>
-                    </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-gray-50 border-t border-b border-gray-100">
+            <div class="container">
+                <div class="text-center mb-12">
+                    <h2 class="fw-bold h3" style="color: #6c2d91;">Apa Kata Warga Sragen?</h2>
+                    <div class="h-1 w-16 bg-warning mx-auto mt-2"></div>
+                    <p class="text-gray-500 text-sm mt-3">Telah dipercaya oleh ribuan pelanggan di Sukowati</p>
+                </div>
+                
+                <div class="row g-4" id="review-container">
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <section class="py-16 bg-gray-50 border-t border-b border-gray-100">
-        <div class="container">
-            <div class="text-center mb-12">
-                <h2 class="fw-bold h3" style="color: #6c2d91;">Apa Kata Warga Sragen?</h2>
-                <div class="h-1 w-16 bg-warning mx-auto mt-2"></div>
-                <p class="text-gray-500 text-sm mt-3">Telah dipercaya oleh ribuan pelanggan di Sukowati</p>
-            </div>
-            
-            <div class="row g-4" id="review-container">
-                </div>
-        </div>
-    </section>
-
-    <footer>
+    <footer role="contentinfo">
         <div class="container">
             <div class="row g-4 text-xs md:text-sm">
                 <div class="col-lg-5">
-                    <h5 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Tentang Kami</h5>
+                    <h2 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Tentang Kami</h2>
                     <div class="text-gray-400 mt-3 mb-4 space-y-3">
                         <p><strong>MyRepublic Sragen</strong> merupakan ISP terkemuka yang hadir untuk menjawab kebutuhan konektivitas tinggi bagi masyarakat Sragen dengan teknologi <strong>Full Fiber Optic</strong> murni.</p>
                         <p>Tanpa FUP (Fair Usage Policy), Anda bebas melakukan streaming 4K dan gaming tanpa batas.</p>
                     </div>
                 </div>
                 <div class="col-lg-3">
-                    <h5 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Kenapa MyRepublic?</h5>
+                    <h2 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Kenapa MyRepublic?</h2>
                     <ul class="list-unstyled text-gray-400 mt-3 space-y-2">
                         <li>🚀 Speed Simetris 1:1</li>
                         <li>🎮 Optimasi Latency Gaming</li>
@@ -557,7 +569,7 @@
                     </ul>
                 </div>
                 <div class="col-lg-4">
-                    <h5 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Kontak Sragen</h5>
+                    <h2 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Kontak Sragen</h2>
                     <ul class="list-unstyled text-gray-400 mt-3">
                         <li class="mb-2">📍 <strong>Area Layanan:</strong> Cakupan merata di pusat kota Sragen, Karangmalang, Sidoharjo, Ngrampal, dan sekitarnya.</li>
                         <li class="mb-2">💬 <strong>Konsultasi:</strong> Gunakan tombol chat di pojok kanan bawah.</li>
@@ -571,11 +583,11 @@
         </div>
     </footer>
 
-    <div class="modal fade" id="modalDaftar" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalDaftar" tabindex="-1" aria-labelledby="modalDaftarLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow-2xl">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold text-sm">Form Registrasi Cepat</h5>
+                    <h5 class="modal-title fw-bold text-sm" id="modalDaftarLabel">Form Registrasi Cepat</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-4 relative" id="registration-body">
@@ -585,19 +597,19 @@
 
                     <div id="reg-form-fields">
                         <div class="mb-3 text-sm">
-                            <label class="form-label fw-semibold">Nama Lengkap</label>
+                            <label for="reg-nama" class="form-label fw-semibold">Nama Lengkap</label>
                             <input type="text" id="reg-nama" class="form-control rounded-pill text-sm" placeholder="Nama sesuai KTP">
                         </div>
                         <div class="mb-3 text-sm">
-                            <label class="form-label fw-semibold">Nomor WhatsApp</label>
+                            <label for="reg-wa" class="form-label fw-semibold">Nomor WhatsApp</label>
                             <input type="number" id="reg-wa" class="form-control rounded-pill text-sm" placeholder="08xxxxxxxxxx">
                         </div>
                         <div class="mb-3 text-sm">
-                            <label class="form-label fw-semibold">Paket yang Dipilih</label>
+                            <label for="reg-paket" class="form-label fw-semibold">Paket yang Dipilih</label>
                             <input type="text" id="reg-paket" class="form-control bg-light rounded-pill fw-bold text-sm" readonly>
                         </div>
                         <div class="mb-3 text-sm">
-                            <label class="form-label fw-semibold">Alamat Pemasangan</label>
+                            <label for="reg-alamat" class="form-label fw-semibold">Alamat Pemasangan</label>
                             <textarea id="reg-alamat" class="form-control text-sm" rows="3" placeholder="Contoh: Jl. Raya Sukowati No. 1..."></textarea>
                         </div>
                         <button onclick="submitRegistrationToBot()" id="btn-submit-reg" class="btn btn-primary p-2 mt-2 shadow-lg text-sm w-100">Kirim Data Pendaftaran</button>
@@ -607,7 +619,7 @@
         </div>
     </div>
 
-    <button id="chat-toggle-btn" onclick="toggleChat()" class="fixed bottom-6 right-6 bg-purple-600 p-4 rounded-full shadow-2xl z-[9999] hover:scale-110 transition-transform" style="background-color: #6c2d91;">
+    <button id="chat-toggle-btn" onclick="toggleChat()" class="fixed bottom-6 right-6 bg-purple-600 p-4 rounded-full shadow-2xl z-[9999] hover:scale-110 transition-transform" style="background-color: #6c2d91;" aria-label="Buka Chat Bantuan">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
         </svg>
@@ -615,28 +627,28 @@
 
     <div id="chat-widget" class="chat-container">
         <div id="chat-blocked-overlay" class="blocked-overlay">
-            <span class="text-4xl mb-2">⏳</span>
-            <h4 class="font-bold text-purple-900 text-sm">Pesan Belum Dibalas</h4>
+            <span class="text-4xl mb-2" aria-hidden="true">⏳</span>
+            <h3 class="font-bold text-purple-900 text-sm">Pesan Belum Dibalas</h3>
             <p class="text-[10px] text-gray-500 px-4">Tunggu admin membalas pesan Anda sebelumnya (Maks. 5 pesan tanpa balasan).</p>
             <button onclick="toggleChat()" class="mt-4 text-xs underline text-purple-600">Tutup</button>
         </div>
 
         <div id="chat-form-overlay">
-            <button onclick="toggleChat()" class="absolute top-4 left-4 text-purple-600 hover:text-purple-800 transition-colors">
+            <button onclick="toggleChat()" class="absolute top-4 left-4 text-purple-600 hover:text-purple-800 transition-colors" aria-label="Kembali">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                 </svg>
             </button>
 
             <div class="text-center mb-6">
-                <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><span class="text-xl">👋</span></div>
-                <h4 class="font-bold text-purple-900 text-sm">Konsultasi Gratis</h4>
+                <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><span class="text-xl" aria-hidden="true">👋</span></div>
+                <h3 class="font-bold text-purple-900 text-sm">Konsultasi Gratis</h3>
                 <p class="text-[10px] text-gray-500">Mulai berbicara dengan Admin Sragen</p>
             </div>
             <div class="space-y-3 pb-20">
-                <input type="text" id="chat-reg-nama" placeholder="Nama Lengkap" class="w-full border p-2 rounded-xl text-xs outline-none">
-                <input type="email" id="chat-reg-email" placeholder="Alamat Email" class="w-full border p-2 rounded-xl text-xs outline-none">
-                <input type="number" id="chat-reg-wa" placeholder="No WhatsApp" class="w-full border p-2 rounded-xl text-xs outline-none">
+                <input type="text" id="chat-reg-nama" placeholder="Nama Lengkap" class="w-full border p-2 rounded-xl text-xs outline-none" aria-label="Nama Lengkap">
+                <input type="email" id="chat-reg-email" placeholder="Alamat Email" class="w-full border p-2 rounded-xl text-xs outline-none" aria-label="Alamat Email">
+                <input type="number" id="chat-reg-wa" placeholder="No WhatsApp" class="w-full border p-2 rounded-xl text-xs outline-none" aria-label="Nomor WhatsApp">
                 <button id="btn-start-chat" onclick="submitChatForm()" class="w-full bg-[#6c2d91] text-white font-bold py-3 rounded-xl text-xs shadow-lg">Mulai Chat Sekarang</button>
             </div>
         </div>
@@ -650,16 +662,16 @@
                 </div>
             </div>
             <div class="flex items-center space-x-1">
-                <button onclick="toggleChat()" class="hover:bg-white/10 p-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg></button>
-                <button onclick="clearChatSessionPrompt()" class="hover:bg-white/10 p-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+                <button onclick="toggleChat()" class="hover:bg-white/10 p-2 rounded-full" aria-label="Minimize Chat"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg></button>
+                <button onclick="clearChatSessionPrompt()" class="hover:bg-white/10 p-2 rounded-full" aria-label="Tutup Sesi Chat"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
             </div>
         </div>
 
         <div id="chat-content"></div>
 
         <div class="chat-input-area" id="input-container-chat">
-            <input type="text" id="user-input" placeholder="Tulis pesan..." onkeypress="if(event.key === 'Enter') sendMessage()">
-            <button id="send-msg-btn" onclick="sendMessage()" class="bg-[#6c2d91] text-white p-2 rounded-full shadow-md">
+            <input type="text" id="user-input" placeholder="Tulis pesan..." onkeypress="if(event.key === 'Enter') sendMessage()" aria-label="Ketik pesan anda">
+            <button id="send-msg-btn" onclick="sendMessage()" class="bg-[#6c2d91] text-white p-2 rounded-full shadow-md" aria-label="Kirim Pesan">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-90" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
             </button>
         </div>
@@ -693,24 +705,11 @@
         let isProcessingPolling = false;
         let map; 
 
-        // Variables for dynamic reviews
         let globalReviews = [];
         let currentlyDisplayedNames = [];
 
         if(!localStorage.getItem(SESSION_ID_KEY)) {
             localStorage.setItem(SESSION_ID_KEY, 'SID-' + Date.now());
-        }
-
-        // --- HELPER UNTUK SALAM REALTIME DENGAN FIX ZONA WAKTU WIB ---
-        function getGreeting() {
-            const options = { timeZone: 'Asia/Jakarta', hour: 'numeric', hour12: false };
-            const formatter = new Intl.DateTimeFormat('en-US', options);
-            const hrs = parseInt(formatter.format(new Date()));
-            
-            if (hrs >= 4 && hrs < 10) return "Pagi";
-            if (hrs >= 10 && hrs < 15) return "Siang";
-            if (hrs >= 15 && hrs < 18) return "Sore";
-            return "Malam";
         }
 
         function handleKeyboardShow() {
@@ -720,16 +719,22 @@
             if (visualViewport) {
                 const onResize = () => {
                     if (chatWidget.style.display === 'flex') {
-                        if (visualViewport.height < window.innerHeight * 0.8) {
-                            chatWidget.style.height = `${visualViewport.height}px`;
-                            chatWidget.style.bottom = `${window.innerHeight - visualViewport.height}px`;
-                            scrollBottom();
+                        const viewportHeight = visualViewport.height;
+                        const windowHeight = window.innerHeight;
+                        
+                        // Deteksi keyboard muncul (viewport mengecil lebih dari 20%)
+                        if (viewportHeight < windowHeight * 0.8) {
+                            chatWidget.style.height = `${viewportHeight}px`;
+                            chatWidget.style.bottom = `${windowHeight - viewportHeight}px`;
+                            setTimeout(scrollBottom, 100);
                         } else {
-                            chatWidget.style.height = '80vh';
-                            chatWidget.style.bottom = '0';
+                            // Reset ke posisi normal
                             if (window.innerWidth >= 640) {
                                 chatWidget.style.height = '550px';
                                 chatWidget.style.bottom = '25px';
+                            } else {
+                                chatWidget.style.height = '80vh';
+                                chatWidget.style.bottom = '0';
                             }
                         }
                     }
@@ -859,7 +864,7 @@
                     const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^\""]*$)/);
                     if (columns.length >= 3) {
                         const nama = columns[0].replace(/"/g, '').trim();
-                        const deskripsi = columns[1].replace(/"/g, '').trim(); // AMBIL KOLOM B (Index 1)
+                        const deskripsi = columns[1].replace(/"/g, '').trim(); 
                         let imgRaw = columns[2].replace(/"/g, '').trim();
                         const imgDirect = convertToDirectLink(imgRaw);
 
@@ -867,7 +872,7 @@
                             htmlContent += `
                                 <div class="col-6 col-md-4 col-lg-3 gallery-item">
                                     <div class="promo-img-wrapper">
-                                        <img src="${imgDirect}" alt="${nama}" onerror="handleImageError(this)" onclick="openLightbox(this.src)">
+                                        <img src="${imgDirect}" alt="${nama}" loading="lazy" onerror="handleImageError(this)" onclick="openLightbox(this.src)">
                                     </div>
                                     <p class="text-[10px] text-center mt-2 font-bold text-purple-800 uppercase mb-0">${nama}</p>
                                     <p class="text-[9px] text-center text-gray-500 leading-tight">${deskripsi}</p>
@@ -947,19 +952,19 @@
 
                 html += `
                 <div class="col-md-4 animate__animated animate__fadeIn">
-                    <div class="review-card">
+                    <article class="review-card">
                         <div class="flex items-center mb-3">
                             <div class="user-avatar mr-3">${initial}</div>
                             <div>
-                                <h6 class="fw-bold m-0 text-sm">${rev.name}</h6>
-                                <div class="star-rating">
+                                <h3 class="fw-bold m-0 text-sm h6">${rev.name}</h3>
+                                <div class="star-rating" aria-label="Rating ${rev.rating} dari 5">
                                     ${starString} 
                                     <span class="text-xs text-gray-400 font-bold ml-1">(${rev.rating})</span>
                                 </div>
                             </div>
                         </div>
                         <p class="text-xs text-gray-500 italic">"${rev.comment}"</p>
-                    </div>
+                    </article>
                 </div>`;
             });
 
@@ -1048,10 +1053,14 @@
                             const cachedLat = localStorage.getItem('raw_lat');
                             const cachedLng = localStorage.getItem('raw_lng');
                             if (cachedLat && cachedLng) {
-                                resolve({ lat: parseFloat(cachedLat), lng: parseFloat(cachedLng), link: localStorage.getItem(COORDS_CACHE_KEY) });
+                                resolve({ 
+                                    lat: parseFloat(cachedLat), 
+                                    lng: parseFloat(cachedLng), 
+                                    link: localStorage.getItem(COORDS_CACHE_KEY) 
+                                });
                             } else { resolve(null); }
                         },
-                        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
                     );
                 } else { resolve(null); }
             });
@@ -1095,14 +1104,19 @@
             const btnMapText = document.getElementById('btn-cek-lokasi-map-text');
 
             resultBox.style.display = 'none';
-            if(statusTextMain) statusTextMain.innerText = "Mengunci Sinyal Satelit...";
+            if(statusTextMain) statusTextMain.innerHTML = `<span class="gps-loading mr-2"></span> Sedang mengunci koordinat GPS...`;
             if(btnMain) { btnMain.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`; btnMain.disabled = true; }
             if(btnMap) btnMap.disabled = true;
             if(btnMapText) btnMapText.innerText = "Mengambil Alamat...";
 
             try {
                 const locationData = await getGuaranteedCoords();
-                if (!locationData) throw new Error("Akses lokasi gagal. Aktifkan GPS.");
+                if (!locationData) throw new Error("Akses lokasi gagal. Pastikan GPS aktif dan izinkan browser mengakses lokasi.");
+
+                // Deteksi Luar Sragen (Radius ±35KM dari pusat Sragen)
+                const sragenCenter = [-7.4277, 111.0225];
+                const distFromSragenCenter = calculateDistance(locationData.lat, locationData.lng, sragenCenter[0], sragenCenter[1]);
+                const isOutsideSragen = distFromSragenCenter > 35; // Estimasi batas kabupaten
 
                 let closestFatDist = 9999;
                 let coverageData = JSON.parse(localStorage.getItem(COVERAGE_STORAGE_KEY) || '[]');
@@ -1119,7 +1133,17 @@
                 const addr = await getFullAddressOnline(locationData.lat, locationData.lng);
                 resultBox.style.display = 'block';
 
-                if (isCovered) {
+                if (isOutsideSragen) {
+                    // LOGIKA JIKA DI LUAR SRAGEN
+                    resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-orange-100 text-orange-800 border border-orange-200";
+                    resultBox.innerHTML = `📍 Lokasi Anda saat ini di <b>${addr ? addr.village : 'Luar Wilayah'}</b> berada di luar jangkauan Cabang Sragen.<br>
+                    <p class="mt-2 text-xs">Silakan isi Nama & No WhatsApp Anda pada form pendaftaran di bawah untuk pengecekan manual oleh tim kami.</p>`;
+                    if(statusTextMain) statusTextMain.innerText = "Status: LUAR WILAYAH";
+                    
+                    // Tampilkan pendaftaran otomatis
+                    setTimeout(() => { openRegistrationModal('Pengecekan Manual (Luar Sragen)'); }, 1500);
+
+                } else if (isCovered) {
                     resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-green-100 text-green-700 border border-green-200";
                     resultBox.innerHTML = `✅ Lokasi Anda saat ini di <b>${addr ? addr.village : 'Sragen'}</b> sudah tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist}.</small>`;
                     if(statusTextMain) statusTextMain.innerText = "Status: TERCOVER";
@@ -1143,7 +1167,7 @@
                             `━━━━━━━━━━━━━━━\n` +
                             `📍 *Desa:* ${addr ? addr.village : 'Sragen'}\n` +
                             `🎯 *Jarak ke FAT:* ${formattedDist}\n` +
-                            `✅ *Status:* ${isCovered ? 'TERCOVER' : 'BELUM TERCOVER'}\n` +
+                            `✅ *Status:* ${isOutsideSragen ? 'LUAR SRAGEN' : (isCovered ? 'TERCOVER' : 'BELUM TERCOVER')}\n` +
                             `🆔 *Session:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n` +
                             `🗺️ [Buka Lokasi User](${locationData.link})`;
                 await telegramFetch(msg);
@@ -1215,7 +1239,6 @@
             btn.disabled = true;
             btn.innerText = "Memproses...";
 
-            // LOGIKA PENGECEKAN LOKASI OTOMATIS SAAT KLIK MULAI CHAT
             let isCovered = false;
             let currentLat = localStorage.getItem('raw_lat');
             let currentLng = localStorage.getItem('raw_lng');
@@ -1246,10 +1269,8 @@
             
             await telegramFetch(msg);
             
-            // PESAN SAMBUTAN AWAL
             addMessageToUI('admin', `Halo Pak/Bu ${nama}! 👋 Ada yang bisa Admin MyRepublic Sragen bantu?`, true);
 
-            // LOGIKA BALASAN OTOMATIS JIKA TERCOVER
             if(isCovered) {
                 setTimeout(() => {
                     addMessageToUI('admin', `Saat ini data anda sudah tersimpan di server dengan database terenkripsi aman. Admin akan segera menghubungi anda secepatnya lewat pesan WhatsApp.`, true);
