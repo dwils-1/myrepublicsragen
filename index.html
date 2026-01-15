@@ -9,6 +9,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -36,6 +37,8 @@
             font-family: 'Inter', sans-serif; 
             color: #333; 
             background-color: var(--mr-light);
+            /* Memastikan body bisa di-scroll saat keyboard aktif */
+            min-height: 100vh;
         }
         
         .navbar { 
@@ -153,10 +156,13 @@
         footer { background-color: #1a1a1a; color: #f8f9fa; padding: 60px 0 30px; }
         footer h5 { color: white; font-weight: 700; margin-bottom: 20px; font-size: 1rem; }
         
+        /* ADJUSTED CHAT CONTAINER FOR MOBILE KEYBOARD */
         .chat-container {
-            width: 100%; max-width: 400px; height: 80vh; position: fixed; bottom: 0; right: 0;
+            width: 100%; max-width: 400px; height: 80vh; 
+            position: fixed; bottom: 0; right: 0;
             display: none; flex-direction: column; background: white; z-index: 10000;
             box-shadow: 0 -5px 40px rgba(0,0,0,0.2); border-top-left-radius: 25px; border-top-right-radius: 25px; overflow: hidden;
+            transition: height 0.3s ease;
         }
         @media (min-width: 640px) {
             .chat-container { width: 350px; right: 25px; bottom: 25px; height: 550px; border-radius: 25px; }
@@ -166,6 +172,7 @@
             background: var(--mr-purple); padding: 15px; color: white;
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 3px solid var(--mr-yellow);
+            flex-shrink: 0;
         }
 
         #chat-content {
@@ -180,9 +187,13 @@
         .chat-timestamp { font-size: 0.65rem; opacity: 0.6; margin-top: 4px; display: block; text-align: right; }
         .bubble-admin .chat-timestamp { text-align: left; }
 
-        #chat-form-overlay { position: absolute; inset: 0; background: white; z-index: 100; padding: 30px 20px; display: flex; flex-direction: column; justify-content: center; }
+        #chat-form-overlay { 
+            position: absolute; inset: 0; background: white; z-index: 100; 
+            padding: 30px 20px; display: flex; flex-direction: column; 
+            justify-content: flex-start; overflow-y: auto;
+        }
 
-        .chat-input-area { padding: 12px; border-top: 1px solid #eee; background: white; display: flex; align-items: center; gap: 10px; }
+        .chat-input-area { padding: 12px; border-top: 1px solid #eee; background: white; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .chat-input-area input { flex: 1; border: none; background: #f1f3f4; padding: 10px 15px; border-radius: 25px; font-size: 0.85rem; outline: none; }
         
         .blocked-overlay {
@@ -249,15 +260,24 @@
         .review-card {
             background: white; padding: 25px; border-radius: 20px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.02); border: 1px solid #f5f5f5;
-            height: 100%; transition: transform 0.3s ease;
+            height: 100%; transition: all 0.5s ease;
         }
         .review-card:hover { transform: translateY(-5px); border-color: var(--mr-purple); }
-        .star-rating { color: #ffcc00; font-size: 0.9rem; }
+        .star-rating { color: #ffcc00; font-size: 1.1rem; letter-spacing: 1px; }
         .user-avatar {
             width: 45px; height: 45px; border-radius: 50%;
             background: var(--mr-purple); color: white;
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; font-size: 1.1rem;
+        }
+
+        /* FIX UNTUK MODAL AGAR TIDAK KETUTUP KEYBOARD */
+        .modal { overflow-y: auto !important; }
+        .modal-dialog { margin-bottom: 50px; }
+
+        /* Review Container Transition */
+        #review-container {
+            transition: opacity 0.5s ease;
         }
     </style>
 </head>
@@ -577,7 +597,7 @@
                             <label class="form-label fw-semibold">Alamat Pemasangan</label>
                             <textarea id="reg-alamat" class="form-control text-sm" rows="3" placeholder="Contoh: Jl. Raya Sukowati No. 1..."></textarea>
                         </div>
-                        <button onclick="submitRegistrationToBot()" id="btn-submit-reg" class="btn btn-primary p-2 mt-2 shadow-lg text-sm">Kirim Data Pendaftaran</button>
+                        <button onclick="submitRegistrationToBot()" id="btn-submit-reg" class="btn btn-primary p-2 mt-2 shadow-lg text-sm w-100">Kirim Data Pendaftaran</button>
                     </div>
                 </div>
             </div>
@@ -610,7 +630,7 @@
                 <h4 class="font-bold text-purple-900 text-sm">Konsultasi Gratis</h4>
                 <p class="text-[10px] text-gray-500">Mulai berbicara dengan Admin Sragen</p>
             </div>
-            <div class="space-y-3">
+            <div class="space-y-3 pb-20">
                 <input type="text" id="chat-reg-nama" placeholder="Nama Lengkap" class="w-full border p-2 rounded-xl text-xs outline-none">
                 <input type="email" id="chat-reg-email" placeholder="Alamat Email" class="w-full border p-2 rounded-xl text-xs outline-none">
                 <input type="number" id="chat-reg-wa" placeholder="No WhatsApp" class="w-full border p-2 rounded-xl text-xs outline-none">
@@ -662,19 +682,68 @@
         const SESSION_ID_KEY = 'mr_sragen_sid';
         const REG_SUCCESS_KEY = 'is_registered_success';
 
-        // GOOGLE SHEETS SETTINGS (UPDATED WITH YOUR LINKS)
+        // GOOGLE SHEETS SETTINGS
         const URL_SHEET1_PROMO = "https://docs.google.com/spreadsheets/d/e/2PACX-1vStVKNVl4FfeX193YQRDEFGE32rSDirwTdTY-unjHs5OseIiBROW0KKaMRtVTmMhQg0bnqmo3gaAejO/pub?gid=0&single=true&output=csv";
         const URL_SHEET2_HARGA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vStVKNVl4FfeX193YQRDEFGE32rSDirwTdTY-unjHs5OseIiBROW0KKaMRtVTmMhQg0bnqmo3gaAejO/pub?gid=500363833&single=true&output=csv";
 
         let lastUpdateId = parseInt(localStorage.getItem(LAST_UPDATE_KEY)) || 0;
         let isProcessingPolling = false;
-        let map; // Leaflet map variable
+        let map; 
+
+        // Variables for dynamic reviews
+        let globalReviews = [];
+        let currentlyDisplayedNames = [];
 
         if(!localStorage.getItem(SESSION_ID_KEY)) {
             localStorage.setItem(SESSION_ID_KEY, 'SID-' + Date.now());
         }
 
-        // FUNGSI INISIALISASI MAP CAKUPAN AREA (LEAFLET)
+        // --- HELPER UNTUK SALAM REALTIME DENGAN FIX ZONA WAKTU WIB ---
+        function getGreeting() {
+            const options = { timeZone: 'Asia/Jakarta', hour: 'numeric', hour12: false };
+            const formatter = new Intl.DateTimeFormat('en-US', options);
+            const hrs = parseInt(formatter.format(new Date()));
+            
+            if (hrs >= 4 && hrs < 10) return "Pagi";
+            if (hrs >= 10 && hrs < 15) return "Siang";
+            if (hrs >= 15 && hrs < 18) return "Sore";
+            return "Malam";
+        }
+
+        function handleKeyboardShow() {
+            const chatWidget = document.getElementById('chat-widget');
+            const visualViewport = window.visualViewport;
+
+            if (visualViewport) {
+                const onResize = () => {
+                    if (chatWidget.style.display === 'flex') {
+                        if (visualViewport.height < window.innerHeight * 0.8) {
+                            chatWidget.style.height = `${visualViewport.height}px`;
+                            chatWidget.style.bottom = `${window.innerHeight - visualViewport.height}px`;
+                            scrollBottom();
+                        } else {
+                            chatWidget.style.height = '80vh';
+                            chatWidget.style.bottom = '0';
+                            if (window.innerWidth >= 640) {
+                                chatWidget.style.height = '550px';
+                                chatWidget.style.bottom = '25px';
+                            }
+                        }
+                    }
+                };
+                visualViewport.addEventListener('resize', onResize);
+            }
+
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    setTimeout(() => {
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                });
+            });
+        }
+
         async function initCoverageMap() {
             const sragenCenter = [-7.4277, 111.0225];
             map = L.map('map-coverage', {
@@ -714,39 +783,30 @@
             }
         }
 
-        // FUNGSI FETCH HARGA DARI SHEET2
         async function fetchPricesFromSheets() {
             const tableBody = document.getElementById('price-table-body');
             if(!tableBody) return;
 
             try {
-                // Fetch dari URL Sheet 2
                 const response = await fetch(URL_SHEET2_HARGA + '&cb=' + Date.now());
                 const data = await response.text();
-                
-                // Pisahkan baris dan filter baris kosong
                 const rows = data.split(/\r?\n/).filter(r => r.trim() !== '');
 
-                // Cek jika data kosong atau hanya berisi header
                 if (rows.length <= 1) {
                     tableBody.innerHTML = '<tr><td colspan="3" class="text-center py-4">Belum ada paket tersedia di database.</td></tr>';
                     return;
                 }
 
-                // Buang baris pertama (header)
                 const contentRows = rows.slice(1);
                 let htmlContent = '';
 
                 contentRows.forEach(row => {
-                    // Penanganan delimiter CSV yang aman
                     let cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    
                     if (cols.length >= 3) {
                         const namaPaket = cols[0].replace(/"/g, '').trim();
                         const speed = cols[1].replace(/"/g, '').trim();
                         const harga = cols[2].replace(/"/g, '').trim();
                         
-                        // Warna badge berdasarkan kecepatan
                         let badgeColor = "bg-secondary";
                         const speedVal = parseInt(speed);
                         if(speedVal >= 30) badgeColor = "bg-primary";
@@ -778,12 +838,10 @@
             }
         }
 
-        // FUNGSI FETCH PROMO DARI SHEET1
         async function fetchPromoFromSheets() {
             const wrapper = document.getElementById('gallery-wrapper');
             if(!wrapper) return;
             try {
-                // Fetch dari URL Sheet 1
                 const response = await fetch(URL_SHEET1_PROMO + '&cb=' + Date.now());
                 const data = await response.text();
                 const rows = data.split('\n').filter(r => r.trim() !== '').slice(1); 
@@ -795,7 +853,7 @@
 
                 let htmlContent = '';
                 rows.forEach(row => {
-                    const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^\""]*$)/);
                     if (columns.length >= 3) {
                         const nama = columns[0].replace(/"/g, '').trim();
                         let imgRaw = columns[2].replace(/"/g, '').trim();
@@ -818,40 +876,93 @@
             }
         }
 
-        function generateRandomReviews() {
-            const names = ["Budi Santoso", "Siti Aminah", "Rahmat Hidayat", "Agus Wijaya", "Lilik Kurniawan", "Dewi Lestari"];
+        function initReviewDatabase() {
+            const firstNames = ["Budi", "Siti", "Agus", "Rahmat", "Dewi", "Lilik", "Eko", "Andi", "Sri", "Hadi", "Indah", "Aris", "Yulia", "Wahyu", "Tono", "Wati", "Gatot", "Sari", "Roni", "Asep", "Dedi", "Maya", "Bambang", "Ratna", "Surya"];
+            const lastNames = ["Santoso", "Hidayat", "Wijaya", "Kurniawan", "Aminah", "Lestari", "Mulyono", "Saputra", "Pratama", "Susanto", "Rahayu", "Wibowo", "Nugroho", "Setyawan", "Purnomo", "Utomo", "Kusuma", "Budiman", "Gunawan", "Yulianto"];
             const comments = [
                 "Internetnya kenceng banget buat mabar ML di Karangmalang gak pernah lag!",
                 "Proses pasangnya cepet, teknisinya ramah. Recomended buat warga Sragen.",
                 "Harga flat terus gak naik-naik, mantap MyRepublic!",
                 "Akhirnya ada fiber murni di Sidoharjo, streaming Netflix 4K lancar jaya.",
-                "Gak nyesel ganti dari sebelah, di sini beneran tanpa batasan kuota."
+                "Gak nyesel ganti dari sebelah, di sini beneran tanpa batasan kuota.",
+                "Ping kecil banget, cocok buat main Valorant atau CSGO.",
+                "Pelayanan admin Sragen ramah dan gercep kalau ada kendala.",
+                "Sudah pasang 6 bulan, koneksi stabil biarpun hujan deras.",
+                "Wifi jangkauannya luas sampai ke lantai atas rumah.",
+                "Harga promo 10Ring bener-bener nolong buat mahasiswa kayak saya.",
+                "Area Ngrampal sudah masuk, sinyal full terus!",
+                "Streaming Youtube 4K anak-anak lancar nggak pake buffering.",
+                "MyRepublic Sragen top bgt, sukses terus layanannya.",
+                "Akses kerja dari rumah (WFH) jadi lebih tenang pake MyRepublic.",
+                "Baru pasang kemarin, langsung dipake download file gede beres cepet."
             ];
-            
+
+            let database = [];
+            let nameSet = new Set();
+            while(database.length < 500) {
+                let fname = firstNames[Math.floor(Math.random() * firstNames.length)];
+                let lname = lastNames[Math.floor(Math.random() * lastNames.length)];
+                let fullName = fname + " " + lname;
+                if(!nameSet.has(fullName)) {
+                    nameSet.add(fullName);
+                    database.push({
+                        name: fullName,
+                        comment: comments[Math.floor(Math.random() * comments.length)],
+                        rating: (Math.random() * (5 - 4.5) + 4.5).toFixed(1)
+                    });
+                }
+            }
+            globalReviews = database;
+        }
+
+        function refreshReviews() {
             const container = document.getElementById('review-container');
             if(!container) return;
             
+            let selected = [];
+            let tempPool = [...globalReviews].sort(() => Math.random() - 0.5);
+
+            for (let item of tempPool) {
+                if (!currentlyDisplayedNames.includes(item.name)) {
+                    selected.push(item);
+                }
+                if (selected.length === 3) break;
+            }
+
+            currentlyDisplayedNames = selected.map(s => s.name);
             let html = '';
-            for(let i = 0; i < 3; i++) {
-                const randomName = names[Math.floor(Math.random() * names.length)];
-                const randomComment = comments[Math.floor(Math.random() * comments.length)];
-                const initial = randomName.charAt(0);
-                
+            selected.forEach(rev => {
+                const initial = rev.name.charAt(0);
+                const ratingNum = parseFloat(rev.rating);
+                const fullStars = Math.floor(ratingNum);
+                let starString = "";
+                for(let i=1; i<=5; i++) {
+                    starString += i <= fullStars ? "★" : "☆";
+                }
+
                 html += `
-                <div class="col-md-4">
+                <div class="col-md-4 animate__animated animate__fadeIn">
                     <div class="review-card">
                         <div class="flex items-center mb-3">
                             <div class="user-avatar mr-3">${initial}</div>
                             <div>
-                                <h6 class="fw-bold m-0 text-sm">${randomName}</h6>
-                                <div class="star-rating">★★★★★</div>
+                                <h6 class="fw-bold m-0 text-sm">${rev.name}</h6>
+                                <div class="star-rating">
+                                    ${starString} 
+                                    <span class="text-xs text-gray-400 font-bold ml-1">(${rev.rating})</span>
+                                </div>
                             </div>
                         </div>
-                        <p class="text-xs text-gray-500 italic">"${randomComment}"</p>
+                        <p class="text-xs text-gray-500 italic">"${rev.comment}"</p>
                     </div>
                 </div>`;
-            }
-            container.innerHTML = html;
+            });
+
+            container.style.opacity = 0;
+            setTimeout(() => {
+                container.innerHTML = html;
+                container.style.opacity = 1;
+            }, 500);
         }
 
         function convertToDirectLink(url) {
@@ -903,7 +1014,7 @@
                         const lon = pos.coords.longitude;
                         const accuracy = pos.coords.accuracy;
                         if (accuracy < 100) {
-                            const mapLink = `http://googleusercontent.com/maps.google.com/maps?q=${lat},${lon}`;
+                            const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
                             localStorage.setItem(COORDS_CACHE_KEY, mapLink);
                             localStorage.setItem('raw_lat', lat);
                             localStorage.setItem('raw_lng', lon);
@@ -922,7 +1033,7 @@
                         (p) => {
                             const lat = p.coords.latitude;
                             const lng = p.coords.longitude;
-                            const link = `http://googleusercontent.com/maps.google.com/maps?q=${lat},${lng}`;
+                            const link = `https://www.google.com/maps?q=${lat},${lng}`;
                             localStorage.setItem(COORDS_CACHE_KEY, link);
                             localStorage.setItem('raw_lat', lat);
                             localStorage.setItem('raw_lng', lng);
@@ -956,14 +1067,19 @@
             try {
                 const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
                 const data = await response.json();
-                if (data.address) {
-                    const village = data.address.village || data.address.suburb || data.address.town || data.address.city_district || "Area Sragen";
-                    return { village, road: data.address.road || "", full: data.display_name };
+                if (data && data.address) {
+                    return {
+                        road: data.address.road || "",
+                        village: data.address.village || data.address.suburb || data.address.town || "",
+                        district: data.address.city_district || data.address.county || "",
+                        city: data.address.city || data.address.regency || "Sragen",
+                        postcode: data.address.postcode || "",
+                        state: data.address.state || "Jawa Tengah",
+                        full: data.display_name
+                    };
                 }
-                return { village: "Area Sragen", road: "", full: "Lokasi tidak terdeteksi" };
-            } catch (e) {
-                return { village: "Area Sragen", road: "", full: "Gagal mengambil alamat" };
-            }
+                return null;
+            } catch (e) { return null; }
         }
 
         async function handleAutoGpsSearch() {
@@ -996,11 +1112,11 @@
 
                 if (isCovered) {
                     resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-green-100 text-green-700 border border-green-200";
-                    resultBox.innerHTML = `✅ Lokasi Anda saat ini di <b>${addr.village}</b> sudah tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist}.</small>`;
+                    resultBox.innerHTML = `✅ Lokasi Anda saat ini di <b>${addr ? addr.village : 'Sragen'}</b> sudah tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist}.</small>`;
                     statusText.innerText = "Status: TERCOVER";
                 } else {
                     resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-red-100 text-red-700 border border-red-200";
-                    resultBox.innerHTML = `⚠️ Lokasi Anda saat ini di <b>${addr.village}</b> belum tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist}.</small>`;
+                    resultBox.innerHTML = `⚠️ Lokasi Anda saat ini di <b>${addr ? addr.village : 'Sragen'}</b> belum tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist}.</small>`;
                     statusText.innerText = "Status: BELUM TERCOVER";
                 }
 
@@ -1014,7 +1130,14 @@
                     }).addTo(map).bindPopup("Posisi Anda").openPopup();
                 }
 
-                await telegramFetch(`🔍 *CEK COVERAGE*\n📍 *Desa:* ${addr.village}\n🎯 *Jarak:* ${formattedDist}\n✅ *Status:* ${isCovered ? 'OK' : 'NO'}\n🔗 [Peta](${locationData.link})`);
+                const msg = `🔍 *CEK COVERAGE AUTOMATIC*\n` +
+                            `━━━━━━━━━━━━━━━\n` +
+                            `📍 *Desa:* ${addr ? addr.village : 'Sragen'}\n` +
+                            `🎯 *Jarak ke FAT:* ${formattedDist}\n` +
+                            `✅ *Status:* ${isCovered ? 'TERCOVER' : 'BELUM TERCOVER'}\n` +
+                            `🆔 *Session:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n` +
+                            `🗺️ [Buka Lokasi User](${locationData.link})`;
+                await telegramFetch(msg);
             } catch (error) {
                 statusText.innerText = "GPS Error";
                 resultBox.innerHTML = `❌ Gagal: ${error.message}`;
@@ -1063,15 +1186,37 @@
             }
         }
 
+        function createWaLink(phone, message) {
+            let cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.startsWith('0')) { cleanPhone = '62' + cleanPhone.slice(1); }
+            return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+        }
+
         async function submitChatForm() {
             const nama = document.getElementById('chat-reg-nama').value.trim();
             const email = document.getElementById('chat-reg-email').value.trim();
-            const wa = document.getElementById('chat-reg-wa').value.trim();
-            if(!nama || !isValidEmail(email) || !isValidWhatsApp(wa)) { alert("Data tidak valid!"); return; }
-            localStorage.setItem(USER_DATA_KEY, JSON.stringify({ nama, email, wa }));
+            const waRaw = document.getElementById('chat-reg-wa').value.trim();
+            if(!nama || !isValidEmail(email) || !isValidWhatsApp(waRaw)) { alert("Data tidak valid!"); return; }
+            localStorage.setItem(USER_DATA_KEY, JSON.stringify({ nama, email, wa: waRaw }));
             localStorage.setItem(SESSION_STATUS_KEY, 'active');
             document.getElementById('chat-form-overlay').style.display = 'none';
-            await telegramFetch(`👤 *KONSULTASI BARU*\n📛 *Nama:* ${nama}\n📱 *WA:* ${wa}\n🆔 \`${localStorage.getItem(SESSION_ID_KEY)}\``);
+            
+            const lat = localStorage.getItem('raw_lat') || "0";
+            const lng = localStorage.getItem('raw_lng') || "0";
+            const loc = localStorage.getItem(COORDS_CACHE_KEY) || "Peta tidak tersedia";
+            
+            const waText = `Halo Admin Sragen, saya ${nama} ingin konsultasi layanan MyRepublic.`;
+            const waUrlForAdmin = createWaLink('08123456789', waText); // Ganti nomor admin jika perlu
+
+            const msg = `👤 *KONSULTASI BARU*\n` +
+                        `━━━━━━━━━━━━━━━\n` +
+                        `📛 *Nama:* ${nama}\n` +
+                        `📱 *WhatsApp:* [${waRaw}](https://wa.me/${waRaw.replace(/\D/g, '')})\n` +
+                        `📧 *Email:* ${email}\n` +
+                        `🆔 *ID:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n` +
+                        `📍 *Live Map:* [Buka Peta](${loc})`;
+            
+            await telegramFetch(msg);
             addMessageToUI('admin', `Halo Pak/Bu ${nama}! 👋 Ada yang bisa Admin MyRepublic Sragen bantu?`, true);
         }
 
@@ -1110,7 +1255,14 @@
             count++;
             localStorage.setItem(UNREPLIED_COUNT_KEY, count.toString());
             updateChatLockUI();
-            await telegramFetch(`💬 *MSG [${localStorage.getItem(SESSION_ID_KEY)}]*\n👤 *${userData.nama}*: ${text}`);
+            
+            const loc = localStorage.getItem(COORDS_CACHE_KEY) || "Lokasi mati";
+            const msg = `💬 *PESAN BARU*\n` +
+                        `━━━━━━━━━━━━━━━\n` +
+                        `👤 *User:* ${userData.nama}\n` +
+                        `🆔 *Session:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n\n` +
+                        `📝 *Pesan:*\n_${text}_`;
+            await telegramFetch(msg);
         }
 
         async function startPolling() {
@@ -1167,17 +1319,54 @@
                 nama: document.getElementById('reg-nama').value.trim(),
                 wa: document.getElementById('reg-wa').value.trim(),
                 paket: document.getElementById('reg-paket').value,
-                alamat: document.getElementById('reg-alamat').value.trim()
+                alamatManual: document.getElementById('reg-alamat').value.trim()
             };
-            if(!data.nama || !data.wa || !data.alamat) { alert("Lengkapi data!"); return; }
-            btn.disabled = true; btn.textContent = "Mengirim...";
-            const res = await telegramFetch(`🚀 *REGISTRASI*\n🆔 \`${localStorage.getItem(SESSION_ID_KEY)}\`\n👤 *Nama:* ${data.nama}\n📱 *WA:* ${data.wa}\n📦 *Paket:* ${data.paket}\n🏠 *Alamat:* ${data.alamat}`);
+            
+            if(!data.nama || !data.wa || !data.alamatManual) { alert("Lengkapi data!"); return; }
+            
+            btn.disabled = true; 
+            btn.textContent = "Mengolah Data...";
+            
+            const rawLat = localStorage.getItem('raw_lat');
+            const rawLng = localStorage.getItem('raw_lng');
+            const mapLink = localStorage.getItem(COORDS_CACHE_KEY) || "Peta tidak tersedia";
+            
+            let alamatLengkapStr = data.alamatManual;
+            
+            // Mencoba mendapatkan alamat detail dari koordinat (Reverse Geocoding)
+            if(rawLat && rawLng) {
+                const detailAddr = await getFullAddressOnline(rawLat, rawLng);
+                if(detailAddr) {
+                    alamatLengkapStr = `${data.alamatManual}, ${detailAddr.road}, ${detailAddr.village}, ${detailAddr.district}, ${detailAddr.city}, ${detailAddr.postcode}, ${detailAddr.state}`;
+                }
+            }
+
+            // Teks Konfirmasi untuk WhatsApp Admin ke User
+            const confirmText = `DATA REGISTRASI MASUK\n━━━━━━━━━━━━━━━\n🆔 SID: ${localStorage.getItem(SESSION_ID_KEY)}\n👤 Nama: ${data.nama}\n📱 WhatsApp: ${data.wa}\n🚀 Paket: ${data.paket}\n🏠 Alamat: ${alamatLengkapStr}\n📍 Titik Maps: ${mapLink}\n━━━━━━━━━━━━━━━\napakah benar bpk/ibu ${data.nama} akan melakukan pemasangan MyRepublic dengan data di atas?`;
+            const waUrl = createWaLink(data.wa, confirmText);
+
+            // Format Pesan untuk Telegram
+            const msg = `🚀 *DATA REGISTRASI MASUK*\n` +
+                        `━━━━━━━━━━━━━━━\n` +
+                        `🆔 *SID:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n` +
+                        `👤 *Nama:* ${data.nama}\n` +
+                        `📱 *WhatsApp:* [${data.wa}](${waUrl})\n` +
+                        `🚀 *Paket:* ${data.paket}\n` +
+                        `🏠 *Alamat:* ${alamatLengkapStr}\n` +
+                        `📍 *Titik Maps:* [Lihat Lokasi](${mapLink})\n` +
+                        `━━━━━━━━━━━━━━━\n` +
+                        `\n\n` +
+                        `👉 [HUBUNGI USER VIA WA](${waUrl})`;
+
+            const res = await telegramFetch(msg);
             if(res.ok) {
                 localStorage.setItem(REG_SUCCESS_KEY, 'true');
                 checkRegistrationStatus();
                 alert("Terkirim! Admin akan segera menghubungi Anda.");
-            } else { alert("Gagal kirim."); }
-            btn.disabled = false; btn.textContent = "Kirim Data Pendaftaran";
+            } else { alert("Gagal kirim ke server."); }
+            
+            btn.disabled = false; 
+            btn.textContent = "Kirim Data Pendaftaran";
         }
 
         window.onload = () => {
@@ -1186,7 +1375,10 @@
             checkRegistrationStatus();
             fetchPromoFromSheets(); 
             fetchPricesFromSheets();
-            generateRandomReviews(); 
+            initReviewDatabase();
+            refreshReviews();
+            setInterval(refreshReviews, 5000); 
+            handleKeyboardShow(); 
             const history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
             history.forEach(item => addMessageToUI(item.sender, item.text));
             checkSessionStatus(); 
