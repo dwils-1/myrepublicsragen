@@ -2,17 +2,34 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MyRepublic Cabang Sragen | Internet Cepat & Stabil</title>
+    
+    <link rel="icon" type="image/png" href="favicon.png">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
     <style>
         :root {
             --mr-purple: #6c2d91;
             --mr-purple-dark: #562475;
             --mr-yellow: #ffcc00;
             --mr-light: #f4f4f9;
+        }
+
+        /* KUNCI HALALMAN AGAR TIDAK GESER KANAN KIRI */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+            position: relative;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            touch-action: pan-y; /* Hanya izinkan scroll vertikal */
         }
 
         body { 
@@ -189,7 +206,7 @@
         #lightbox-overlay.show #lightbox-img { transform: scale(1); }
         .lightbox-close { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; font-weight: bold; cursor: pointer; }
 
-        .promo-img-wrapper { border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease; cursor: pointer; background: transparent; }
+        .promo-img-wrapper { border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.3s ease; cursor: pointer; background: #eee; min-height: 150px; display: flex; align-items: center; justify-content: center; }
         .promo-img-wrapper:hover { transform: scale(1.03); }
         .promo-img-wrapper img { width: 100%; height: auto; max-height: 400px; object-fit: contain; }
         .gallery-item.img-error { display: none !important; }
@@ -214,6 +231,34 @@
         /* Status Styles */
         .status-blocked { pointer-events: none; opacity: 0.6; }
         #reg-success-note { display: none; background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
+
+        /* About Us Styles */
+        .about-section { background-color: #fff; padding: 80px 0; }
+        .about-icon-box { background: var(--mr-light); padding: 20px; border-radius: 20px; text-align: center; height: 100%; transition: all 0.3s ease; border: 1px solid #eee; }
+        .about-icon-box:hover { border-color: var(--mr-purple); transform: translateY(-5px); }
+        .about-icon { font-size: 2.5rem; margin-bottom: 15px; display: block; }
+
+        /* NEW STYLES FOR ADDRESS & REVIEWS */
+        .address-card {
+            background: white; border-radius: 30px; overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid #f0f0f0;
+        }
+        .map-container { width: 100%; height: 350px; background: #eee; position: relative; }
+        #map-coverage { width: 100%; height: 100%; z-index: 5; }
+        
+        .review-card {
+            background: white; padding: 25px; border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02); border: 1px solid #f5f5f5;
+            height: 100%; transition: transform 0.3s ease;
+        }
+        .review-card:hover { transform: translateY(-5px); border-color: var(--mr-purple); }
+        .star-rating { color: #ffcc00; font-size: 0.9rem; }
+        .user-avatar {
+            width: 45px; height: 45px; border-radius: 50%;
+            background: var(--mr-purple); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
@@ -302,24 +347,12 @@
                                     <th class="text-center">AKSI</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">10Ring</span><span class="bottom-text">Rp 110.000</span></div></td><td class="text-center"><span class="badge bg-secondary rounded-pill badge-speed-table">10 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('10Ring')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Eco15</span><span class="bottom-text">Rp 166.500</span></div></td><td class="text-center"><span class="badge bg-secondary rounded-pill badge-speed-table">15 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Eco15')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Jet20</span><span class="bottom-text">Rp 205.350</span></div></td><td class="text-center"><span class="badge bg-primary rounded-pill badge-speed-table">20 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Jet20')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">30ValueLite</span><span class="bottom-text">Rp 233.100</span></div></td><td class="text-center"><span class="badge bg-primary rounded-pill badge-speed-table">30 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('30ValueLite')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Neo100</span><span class="bottom-text">Rp 233.100</span></div></td><td class="text-center"><span class="badge bg-info text-dark rounded-pill badge-speed-table">100 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Neo100')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Value30</span><span class="bottom-text">Rp 260.000</span></div></td><td class="text-center"><span class="badge bg-primary rounded-pill badge-speed-table">30 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Value30')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Fast50</span><span class="bottom-text">Rp 277.500</span></div></td><td class="text-center"><span class="badge bg-info text-dark rounded-pill badge-speed-table">50 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Fast50')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Velo150</span><span class="bottom-text">Rp 277.500</span></div></td><td class="text-center"><span class="badge bg-danger rounded-pill badge-speed-table">150 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Velo150')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Nova100</span><span class="bottom-text">Rp 333.000</span></div></td><td class="text-center"><span class="badge bg-info text-dark rounded-pill badge-speed-table">100 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Nova100')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Nexus300</span><span class="bottom-text">Rp 333.000</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">300 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Nexus300')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Gamer250</span><span class="bottom-text">Rp 444.000</span></div></td><td class="text-center"><span class="badge bg-danger rounded-pill badge-speed-table">250 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Gamer250')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Prime500</span><span class="bottom-text">Rp 555.000</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">500 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Prime500')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Gamer500</span><span class="bottom-text">Rp 610.500</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">500 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Gamer500')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Wonder750</span><span class="bottom-text" style="color: #6c2d91;">Rp 721.500</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">750 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Wonder750')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Gamer750</span><span class="bottom-text" style="color: #6c2d91;">Rp 777.000</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">750 Mbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Gamer750')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Ultra1Gbps</span><span class="bottom-text" style="color: #6c2d91;">Rp 943.500</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">1 Gbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Ultra1Gbps')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
-                                <tr class="table-row-hover"><td><div class="cell-stack"><span class="top-text">Gamer1Gbps</span><span class="bottom-text" style="color: #6c2d91;">Rp 999.000</span></div></td><td class="text-center"><span class="badge bg-dark rounded-pill badge-speed-table">1 Gbps</span></td><td class="text-center"><button onclick="openRegistrationModal('Gamer1Gbps')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button></td></tr>
+                            <tbody id="price-table-body">
+                                <tr>
+                                    <td colspan="3" class="text-center py-4 text-muted">
+                                        <span class="spinner-border spinner-border-sm me-2"></span> Memuat Daftar Harga...
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -328,26 +361,155 @@
         </section>
     </div>
 
-    <section class="py-12 bg-white" id="promo-gallery">
+    <section class="py-12 bg-gray-50" id="promo-gallery">
         <div class="container">
             <div class="text-center mb-8">
                 <h2 class="fw-bold h4" style="color: #6c2d91;">Promo & Event Terbaru</h2>
                 <div class="h-1 w-20 bg-warning mx-auto mt-2"></div>
             </div>
             <div class="row g-4 justify-content-center" id="gallery-wrapper">
-                <div class="col-6 col-md-4 col-lg-3 gallery-item">
-                    <div class="promo-img-wrapper"><img src="gambar1.png" onerror="handleImageError(this)" onclick="openLightbox(this.src)"></div>
-                </div>
-                <div class="col-6 col-md-4 col-lg-3 gallery-item">
-                    <div class="promo-img-wrapper"><img src="gambar2.png" onerror="handleImageError(this)" onclick="openLightbox(this.src)"></div>
-                </div>
-                <div class="col-6 col-md-4 col-lg-3 gallery-item">
-                    <div class="promo-img-wrapper"><img src="gambar3.png" onerror="handleImageError(this)" onclick="openLightbox(this.src)"></div>
-                </div>
-                <div class="col-6 col-md-4 col-lg-3 gallery-item">
-                    <div class="promo-img-wrapper"><img src="gambar4.png" onerror="handleImageError(this)" onclick="openLightbox(this.src)"></div>
+                <div class="col-12 text-center text-muted py-5" id="promo-loading">
+                    <span class="spinner-border spinner-border-sm me-2"></span> Memuat Promo Terbaru...
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="about-section">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <h2 class="display-6 fw-bold mb-4" style="color: var(--mr-purple);">Tentang MyRepublic Sragen</h2>
+                    <p class="text-gray-600 mb-4 leading-relaxed">
+                        Kami adalah pelopor penyedia layanan internet <strong>Ultra-Fast Fiber Optic</strong> di Bumi Sukowati. Sejak hadir di Sragen, fokus utama kami adalah memberikan pengalaman berinternet yang belum pernah dirasakan sebelumnya: <strong>Cepat, Stabil, dan Tanpa Batas.</strong>
+                    </p>
+                    <p class="text-gray-600 mb-5 leading-relaxed">
+                        Berbeda dengan penyedia layanan lain, MyRepublic menggunakan teknologi <strong>Fiber-to-the-Home (FTTH)</strong> murni 100%. Ini berarti sinyal internet dikirimkan melalui cahaya, memastikan kecepatan yang Anda bayar adalah kecepatan yang Anda dapatkan, bahkan di jam sibuk sekalipun.
+                    </p>
+                    
+                    <div class="row g-4">
+                        <div class="col-6 col-md-4">
+                            <div class="text-center">
+                                <span class="block text-3xl font-bold text-purple-600">150+</span>
+                                <span class="text-xs text-gray-500 font-semibold uppercase">Cluster Area</span>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4">
+                            <div class="text-center">
+                                <span class="block text-3xl font-bold text-purple-600">24/7</span>
+                                <span class="text-xs text-gray-500 font-semibold uppercase">Customer Care</span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="text-center">
+                                <span class="block text-3xl font-bold text-purple-600">0%</span>
+                                <span class="text-xs text-gray-500 font-semibold uppercase">Tanpa FUP</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <div class="about-icon-box">
+                                <span class="about-icon">🚀</span>
+                                <h4 class="fw-bold mb-2">Speed Maksimal</h4>
+                                <p class="text-xs text-gray-500">Nikmati kecepatan hingga 1Gbps untuk download dan upload yang simetris.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="about-icon-box">
+                                <span class="about-icon">🎮</span>
+                                <h4 class="fw-bold mb-2">Low Latency</h4>
+                                <p class="text-xs text-gray-500">Optimasi khusus untuk gamer Sragen agar ping tetap hijau saat mabar.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="about-icon-box">
+                                <span class="about-icon">💎</span>
+                                <h4 class="fw-bold mb-2">Kualitas Premium</h4>
+                                <p class="text-xs text-gray-500">Hardware router terbaru (ONT) dengan jangkauan Wi-Fi lebih luas dan stabil.</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="about-icon-box">
+                                <span class="about-icon">🏷️</span>
+                                <h4 class="fw-bold mb-2">Harga Transparan</h4>
+                                <p class="text-xs text-gray-500">Harga flat sesuai kontrak tanpa ada biaya tersembunyi atau kenaikan tiba-tiba.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-white border-t border-gray-100">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-5">
+                    <div class="ps-lg-4">
+                        <span class="text-purple-600 font-bold uppercase tracking-widest text-xs mb-2 block">Lokasi Layanan</span>
+                        <h2 class="display-6 fw-bold mb-4" style="color: var(--mr-purple);">Peta Cakupan Fiber Sragen</h2>
+                        <p class="text-gray-600 mb-5">Klik pada area berwarna biru untuk melihat detail cakupan fiber optic kami. Area yang ditandai adalah wilayah yang sudah tersedia jaringan MyRepublic.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="bg-purple-100 p-3 rounded-2xl mr-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-1">Kantor Layanan</h5>
+                                    <p class="text-sm text-gray-500">Jl. Raya Sukowati No. 120, Sragen Tengah.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="bg-purple-100 p-3 rounded-2xl mr-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-1">Status Area</h5>
+                                    <p class="text-sm text-gray-500">Biru = Tercover Fiber Optic<br>Merah = Area Maintenance</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="address-card">
+                        <div class="map-container">
+                            <div id="map-coverage"></div>
+                        </div>
+                        <div class="p-4 bg-purple-900 text-white text-center">
+                            <p class="text-[10px] mb-2 opacity-80">Gunakan GPS di atas untuk cek otomatis di posisi Anda</p>
+                            <button onclick="handleAutoGpsSearch()" class="text-sm font-bold flex items-center justify-center w-full bg-yellow-500 py-2 rounded-lg text-purple-900 shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                </svg>
+                                Cek Cover Area
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-gray-50 border-t border-b border-gray-100">
+        <div class="container">
+            <div class="text-center mb-12">
+                <h2 class="fw-bold h3" style="color: #6c2d91;">Apa Kata Warga Sragen?</h2>
+                <div class="h-1 w-16 bg-warning mx-auto mt-2"></div>
+                <p class="text-gray-500 text-sm mt-3">Telah dipercaya oleh ribuan pelanggan di Sukowati</p>
+            </div>
+            
+            <div class="row g-4" id="review-container">
+                </div>
         </div>
     </section>
 
@@ -415,7 +577,7 @@
                             <label class="form-label fw-semibold">Alamat Pemasangan</label>
                             <textarea id="reg-alamat" class="form-control text-sm" rows="3" placeholder="Contoh: Jl. Raya Sukowati No. 1..."></textarea>
                         </div>
-                        <button onclick="submitRegistrationToBot()" id="btn-submit-reg" class="btn btn-primary w-100 py-2 mt-2 shadow-lg text-sm">Kirim Data Pendaftaran</button>
+                        <button onclick="submitRegistrationToBot()" id="btn-submit-reg" class="btn btn-primary p-2 mt-2 shadow-lg text-sm">Kirim Data Pendaftaran</button>
                     </div>
                 </div>
             </div>
@@ -437,6 +599,12 @@
         </div>
 
         <div id="chat-form-overlay">
+            <button onclick="toggleChat()" class="absolute top-4 left-4 text-purple-600 hover:text-purple-800 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+
             <div class="text-center mb-6">
                 <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><span class="text-xl">👋</span></div>
                 <h4 class="font-bold text-purple-900 text-sm">Konsultasi Gratis</h4>
@@ -477,7 +645,9 @@
         </div>
     </div>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
         // CONFIGURATION
         const BOT_TOKEN = '8330506170:AAGibEbDqetkYsw5zzY1YS03--jbCnV5iww'; 
@@ -492,32 +662,214 @@
         const SESSION_ID_KEY = 'mr_sragen_sid';
         const REG_SUCCESS_KEY = 'is_registered_success';
 
+        // GOOGLE SHEETS SETTINGS (UPDATED WITH YOUR LINKS)
+        const URL_SHEET1_PROMO = "https://docs.google.com/spreadsheets/d/e/2PACX-1vStVKNVl4FfeX193YQRDEFGE32rSDirwTdTY-unjHs5OseIiBROW0KKaMRtVTmMhQg0bnqmo3gaAejO/pub?gid=0&single=true&output=csv";
+        const URL_SHEET2_HARGA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vStVKNVl4FfeX193YQRDEFGE32rSDirwTdTY-unjHs5OseIiBROW0KKaMRtVTmMhQg0bnqmo3gaAejO/pub?gid=500363833&single=true&output=csv";
+
         let lastUpdateId = parseInt(localStorage.getItem(LAST_UPDATE_KEY)) || 0;
         let isProcessingPolling = false;
+        let map; // Leaflet map variable
 
         if(!localStorage.getItem(SESSION_ID_KEY)) {
             localStorage.setItem(SESSION_ID_KEY, 'SID-' + Date.now());
         }
 
-        // Logic Initialization for Registration Status
-        function checkRegistrationStatus() {
-            const isRegistered = localStorage.getItem(REG_SUCCESS_KEY) === 'true';
-            if (isRegistered) {
-                document.getElementById('reg-form-fields').style.display = 'none';
-                document.getElementById('reg-success-note').style.display = 'block';
+        // FUNGSI INISIALISASI MAP CAKUPAN AREA (LEAFLET)
+        async function initCoverageMap() {
+            const sragenCenter = [-7.4277, 111.0225];
+            map = L.map('map-coverage', {
+                preferCanvas: true 
+            }).setView(sragenCenter, 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© MyRepublic Sragen'
+            }).addTo(map);
+
+            try {
+                const response = await fetch('sragen_coverage.json');
+                if (!response.ok) throw new Error("File JSON tidak ditemukan");
+                
+                const coverageData = await response.json();
+                localStorage.setItem(COVERAGE_STORAGE_KEY, JSON.stringify(coverageData));
+
+                coverageData.forEach(point => {
+                    const lat = point[1];
+                    const lng = point[0];
+                    L.circleMarker([lat, lng], {
+                        radius: 4,               
+                        fillColor: "#6c2d91",    
+                        color: "#fff",           
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map).bindPopup("Area Tercover MyRepublic");
+                });
+
+                L.marker(sragenCenter).addTo(map)
+                    .bindPopup("<b>Pusat Layanan Sragen</b><br>Jl. Raya Sukowati No. 120")
+                    .openPopup();
+
+            } catch (error) {
+                console.error("Gagal memuat peta coverage:", error);
             }
         }
 
-        async function initCoverageData() {
-            const cachedData = localStorage.getItem(COVERAGE_STORAGE_KEY);
-            if (!cachedData) {
-                try {
-                    const response = await fetch('sragen_coverage.json');
-                    if (response.ok) {
-                        const data = await response.json();
-                        localStorage.setItem(COVERAGE_STORAGE_KEY, JSON.stringify(data));
+        // FUNGSI FETCH HARGA DARI SHEET2
+        async function fetchPricesFromSheets() {
+            const tableBody = document.getElementById('price-table-body');
+            if(!tableBody) return;
+
+            try {
+                // Fetch dari URL Sheet 2
+                const response = await fetch(URL_SHEET2_HARGA + '&cb=' + Date.now());
+                const data = await response.text();
+                
+                // Pisahkan baris dan filter baris kosong
+                const rows = data.split(/\r?\n/).filter(r => r.trim() !== '');
+
+                // Cek jika data kosong atau hanya berisi header
+                if (rows.length <= 1) {
+                    tableBody.innerHTML = '<tr><td colspan="3" class="text-center py-4">Belum ada paket tersedia di database.</td></tr>';
+                    return;
+                }
+
+                // Buang baris pertama (header)
+                const contentRows = rows.slice(1);
+                let htmlContent = '';
+
+                contentRows.forEach(row => {
+                    // Penanganan delimiter CSV yang aman
+                    let cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    
+                    if (cols.length >= 3) {
+                        const namaPaket = cols[0].replace(/"/g, '').trim();
+                        const speed = cols[1].replace(/"/g, '').trim();
+                        const harga = cols[2].replace(/"/g, '').trim();
+                        
+                        // Warna badge berdasarkan kecepatan
+                        let badgeColor = "bg-secondary";
+                        const speedVal = parseInt(speed);
+                        if(speedVal >= 30) badgeColor = "bg-primary";
+                        if(speedVal >= 100) badgeColor = "bg-info text-dark";
+                        if(speedVal >= 200) badgeColor = "bg-danger";
+
+                        htmlContent += `
+                        <tr class="table-row-hover">
+                            <td>
+                                <div class="cell-stack">
+                                    <span class="top-text">${namaPaket}</span>
+                                    <span class="bottom-text">${harga}</span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge ${badgeColor} rounded-pill badge-speed-table">${speed} Mbps</span>
+                            </td>
+                            <td class="text-center">
+                                <button onclick="openRegistrationModal('${namaPaket}')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button>
+                            </td>
+                        </tr>`;
                     }
-                } catch (e) { console.error("Fetch JSON error", e); }
+                });
+
+                tableBody.innerHTML = htmlContent || '<tr><td colspan="3" class="text-center py-4">Data tidak ditemukan.</td></tr>';
+            } catch (error) {
+                console.error("Error Sheet Harga:", error);
+                tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-danger py-4">Gagal terhubung ke Database Harga.</td></tr>';
+            }
+        }
+
+        // FUNGSI FETCH PROMO DARI SHEET1
+        async function fetchPromoFromSheets() {
+            const wrapper = document.getElementById('gallery-wrapper');
+            if(!wrapper) return;
+            try {
+                // Fetch dari URL Sheet 1
+                const response = await fetch(URL_SHEET1_PROMO + '&cb=' + Date.now());
+                const data = await response.text();
+                const rows = data.split('\n').filter(r => r.trim() !== '').slice(1); 
+                
+                if (rows.length === 0) {
+                    wrapper.innerHTML = '<div class="col-12 text-center text-muted py-4">Belum ada promo aktif.</div>';
+                    return;
+                }
+
+                let htmlContent = '';
+                rows.forEach(row => {
+                    const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    if (columns.length >= 3) {
+                        const nama = columns[0].replace(/"/g, '').trim();
+                        let imgRaw = columns[2].replace(/"/g, '').trim();
+                        const imgDirect = convertToDirectLink(imgRaw);
+
+                        if (imgDirect && imgDirect !== "") {
+                            htmlContent += `
+                                <div class="col-6 col-md-4 col-lg-3 gallery-item">
+                                    <div class="promo-img-wrapper">
+                                        <img src="${imgDirect}" alt="${nama}" onerror="handleImageError(this)" onclick="openLightbox(this.src)">
+                                    </div>
+                                    <p class="text-[10px] text-center mt-2 font-bold text-purple-800 uppercase">${nama}</p>
+                                </div>`;
+                        }
+                    }
+                });
+                wrapper.innerHTML = htmlContent || '<div class="col-12 text-center text-muted py-4">Data promo tidak ditemukan.</div>';
+            } catch (error) {
+                wrapper.innerHTML = '<div class="col-12 text-center text-red-500 py-4">Gagal memuat promo.</div>';
+            }
+        }
+
+        function generateRandomReviews() {
+            const names = ["Budi Santoso", "Siti Aminah", "Rahmat Hidayat", "Agus Wijaya", "Lilik Kurniawan", "Dewi Lestari"];
+            const comments = [
+                "Internetnya kenceng banget buat mabar ML di Karangmalang gak pernah lag!",
+                "Proses pasangnya cepet, teknisinya ramah. Recomended buat warga Sragen.",
+                "Harga flat terus gak naik-naik, mantap MyRepublic!",
+                "Akhirnya ada fiber murni di Sidoharjo, streaming Netflix 4K lancar jaya.",
+                "Gak nyesel ganti dari sebelah, di sini beneran tanpa batasan kuota."
+            ];
+            
+            const container = document.getElementById('review-container');
+            if(!container) return;
+            
+            let html = '';
+            for(let i = 0; i < 3; i++) {
+                const randomName = names[Math.floor(Math.random() * names.length)];
+                const randomComment = comments[Math.floor(Math.random() * comments.length)];
+                const initial = randomName.charAt(0);
+                
+                html += `
+                <div class="col-md-4">
+                    <div class="review-card">
+                        <div class="flex items-center mb-3">
+                            <div class="user-avatar mr-3">${initial}</div>
+                            <div>
+                                <h6 class="fw-bold m-0 text-sm">${randomName}</h6>
+                                <div class="star-rating">★★★★★</div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 italic">"${randomComment}"</p>
+                    </div>
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function convertToDirectLink(url) {
+            if (!url) return "";
+            if (url.includes("canva.com")) return url.trim(); 
+            const regex = /(?:\/file\/d\/|id=)([\w-]+)/;
+            const match = url.match(regex);
+            if (match && match[1]) return `https://docs.google.com/uc?export=view&id=${match[1]}`;
+            return url.trim();
+        }
+
+        function checkRegistrationStatus() {
+            const isRegistered = localStorage.getItem(REG_SUCCESS_KEY) === 'true';
+            if (isRegistered) {
+                const fields = document.getElementById('reg-form-fields');
+                const note = document.getElementById('reg-success-note');
+                if(fields) fields.style.display = 'none';
+                if(note) note.style.display = 'block';
             }
         }
 
@@ -539,7 +891,7 @@
         }
         function handleImageError(img) {
             const galleryItem = img.closest('.gallery-item');
-            if (galleryItem) galleryItem.classList.add('img-error');
+            if (galleryItem) galleryItem.style.display = 'none';
         }
 
         function forcePrecisionLocation() {
@@ -551,7 +903,7 @@
                         const lon = pos.coords.longitude;
                         const accuracy = pos.coords.accuracy;
                         if (accuracy < 100) {
-                            const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                            const mapLink = `http://googleusercontent.com/maps.google.com/maps?q=${lat},${lon}`;
                             localStorage.setItem(COORDS_CACHE_KEY, mapLink);
                             localStorage.setItem('raw_lat', lat);
                             localStorage.setItem('raw_lng', lon);
@@ -570,7 +922,7 @@
                         (p) => {
                             const lat = p.coords.latitude;
                             const lng = p.coords.longitude;
-                            const link = `https://www.google.com/maps?q=${lat},${lng}`;
+                            const link = `http://googleusercontent.com/maps.google.com/maps?q=${lat},${lng}`;
                             localStorage.setItem(COORDS_CACHE_KEY, link);
                             localStorage.setItem('raw_lat', lat);
                             localStorage.setItem('raw_lng', lng);
@@ -606,8 +958,7 @@
                 const data = await response.json();
                 if (data.address) {
                     const village = data.address.village || data.address.suburb || data.address.town || data.address.city_district || "Area Sragen";
-                    const road = data.address.road || "";
-                    return { village, road, full: data.display_name };
+                    return { village, road: data.address.road || "", full: data.display_name };
                 }
                 return { village: "Area Sragen", road: "", full: "Lokasi tidak terdeteksi" };
             } catch (e) {
@@ -632,13 +983,6 @@
                 let closestFatDist = 9999;
                 let coverageData = JSON.parse(localStorage.getItem(COVERAGE_STORAGE_KEY) || '[]');
 
-                if (coverageData.length === 0) {
-                    try {
-                        const response = await fetch('sragen_coverage.json');
-                        if (response.ok) coverageData = await response.json();
-                    } catch(e) {}
-                }
-
                 coverageData.forEach(coord => {
                     const d = calculateDistance(locationData.lat, locationData.lng, coord[1], coord[0]);
                     if (d < closestFatDist) closestFatDist = d;
@@ -647,7 +991,6 @@
                 const distInMeters = closestFatDist * 1000;
                 let formattedDist = distInMeters < 1000 ? `${distInMeters.toFixed(0)} meter` : `${closestFatDist.toFixed(2)} KM`;
                 const isCovered = distInMeters <= 250;
-                
                 const addr = await getFullAddressOnline(locationData.lat, locationData.lng);
                 resultBox.style.display = 'block';
 
@@ -655,17 +998,25 @@
                     resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-green-100 text-green-700 border border-green-200";
                     resultBox.innerHTML = `✅ Lokasi Anda saat ini di <b>${addr.village}</b> sudah tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist}.</small>`;
                     statusText.innerText = "Status: TERCOVER";
-                    await telegramFetch(`🔍 *CEK COVERAGE (WEB-UI)*\n\n🏘️ *Desa:* ${addr.village}\n🛣️ *Jalan:* ${addr.road}\n🎯 *Jarak ke FAT:* ${formattedDist}\n✅ *Status:* TERCOVER\n📍 *Lokasi:* [Gmaps Link](${locationData.link})`);
                 } else {
                     resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-red-100 text-red-700 border border-red-200";
-                    resultBox.innerHTML = `⚠️ Lokasi Anda saat ini di <b>${addr.village}</b> belum tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist} (Maks. 250m).</small>`;
+                    resultBox.innerHTML = `⚠️ Lokasi Anda saat ini di <b>${addr.village}</b> belum tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist}.</small>`;
                     statusText.innerText = "Status: BELUM TERCOVER";
-                    await telegramFetch(`⚠️ *CEK COVERAGE (WEB-UI)*\n\n🏘️ *Desa:* ${addr.village}\n🎯 *Jarak FAT:* ${formattedDist}\n❌ *Status:* BELUM TERCOVER\n📍 *Lokasi:* [Gmaps Link](${locationData.link})`);
                 }
+
+                if(map) {
+                    map.setView([locationData.lat, locationData.lng], 16);
+                    L.marker([locationData.lat, locationData.lng], {
+                        icon: L.icon({
+                            iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                            iconSize: [30, 30]
+                        })
+                    }).addTo(map).bindPopup("Posisi Anda").openPopup();
+                }
+
+                await telegramFetch(`🔍 *CEK COVERAGE*\n📍 *Desa:* ${addr.village}\n🎯 *Jarak:* ${formattedDist}\n✅ *Status:* ${isCovered ? 'OK' : 'NO'}\n🔗 [Peta](${locationData.link})`);
             } catch (error) {
                 statusText.innerText = "GPS Error";
-                resultBox.style.display = 'block';
-                resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-gray-100 text-gray-700";
                 resultBox.innerHTML = `❌ Gagal: ${error.message}`;
             }
             btn.innerHTML = "Cek Ulang"; btn.disabled = false;
@@ -674,18 +1025,16 @@
         function isValidEmail(email) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email); }
         function isValidWhatsApp(wa) { return /^(08|628)[0-9]{8,13}$/.test(wa); }
 
-        // Core Logic for Blocking Input
         function updateChatLockUI() {
             const count = parseInt(localStorage.getItem(UNREPLIED_COUNT_KEY)) || 0;
             const overlay = document.getElementById('chat-blocked-overlay');
             const inputArea = document.getElementById('input-container-chat');
-
             if (count >= 5) {
-                overlay.style.display = 'flex';
-                inputArea.classList.add('status-blocked');
+                if(overlay) overlay.style.display = 'flex';
+                if(inputArea) inputArea.classList.add('status-blocked');
             } else {
-                overlay.style.display = 'none';
-                inputArea.classList.remove('status-blocked');
+                if(overlay) overlay.style.display = 'none';
+                if(inputArea) inputArea.classList.remove('status-blocked');
             }
         }
 
@@ -718,71 +1067,12 @@
             const nama = document.getElementById('chat-reg-nama').value.trim();
             const email = document.getElementById('chat-reg-email').value.trim();
             const wa = document.getElementById('chat-reg-wa').value.trim();
-            const btn = document.getElementById('btn-start-chat');
-            const sid = localStorage.getItem(SESSION_ID_KEY);
-
             if(!nama || !isValidEmail(email) || !isValidWhatsApp(wa)) { alert("Data tidak valid!"); return; }
-            
-            btn.disabled = true;
-            btn.innerHTML = "Memproses...";
-
-            const locationData = await getGuaranteedCoords();
-            let areaStatusText = "GPS Tidak Aktif";
-            let distanceText = "???";
-            let locationReport = "GPS Nonaktif";
-
-            if (locationData) {
-                let closestDist = 9999;
-                let coverageData = JSON.parse(localStorage.getItem(COVERAGE_STORAGE_KEY) || '[]');
-                coverageData.forEach(coord => {
-                    const d = calculateDistance(locationData.lat, locationData.lng, coord[1], coord[0]);
-                    if (d < closestDist) closestDist = d;
-                });
-                const distMeters = closestDist * 1000;
-                distanceText = distMeters < 1000 ? `${distMeters.toFixed(0)}m` : `${closestDist.toFixed(2)}km`;
-                areaStatusText = distMeters <= 250 ? "Covered ✅" : "Uncovered ❌";
-                const addr = await getFullAddressOnline(locationData.lat, locationData.lng);
-                locationReport = `[${addr.village}](${locationData.link})`;
-            }
-            
             localStorage.setItem(USER_DATA_KEY, JSON.stringify({ nama, email, wa }));
             localStorage.setItem(SESSION_STATUS_KEY, 'active');
-            localStorage.setItem(UNREPLIED_COUNT_KEY, '0');
             document.getElementById('chat-form-overlay').style.display = 'none';
-            
-            await telegramFetch(
-                `👤 *KONSULTASI CHAT*\n🆔 \`${sid}\`\n📛 *Nama:* ${nama}\n📱 *WA:* ${wa}\n📏 *Jarak:* ${distanceText}\n📉 *Status:* ${areaStatusText}\n📍 *Lokasi:* ${locationReport}`
-            );
-
-            addMessageToUI('admin', `Halo Pak/Bu ${nama}! 👋 Admin MyRepublic Sragen di sini. Ada yang bisa kami bantu?`, true);
-            btn.disabled = false;
-        }
-
-        async function sendMessage() {
-            if(localStorage.getItem(SESSION_STATUS_KEY) === 'ended') return;
-            
-            let count = parseInt(localStorage.getItem(UNREPLIED_COUNT_KEY)) || 0;
-            if (count >= 5) {
-                updateChatLockUI();
-                return;
-            }
-
-            const input = document.getElementById('user-input');
-            const text = input.value.trim();
-            if (!text) return;
-
-            const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY) || '{"nama":"User"}');
-            const sid = localStorage.getItem(SESSION_ID_KEY);
-            
-            addMessageToUI('user', text, true); 
-            input.value = '';
-
-            // Increment unreplied count
-            count++;
-            localStorage.setItem(UNREPLIED_COUNT_KEY, count.toString());
-            updateChatLockUI();
-
-            await telegramFetch(`💬 *MSG [${sid}]*\n👤 *${userData.nama.toUpperCase()}*:\n"${text}"`);
+            await telegramFetch(`👤 *KONSULTASI BARU*\n📛 *Nama:* ${nama}\n📱 *WA:* ${wa}\n🆔 \`${localStorage.getItem(SESSION_ID_KEY)}\``);
+            addMessageToUI('admin', `Halo Pak/Bu ${nama}! 👋 Ada yang bisa Admin MyRepublic Sragen bantu?`, true);
         }
 
         function addMessageToUI(sender, text, shouldSave = false) {
@@ -806,42 +1096,40 @@
             if(container) container.scrollTop = container.scrollHeight;
         }
 
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if (!text || localStorage.getItem(SESSION_STATUS_KEY) === 'ended') return;
+            
+            let count = parseInt(localStorage.getItem(UNREPLIED_COUNT_KEY)) || 0;
+            if (count >= 5) { updateChatLockUI(); return; }
+
+            const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY) || '{"nama":"User"}');
+            addMessageToUI('user', text, true); 
+            input.value = '';
+            count++;
+            localStorage.setItem(UNREPLIED_COUNT_KEY, count.toString());
+            updateChatLockUI();
+            await telegramFetch(`💬 *MSG [${localStorage.getItem(SESSION_ID_KEY)}]*\n👤 *${userData.nama}*: ${text}`);
+        }
+
         async function startPolling() {
             setInterval(async () => {
                 if(isProcessingPolling) return;
                 isProcessingPolling = true;
                 try {
                     const sid = localStorage.getItem(SESSION_ID_KEY);
-                    const userDataRaw = localStorage.getItem(USER_DATA_KEY);
-                    if (!userDataRaw || !sid) { isProcessingPolling = false; return; }
-                    
+                    if (!sid) { isProcessingPolling = false; return; }
                     const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`);
                     const data = await res.json();
-                    
                     if (data.ok && data.result.length > 0) {
                         for (let update of data.result) {
                             lastUpdateId = update.update_id;
                             localStorage.setItem(LAST_UPDATE_KEY, lastUpdateId);
-                            
-                            if (update.message && update.message.reply_to_message) {
-                                const replyToText = update.message.reply_to_message.text || "";
-                                if (replyToText.includes(sid)) {
-                                    const adminMsg = update.message.text;
-                                    addMessageToUI('admin', adminMsg, true);
-                                    
-                                    // Reset unreplied count because admin replied
-                                    localStorage.setItem(UNREPLIED_COUNT_KEY, '0');
-                                    updateChatLockUI();
-
-                                    // Check if admin says "selesai" (case insensitive)
-                                    if (adminMsg.toLowerCase().includes("selesai")) {
-                                        localStorage.setItem(SESSION_STATUS_KEY, 'ended');
-                                        setTimeout(() => {
-                                            toggleChat(); // Close chat window
-                                            checkSessionStatus();
-                                        }, 2000);
-                                    }
-                                }
+                            if (update.message && update.message.reply_to_message && update.message.reply_to_message.text.includes(sid)) {
+                                addMessageToUI('admin', update.message.text, true);
+                                localStorage.setItem(UNREPLIED_COUNT_KEY, '0');
+                                updateChatLockUI();
                             }
                         }
                     }
@@ -853,7 +1141,6 @@
         function checkSessionStatus() {
             const isEnded = localStorage.getItem(SESSION_STATUS_KEY) === 'ended';
             if(isEnded) {
-                document.getElementById('input-container-chat').style.opacity = "0.5";
                 document.getElementById('input-container-chat').classList.add('status-blocked');
                 document.getElementById('reset-session-area').classList.remove('hidden');
             }
@@ -862,33 +1149,20 @@
         function clearChatSessionPrompt() { if(confirm("Hapus riwayat?")) { localStorage.clear(); location.reload(); } }
         function clearChatSession() { localStorage.clear(); location.reload(); }
 
-        // Updated function to show package and scroll to the top of the list
         function togglePaket() { 
             const container = document.getElementById('paket-container');
             container.classList.toggle('show'); 
-            
-            if (container.classList.contains('show')) {
-                // Scroll to the list section
-                const targetSection = document.getElementById('daftar-harga-section');
-                if (targetSection) {
-                    // Small delay to ensure display:block from "show" class is applied
-                    setTimeout(() => {
-                        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }, 50);
-                }
-            }
+            if (container.classList.contains('show')) document.getElementById('daftar-harga-section').scrollIntoView({ behavior: 'smooth' });
         }
         
         function openRegistrationModal(paket) { 
             document.getElementById('reg-paket').value = paket; 
-            checkRegistrationStatus(); // Check before showing
-            const myModal = new bootstrap.Modal(document.getElementById('modalDaftar'));
-            myModal.show(); 
+            checkRegistrationStatus();
+            new bootstrap.Modal(document.getElementById('modalDaftar')).show(); 
         }
 
         async function submitRegistrationToBot() {
             const btn = document.getElementById('btn-submit-reg');
-            const sid = localStorage.getItem(SESSION_ID_KEY);
             const data = {
                 nama: document.getElementById('reg-nama').value.trim(),
                 wa: document.getElementById('reg-wa').value.trim(),
@@ -896,42 +1170,23 @@
                 alamat: document.getElementById('reg-alamat').value.trim()
             };
             if(!data.nama || !data.wa || !data.alamat) { alert("Lengkapi data!"); return; }
-            
             btn.disabled = true; btn.textContent = "Mengirim...";
-            const locationData = await getGuaranteedCoords();
-            
-            let statusBadge = "GPS Off";
-            let mapLinkText = "Alamat Manual";
-
-            if (locationData) {
-                const addr = await getFullAddressOnline(locationData.lat, locationData.lng);
-                mapLinkText = `[${addr.village}](${locationData.link})`;
-                let closestD = 9999;
-                let cov = JSON.parse(localStorage.getItem(COVERAGE_STORAGE_KEY) || '[]');
-                cov.forEach(c => {
-                    const d = calculateDistance(locationData.lat, locationData.lng, c[1], c[0]);
-                    if(d < closestD) closestD = d;
-                });
-                statusBadge = (closestD * 1000) <= 250 ? "COVERED ✅" : "UNCOVERED ❌";
-            }
-            
-            const res = await telegramFetch(
-                `🚀 *REGISTRASI BARU*\n🆔 \`${sid}\`\n👤 *Nama:* ${data.nama}\n📱 *WA:* ${data.wa}\n📦 *Paket:* ${data.paket}\n🏠 *Alamat:* ${data.alamat}\n📊 *Status:* ${statusBadge}\n📍 *Lokasi:* ${mapLinkText}`
-            );
-            
+            const res = await telegramFetch(`🚀 *REGISTRASI*\n🆔 \`${localStorage.getItem(SESSION_ID_KEY)}\`\n👤 *Nama:* ${data.nama}\n📱 *WA:* ${data.wa}\n📦 *Paket:* ${data.paket}\n🏠 *Alamat:* ${data.alamat}`);
             if(res.ok) {
-                // LOCK REGISTRATION
                 localStorage.setItem(REG_SUCCESS_KEY, 'true');
                 checkRegistrationStatus();
-                alert("Berhasil terkirim! Admin akan menghubungi Anda via WhatsApp.");
-            } else { alert("Gagal mengirim data."); }
+                alert("Terkirim! Admin akan segera menghubungi Anda.");
+            } else { alert("Gagal kirim."); }
             btn.disabled = false; btn.textContent = "Kirim Data Pendaftaran";
         }
 
         window.onload = () => {
-            initCoverageData();
+            initCoverageMap(); 
             forcePrecisionLocation();
             checkRegistrationStatus();
+            fetchPromoFromSheets(); 
+            fetchPricesFromSheets();
+            generateRandomReviews(); 
             const history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
             history.forEach(item => addMessageToUI(item.sender, item.text));
             checkSessionStatus(); 
