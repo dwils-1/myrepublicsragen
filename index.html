@@ -320,8 +320,11 @@
                             </div>
                             <ul class="text-start mb-4 space-y-1 text-xs text-dark">
                                 <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Unlimited Tanpa FUP</li>
+                                
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Daftar Sekarang pasang Sekarang</li>
+
                                 <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Full Fiber Optic</li>
-                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Gratis Instalasi*</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Gratis Instalasi.</li>
                             </ul>
                             <button onclick="openRegistrationModal('10Ring')" class="btn btn-primary w-100 py-2 text-sm shadow-md">Daftar Sekarang</button>
                         </div>
@@ -507,11 +510,11 @@
                         </div>
                         <div class="p-4 bg-purple-900 text-white text-center">
                             <p class="text-[10px] mb-2 opacity-80">Gunakan GPS di atas untuk cek otomatis di posisi Anda</p>
-                            <button onclick="handleAutoGpsSearch()" class="text-sm font-bold flex items-center justify-center w-full bg-yellow-500 py-2 rounded-lg text-purple-900 shadow-lg">
+                            <button id="btn-cek-lokasi-map" onclick="handleAutoGpsSearch()" class="text-sm font-bold flex items-center justify-center w-full bg-yellow-500 py-2 rounded-lg text-purple-900 shadow-lg transition-all active:scale-95">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 </svg>
-                                Cek Cover Area
+                                <span id="btn-cek-lokasi-map-text">Cek Cover Area</span>
                             </button>
                         </div>
                     </div>
@@ -643,7 +646,7 @@
                 <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold text-xs">MR</div>
                 <div>
                     <h3 class="font-bold text-xs leading-none">Admin MyRepublic Sragen</h3>
-                    <p class="text-[9px] opacity-80 mt-1">● Online (Bot Telegram Active)</p>
+                    <p class="text-[9px] opacity-80 mt-1">● Online</p>
                 </div>
             </div>
             <div class="flex items-center space-x-1">
@@ -856,6 +859,7 @@
                     const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^\""]*$)/);
                     if (columns.length >= 3) {
                         const nama = columns[0].replace(/"/g, '').trim();
+                        const deskripsi = columns[1].replace(/"/g, '').trim(); // AMBIL KOLOM B (Index 1)
                         let imgRaw = columns[2].replace(/"/g, '').trim();
                         const imgDirect = convertToDirectLink(imgRaw);
 
@@ -865,7 +869,8 @@
                                     <div class="promo-img-wrapper">
                                         <img src="${imgDirect}" alt="${nama}" onerror="handleImageError(this)" onclick="openLightbox(this.src)">
                                     </div>
-                                    <p class="text-[10px] text-center mt-2 font-bold text-purple-800 uppercase">${nama}</p>
+                                    <p class="text-[10px] text-center mt-2 font-bold text-purple-800 uppercase mb-0">${nama}</p>
+                                    <p class="text-[9px] text-center text-gray-500 leading-tight">${deskripsi}</p>
                                 </div>`;
                         }
                     }
@@ -886,7 +891,7 @@
                 "Akhirnya ada fiber murni di Sidoharjo, streaming Netflix 4K lancar jaya.",
                 "Gak nyesel ganti dari sebelah, di sini beneran tanpa batasan kuota.",
                 "Ping kecil banget, cocok buat main Valorant atau CSGO.",
-                "Pelayanan admin Sragen ramah dan gercep kalau ada kendala.",
+                "Pelayanan admin Sragen ramah and gercep kalau ada kendala.",
                 "Sudah pasang 6 bulan, koneksi stabil biarpun hujan deras.",
                 "Wifi jangkauannya luas sampai ke lantai atas rumah.",
                 "Harga promo 10Ring bener-bener nolong buat mahasiswa kayak saya.",
@@ -1084,13 +1089,16 @@
 
         async function handleAutoGpsSearch() {
             const resultBox = document.getElementById('search-result');
-            const btn = document.getElementById('btn-cek-lokasi');
-            const statusText = document.getElementById('status-gps-text');
-            
+            const btnMain = document.getElementById('btn-cek-lokasi');
+            const statusTextMain = document.getElementById('status-gps-text');
+            const btnMap = document.getElementById('btn-cek-lokasi-map');
+            const btnMapText = document.getElementById('btn-cek-lokasi-map-text');
+
             resultBox.style.display = 'none';
-            statusText.innerText = "Mengunci Sinyal Satelit...";
-            btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`;
-            btn.disabled = true;
+            if(statusTextMain) statusTextMain.innerText = "Mengunci Sinyal Satelit...";
+            if(btnMain) { btnMain.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`; btnMain.disabled = true; }
+            if(btnMap) btnMap.disabled = true;
+            if(btnMapText) btnMapText.innerText = "Mengambil Alamat...";
 
             try {
                 const locationData = await getGuaranteedCoords();
@@ -1107,17 +1115,18 @@
                 const distInMeters = closestFatDist * 1000;
                 let formattedDist = distInMeters < 1000 ? `${distInMeters.toFixed(0)} meter` : `${closestFatDist.toFixed(2)} KM`;
                 const isCovered = distInMeters <= 250;
+                
                 const addr = await getFullAddressOnline(locationData.lat, locationData.lng);
                 resultBox.style.display = 'block';
 
                 if (isCovered) {
                     resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-green-100 text-green-700 border border-green-200";
                     resultBox.innerHTML = `✅ Lokasi Anda saat ini di <b>${addr ? addr.village : 'Sragen'}</b> sudah tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist}.</small>`;
-                    statusText.innerText = "Status: TERCOVER";
+                    if(statusTextMain) statusTextMain.innerText = "Status: TERCOVER";
                 } else {
                     resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-red-100 text-red-700 border border-red-200";
                     resultBox.innerHTML = `⚠️ Lokasi Anda saat ini di <b>${addr ? addr.village : 'Sragen'}</b> belum tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist}.</small>`;
-                    statusText.innerText = "Status: BELUM TERCOVER";
+                    if(statusTextMain) statusTextMain.innerText = "Status: BELUM TERCOVER";
                 }
 
                 if(map) {
@@ -1139,10 +1148,13 @@
                             `🗺️ [Buka Lokasi User](${locationData.link})`;
                 await telegramFetch(msg);
             } catch (error) {
-                statusText.innerText = "GPS Error";
+                if(statusTextMain) statusTextMain.innerText = "GPS Error";
+                resultBox.style.display = 'block';
                 resultBox.innerHTML = `❌ Gagal: ${error.message}`;
             }
-            btn.innerHTML = "Cek Ulang"; btn.disabled = false;
+            if(btnMain) { btnMain.innerHTML = "Cek Ulang"; btnMain.disabled = false; }
+            if(btnMap) btnMap.disabled = false;
+            if(btnMapText) btnMapText.innerText = "Cek Cover Area";
         }
 
         function isValidEmail(email) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email); }
@@ -1196,28 +1208,61 @@
             const nama = document.getElementById('chat-reg-nama').value.trim();
             const email = document.getElementById('chat-reg-email').value.trim();
             const waRaw = document.getElementById('chat-reg-wa').value.trim();
+            const btn = document.getElementById('btn-start-chat');
+
             if(!nama || !isValidEmail(email) || !isValidWhatsApp(waRaw)) { alert("Data tidak valid!"); return; }
+            
+            btn.disabled = true;
+            btn.innerText = "Memproses...";
+
+            // LOGIKA PENGECEKAN LOKASI OTOMATIS SAAT KLIK MULAI CHAT
+            let isCovered = false;
+            let currentLat = localStorage.getItem('raw_lat');
+            let currentLng = localStorage.getItem('raw_lng');
+            
+            if(currentLat && currentLng) {
+                let closestDist = 9999;
+                let coverageData = JSON.parse(localStorage.getItem(COVERAGE_STORAGE_KEY) || '[]');
+                coverageData.forEach(coord => {
+                    const d = calculateDistance(parseFloat(currentLat), parseFloat(currentLng), coord[1], coord[0]);
+                    if (d < closestDist) closestDist = d;
+                });
+                if ((closestDist * 1000) <= 250) isCovered = true;
+            }
+
             localStorage.setItem(USER_DATA_KEY, JSON.stringify({ nama, email, wa: waRaw }));
             localStorage.setItem(SESSION_STATUS_KEY, 'active');
             document.getElementById('chat-form-overlay').style.display = 'none';
             
-            const lat = localStorage.getItem('raw_lat') || "0";
-            const lng = localStorage.getItem('raw_lng') || "0";
             const loc = localStorage.getItem(COORDS_CACHE_KEY) || "Peta tidak tersedia";
-            
-            const waText = `Halo Admin Sragen, saya ${nama} ingin konsultasi layanan MyRepublic.`;
-            const waUrlForAdmin = createWaLink('08123456789', waText); // Ganti nomor admin jika perlu
-
             const msg = `👤 *KONSULTASI BARU*\n` +
                         `━━━━━━━━━━━━━━━\n` +
                         `📛 *Nama:* ${nama}\n` +
                         `📱 *WhatsApp:* [${waRaw}](https://wa.me/${waRaw.replace(/\D/g, '')})\n` +
                         `📧 *Email:* ${email}\n` +
+                        `✅ *Status Coverage:* ${isCovered ? 'TERCOVER' : 'BELUM TERCOVER'}\n` +
                         `🆔 *ID:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n` +
                         `📍 *Live Map:* [Buka Peta](${loc})`;
             
             await telegramFetch(msg);
+            
+            // PESAN SAMBUTAN AWAL
             addMessageToUI('admin', `Halo Pak/Bu ${nama}! 👋 Ada yang bisa Admin MyRepublic Sragen bantu?`, true);
+
+            // LOGIKA BALASAN OTOMATIS JIKA TERCOVER
+            if(isCovered) {
+                setTimeout(() => {
+                    addMessageToUI('admin', `Saat ini data anda sudah tersimpan di server dengan database terenkripsi aman. Admin akan segera menghubungi anda secepatnya lewat pesan WhatsApp.`, true);
+                }, 1000);
+                
+                setTimeout(() => {
+                    const daftarLink = `<a href="https://myrepublicsragen.my.id/indexpendaftaran.html" style="color:#6c2d91; font-weight:bold; text-decoration:underline;">DAFTAR</a>`;
+                    addMessageToUI('admin', `Apabila anda ingin melanjutkan pendaftaran Klik ${daftarLink}`, true);
+                }, 2000);
+            }
+            
+            btn.disabled = false;
+            btn.innerText = "Mulai Chat Sekarang";
         }
 
         function addMessageToUI(sender, text, shouldSave = false) {
@@ -1321,52 +1366,26 @@
                 paket: document.getElementById('reg-paket').value,
                 alamatManual: document.getElementById('reg-alamat').value.trim()
             };
-            
             if(!data.nama || !data.wa || !data.alamatManual) { alert("Lengkapi data!"); return; }
-            
-            btn.disabled = true; 
-            btn.textContent = "Mengolah Data...";
-            
+            btn.disabled = true; btn.textContent = "Mengolah Data...";
             const rawLat = localStorage.getItem('raw_lat');
             const rawLng = localStorage.getItem('raw_lng');
             const mapLink = localStorage.getItem(COORDS_CACHE_KEY) || "Peta tidak tersedia";
-            
             let alamatLengkapStr = data.alamatManual;
-            
-            // Mencoba mendapatkan alamat detail dari koordinat (Reverse Geocoding)
             if(rawLat && rawLng) {
                 const detailAddr = await getFullAddressOnline(rawLat, rawLng);
-                if(detailAddr) {
-                    alamatLengkapStr = `${data.alamatManual}, ${detailAddr.road}, ${detailAddr.village}, ${detailAddr.district}, ${detailAddr.city}, ${detailAddr.postcode}, ${detailAddr.state}`;
-                }
+                if(detailAddr) alamatLengkapStr = `${data.alamatManual}, ${detailAddr.road}, ${detailAddr.village}, ${detailAddr.district}, ${detailAddr.city}, ${detailAddr.postcode}, ${detailAddr.state}`;
             }
-
-            // Teks Konfirmasi untuk WhatsApp Admin ke User
             const confirmText = `DATA REGISTRASI MASUK\n━━━━━━━━━━━━━━━\n🆔 SID: ${localStorage.getItem(SESSION_ID_KEY)}\n👤 Nama: ${data.nama}\n📱 WhatsApp: ${data.wa}\n🚀 Paket: ${data.paket}\n🏠 Alamat: ${alamatLengkapStr}\n📍 Titik Maps: ${mapLink}\n━━━━━━━━━━━━━━━\napakah benar bpk/ibu ${data.nama} akan melakukan pemasangan MyRepublic dengan data di atas?`;
             const waUrl = createWaLink(data.wa, confirmText);
-
-            // Format Pesan untuk Telegram
-            const msg = `🚀 *DATA REGISTRASI MASUK*\n` +
-                        `━━━━━━━━━━━━━━━\n` +
-                        `🆔 *SID:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n` +
-                        `👤 *Nama:* ${data.nama}\n` +
-                        `📱 *WhatsApp:* [${data.wa}](${waUrl})\n` +
-                        `🚀 *Paket:* ${data.paket}\n` +
-                        `🏠 *Alamat:* ${alamatLengkapStr}\n` +
-                        `📍 *Titik Maps:* [Lihat Lokasi](${mapLink})\n` +
-                        `━━━━━━━━━━━━━━━\n` +
-                        `\n\n` +
-                        `👉 [HUBUNGI USER VIA WA](${waUrl})`;
-
+            const msg = `🚀 *DATA REGISTRASI MASUK*\n━━━━━━━━━━━━━━━\n🆔 *SID:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n👤 *Nama:* ${data.nama}\n📱 *WhatsApp:* [${data.wa}](${waUrl})\n🚀 *Paket:* ${data.paket}\n🏠 *Alamat:* ${alamatLengkapStr}\n📍 *Titik Maps:* [Lihat Lokasi](${mapLink})\n━━━━━━━━━━━━━━━\n\n\n👉 [HUBUNGI USER VIA WA](${waUrl})`;
             const res = await telegramFetch(msg);
             if(res.ok) {
                 localStorage.setItem(REG_SUCCESS_KEY, 'true');
                 checkRegistrationStatus();
                 alert("Terkirim! Admin akan segera menghubungi Anda.");
             } else { alert("Gagal kirim ke server."); }
-            
-            btn.disabled = false; 
-            btn.textContent = "Kirim Data Pendaftaran";
+            btn.disabled = false; btn.textContent = "Kirim Data Pendaftaran";
         }
 
         window.onload = () => {
