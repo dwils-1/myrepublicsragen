@@ -2,1464 +2,1509 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <title>MyRepublic System - Professional Unified</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>MyRepublic Cabang Sragen | Internet Fiber Cepat & Stabil</title>
+    <meta name="description" content="Layanan resmi MyRepublic Sragen. Nikmati internet fiber optic 100% tanpa batas kuota (FUP). Daftar sekarang untuk koneksi cepat dan stabil di Sragen.">
+    
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
     <style>
         :root {
-            --app-height: 100%;
+            --mr-purple: #6c2d91;
+            --mr-purple-dark: #562475;
+            --mr-yellow: #ffcc00;
+            --mr-light: #f4f4f9;
+        }
+
+        /* KUNCI HALALMAN AGAR TIDAK GESER KANAN KIRI */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+            position: relative;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            touch-action: pan-y;
         }
 
         body { 
-            background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%); 
-            height: 100vh;
-            height: -webkit-fill-available;
-            font-family: 'Segoe UI', sans-serif; 
-            overflow: hidden; 
-            display: flex;
-            justify-content: center;
+            font-family: 'Inter', sans-serif; 
+            color: #333; 
+            background-color: var(--mr-light);
+            min-height: 100vh;
         }
-
-        .app-viewport {
+        
+        .navbar { 
+            background-color: var(--mr-purple); 
+            border-bottom: 4px solid var(--mr-yellow); 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        .navbar-brand img {
+            max-height: 45px;
+            width: auto;
+            object-fit: contain;
+        }
+        
+        .slogan-text { color: var(--mr-yellow); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; line-height: 1; margin-top: 4px; }
+        
+        /* VIDEO BANNER STYLING */
+        .video-banner-container {
             width: 100%;
-            max-width: 600px;
-            height: 100dvh;
-            background: transparent;
+            max-width: 1440px;
+            margin: 0 auto;
             position: relative;
-            display: flex;
-            flex-direction: column;
             overflow: hidden;
-        }
-
-        .top-nav {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            padding: calc(15px + env(safe-area-inset-top)) 20px 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .bottom-nav {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            padding: 10px 10px calc(20px + env(safe-area-inset-bottom));
-            display: flex;
-            justify-content: space-around;
-            gap: 5px;
-            z-index: 1000;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-        }
-
-        .scrollable-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            padding-bottom: 6rem; 
-            scrollbar-width: none; 
+            background: #000;
+            aspect-ratio: 1440 / 576;
         }
         
-        .scrollable-content::-webkit-scrollbar { display: none; }
+        .video-banner-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
-        .glass-card { background: rgba(255, 255, 255, 0.98); border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+        .hero-section { 
+            background: linear-gradient(135deg, rgba(108, 45, 145, 0.9), rgba(60, 20, 90, 0.95)), url('https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            border-bottom-right-radius: 80px;
+        }
+
+        .btn-primary { 
+            background-color: var(--mr-purple) !important; 
+            border: none; 
+            padding: 12px 30px; 
+            font-weight: 700; 
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover { background-color: var(--mr-purple-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(108, 45, 145, 0.4); }
         
-        .input-field { 
+        .promo-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .featured-card {
+            animation: float 4s ease-in-out infinite;
+            border: 2px solid var(--mr-yellow);
+            box-shadow: 0 0 20px rgba(108, 45, 145, 0.2);
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+            50% { transform: translateY(-15px); box-shadow: 0 25px 40px rgba(108, 45, 145, 0.3); }
+            100% { transform: translateY(0px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        }
+
+        .card-header-purple {
+            background: var(--mr-purple);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .best-seller-badge {
+            position: absolute;
+            top: 18px;
+            right: -35px;
+            background: var(--mr-yellow);
+            color: var(--mr-purple);
+            padding: 6px 45px;
+            transform: rotate(45deg);
+            font-weight: 800;
+            font-size: 0.65rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        .price-table-container {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .table { font-size: 0.85rem; }
+        .table thead th {
+            background: var(--mr-purple);
+            color: white;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            padding: 12px 15px;
+        }
+        .table tbody td { padding: 12px 15px; vertical-align: middle; }
+        
+        .cell-stack { display: flex; flex-direction: column; line-height: 1.2; }
+        .cell-stack .top-text { font-weight: 700; font-size: 0.9rem; color: #333; }
+        .cell-stack .bottom-text { font-weight: 800; font-size: 0.95rem; color: #6c2d91; }
+
+        .badge-speed-table { font-size: 0.7rem; padding: 4px 10px; }
+
+        #paket-container {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+        #paket-container.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        footer { background-color: #1a1a1a; color: #f8f9fa; padding: 60px 0 30px; }
+        footer h2 { color: white; font-weight: 700; margin-bottom: 20px; font-size: 1rem; }
+        
+        .chat-container {
+            width: 100%; max-width: 400px; height: 80vh; 
+            position: fixed; bottom: 0; right: 0;
+            display: none; flex-direction: column; background: white; z-index: 10000;
+            box-shadow: 0 -5px 40px rgba(0,0,0,0.2); border-top-left-radius: 25px; border-top-right-radius: 25px; overflow: hidden;
+            transition: height 0.3s ease, bottom 0.3s ease;
+        }
+        @media (min-width: 640px) {
+            .chat-container { width: 350px; right: 25px; bottom: 25px; height: 550px; border-radius: 25px; }
+        }
+        
+        .chat-header {
+            background: var(--mr-purple); padding: 15px; color: white;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 3px solid var(--mr-yellow);
+            flex-shrink: 0;
+        }
+
+        #chat-content {
+            flex: 1; padding: 15px; overflow-y: auto; background-color: #f8f9fa;
+            display: flex; flex-direction: column; gap: 12px;
+            scroll-behavior: smooth;
+        }
+
+        .bubble { max-width: 80%; padding: 10px 14px; font-size: 0.85rem; line-height: 1.4; position: relative; word-wrap: break-word; }
+        .bubble-admin { background: white; color: #333; align-self: flex-start; border-radius: 18px 18px 18px 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        .bubble-user { background: var(--mr-purple); color: white; align-self: flex-end; border-radius: 18px 18px 4px 18px; }
+
+        .chat-timestamp { font-size: 0.65rem; opacity: 0.6; margin-top: 4px; display: block; text-align: right; }
+        .bubble-admin .chat-timestamp { text-align: left; }
+
+        #chat-form-overlay { 
+            position: absolute; inset: 0; background: white; z-index: 100; 
+            padding: 30px 20px; display: flex; flex-direction: column; 
+            justify-content: flex-start; overflow-y: auto;
+        }
+
+        .chat-input-area { padding: 12px; border-top: 1px solid #eee; background: white; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+        .chat-input-area input { flex: 1; border: none; background: #f1f3f4; padding: 10px 15px; border-radius: 25px; font-size: 0.85rem; outline: none; }
+        
+        .blocked-overlay {
+            position: absolute; inset: 0; background: rgba(255,255,255,0.95);
+            z-index: 200; display: none; flex-direction: column; align-items: center; 
+            justify-content: center; text-align: center; padding: 20px;
+        }
+
+        #lightbox-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 99999; display: none;
+            justify-content: center; align-items: center; cursor: zoom-out;
+            padding: 20px; opacity: 0; transition: opacity 0.3s ease;
+        }
+        #lightbox-overlay.show { display: flex; opacity: 1; }
+        #lightbox-img {
+            max-width: 95%; max-height: 85vh; border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5); transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #lightbox-overlay.show #lightbox-img { transform: scale(1); }
+        .lightbox-close { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; font-weight: bold; cursor: pointer; }
+
+        /* --- STYLING GALLERY YANG DIPERBAIKI --- */
+        .promo-img-wrapper { 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+            transition: transform 0.3s ease; 
+            cursor: pointer; 
+            background: #fff; 
+            aspect-ratio: 4 / 5; /* Mengunci rasio kotak agar seragam */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+        .promo-img-wrapper:hover { transform: scale(1.03); }
+        .promo-img-wrapper img { 
             width: 100%; 
-            padding: 10px 12px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 12px; 
-            outline: none; 
-            transition: all 0.3s; 
-            font-weight: 600; 
-            font-size: 13px; 
+            height: 100%; 
+            object-fit: cover; /* Gambar akan memenuhi kotak tanpa merusak rasio */
         }
-        .force-caps { text-transform: uppercase; }
-        .input-field::placeholder { font-size: 11px; font-weight: 500; color: #94a3b8; text-transform: none; }
-        .input-field:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2); }
-
-        .tab-btn { 
-            flex: 1;
+        .gallery-item {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-            padding: 8px 0; 
-            font-weight: 800; 
-            border-radius: 15px; 
-            color: #64748b; 
-            text-transform: uppercase; 
-            transition: 0.3s; 
-            font-size: 0.6rem; 
-            text-align: center; 
+            margin-bottom: 20px;
         }
-        .tab-active { color: #4338ca; background: rgba(99, 102, 241, 0.1); }
-        .tab-active .tab-icon { transform: scale(1.1); filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.3)); }
-        
-        .portal-btn { background: #4338ca; color: white; padding: 6px 15px; border-radius: 12px; font-weight: 900; font-size: 11px; }
-        
-        .mr-template-wrapper { position: absolute; left: -9999px; top: 0; }
-        
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f8fafc; color: #000000 !important; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em; padding: 12px; border: 1px solid #e2e8f0; }
-        
-        .fast-group-header { background: #ef4444; color: white; padding: 8px 15px; border-radius: 12px; font-weight: 900; font-size: 11px; margin: 20px 0 10px 0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); text-transform: uppercase; }
-        .pending-old-header { background: #4b5563; color: white; padding: 8px 15px; border-radius: 12px; font-weight: 900; font-size: 11px; margin: 20px 0 10px 0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(75, 85, 99, 0.3); text-transform: uppercase; }
-        .leads-group-header { background: #db2777; color: white; padding: 8px 15px; border-radius: 12px; font-weight: 900; font-size: 11px; margin: 20px 0 10px 0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3); text-transform: uppercase; }
-        td { padding: 15px; text-align: center; border: 1px solid #e2e8f0; font-weight: 800; color: #4338ca; font-size: 14px; }
-        
-        #customModal { display: none; position: fixed; inset: 0; z-index: 10001; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 20px; }
-        .modal-box { width: 100%; max-width: 350px; background: white; border-radius: 30px; overflow: hidden; animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        
-        @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-        .blink-name { animation: pulse-soft 2s infinite ease-in-out; }
-        .animate-click { animation: click-bounce 0.2s ease-out; }
-        @keyframes click-bounce { 0% { transform: scale(1); } 50% { transform: scale(0.92); } 100% { transform: scale(1); } }
-        
-        .card-red { border: 1px solid #fee2e2; background: #fff1f1; }
-        .card-orange { border: 1px solid #ffedd5; background: #fff7ed; }
-        .card-blue { border: 1px solid #e0e7ff; background: #f5f7ff; }
-        .card-yellow { border: 1px solid #fef3c7; background: #fffbeb; }
-        .card-pink { border: 1px solid #fce7f3; background: #fdf2f8; }
-        
-        .stats-group { background: #f1f5f9; border: 2px solid #e2e8f0; border-radius: 20px; padding: 15px; margin-bottom: 24px; }
-        #undoToast { position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%); z-index: 10000; display: none; width: 80%; max-width: 400px; }
-        .progress-container { width: 100%; background-color: #e2e8f0; border-radius: 99px; height: 12px; overflow: hidden; margin-top: 10px; border: 1px solid #cbd5e1; }
-        .progress-bar-fill { height: 100%; width: 0%; transition: width 1s ease-in-out, background-color 0.5s; }
-        
-        .grade-badge { padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 900; color: white; text-transform: uppercase; display: inline-block; }
-        .grade-A { background: #10b981; } .grade-B { background: #3b82f6; } 
-        .grade-C { background: #f59e0b; } .grade-U { background: #ef4444; } .grade- { background: #94a3b8; }
-        
-        .radio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        .radio-item-chip { position: relative; }
-        .radio-item-chip input { position: absolute; opacity: 0; }
-        .radio-item-chip label { display: block; padding: 10px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; text-align: center; font-size: 10px; font-weight: 900; cursor: pointer; transition: 0.2s; color: #64748b; }
-        .radio-item-chip input:checked + label { border-color: #6366f1; background: #eef2ff; color: #4338ca; box-shadow: 0 4px 10px rgba(99, 102, 241, 0.1); }
-        
-        .history-table-container { margin-top: 20px; border-radius: 15px; overflow: hidden; border: 2px solid #e2e8f0; }
-        .history-table th { font-size: 9px; padding: 8px; }
-        .history-table td { font-size: 11px; padding: 10px; font-weight: 700; }
-        
-        .progress-badge-new { background: #10b981; color: white; padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 900; }
-        .progress-badge-mid { background: #f59e0b; color: white; padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 900; }
-        .pending-badge { background: #f59e0b; color: white; padding: 2px 6px; border-radius: 6px; font-size: 9px; font-weight: 900; }
-        
-        .notif-banner { display: none; background: #fbbf24; color: #92400e; padding: 12px; border-radius: 16px; margin-bottom: 15px; font-weight: 800; font-size: 12px; align-items: center; gap: 10px; animation: slideDown 0.5s ease-out; cursor: pointer; border: 2px solid #f59e0b; }
-        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .promo-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--mr-purple);
+            text-transform: uppercase;
+            margin-top: 10px;
+            text-align: center;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+        }
+        .promo-desc {
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+            line-height: 1.2;
+            margin-top: 4px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Batasi maksimal 2 baris agar tetap sejajar */
+            -webkit-box-orient: vertical;
+        }
+        /* --------------------------------------- */
 
-        #dk-monthly-bonus-body td { font-size: 9px !important; padding: 8px 4px !important; }
-        #dk-table-body td { font-size: 9px !important; padding: 8px 4px !important; }
+        .search-container {
+            max-width: 600px; margin: -40px auto 40px; position: relative; z-index: 10; padding: 0 15px;
+        }
+        .search-box-auto {
+            background: white; border-radius: 50px; padding: 12px 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: flex; align-items: center; 
+            justify-content: space-between; border: 2px solid #eee; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .search-box-auto:hover { border-color: var(--mr-purple); }
+        .search-box-auto .location-text { font-size: 0.9rem; color: #666; font-weight: 500; }
         
-        .rincian-bonus-header th { font-size: 8px !important; padding: 10px 4px !important; background: #4338ca; color: white !important; border-color: #3730a3; }
-        .kategori-bonus-header th { font-size: 8px !important; padding: 10px 4px !important; background: #1e1b4b; color: white !important; }
+        .search-result-box {
+            margin-top: 15px; border-radius: 15px; display: none; animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .leads-modal-body { padding: 20px; text-align: left; }
-        .leads-input-group { margin-bottom: 12px; position: relative; }
-        .leads-label { display: block; font-size: 9px; font-weight: 900; color: #4338ca; text-transform: uppercase; margin-bottom: 4px; }
+        .status-blocked { pointer-events: none; opacity: 0.6; }
+        #reg-success-note { display: none; background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
+
+        .about-section { background-color: #fff; padding: 80px 0; }
+        .about-icon-box { background: var(--mr-light); padding: 20px; border-radius: 20px; text-align: center; height: 100%; transition: all 0.3s ease; border: 1px solid #eee; }
+        .about-icon-box:hover { border-color: var(--mr-purple); transform: translateY(-5px); }
+        .about-icon { font-size: 2.5rem; margin-bottom: 15px; display: block; }
+
+        .address-card {
+            background: white; border-radius: 30px; overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid #f0f0f0;
+        }
+        .map-container { width: 100%; height: 350px; background: #eee; position: relative; }
+        #map-coverage { width: 100%; height: 100%; z-index: 5; }
         
-        .card-exit-anim { animation: cardExit 0.5s forwards cubic-bezier(0.4, 0, 0.2, 1); }
-        @keyframes cardExit { 0% { opacity: 1; transform: translateX(0); } 100% { opacity: 0; transform: translateX(100px); height: 0; margin: 0; padding: 0; } }
+        .review-card {
+            background: white; padding: 25px; border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02); border: 1px solid #f5f5f5;
+            height: 100%; transition: all 0.5s ease;
+        }
+        .review-card:hover { transform: translateY(-5px); border-color: var(--mr-purple); }
+        .star-rating { color: #ffcc00; font-size: 1.1rem; letter-spacing: 1px; }
+        .user-avatar {
+            width: 45px; height: 45px; border-radius: 50%;
+            background: var(--mr-purple); color: white;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 1.1rem;
+        }
+
+        .modal { overflow-y: auto !important; }
+        .modal-dialog { margin-bottom: 50px; }
+
+        #review-container {
+            transition: opacity 0.5s ease;
+        }
+
+        /* GPS Loading Spinner */
+        .gps-loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            vertical-align: text-bottom;
+            border: .2em solid currentColor;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spinner-border .75s linear infinite;
+        }
     </style>
 </head>
 <body>
 
-    <div class="app-viewport">
-        <div class="top-nav">
-            <div class="flex flex-col">
-                <h1 class="text-white font-black text-xs tracking-tighter">MYREPUBLIC SYSTEM</h1>
-                <p id="currentDateDisplay" class="text-indigo-200 text-[9px] font-bold">JANUARY 2026</p>
+    <div id="lightbox-overlay" onclick="closeLightbox()" aria-hidden="true">
+        <span class="lightbox-close">×</span>
+        <img id="lightbox-img" src="" alt="Promo Zoom View">
+    </div>
+
+    <nav class="navbar sticky-top" role="navigation">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand d-flex flex-column align-items-center" href="#">
+                <img src="logo.png" alt="MyRepublic Sragen" loading="lazy">
+                <span class="slogan-text">Internet Rocket Sragen</span>
+            </a>
+            <div class="d-none d-md-block">
+                <span class="badge bg-white text-purple-900 p-2 rounded-pill border fw-bold" style="color: #6c2d91; font-size: 0.7rem;">📍 Sragen City Service</span>
             </div>
-            <button onclick="window.open('https://sales.myrepublic.net.id/Login.jsp', '_blank')" class="portal-btn active:scale-95 transition-transform">🚀 PORTAL</button>
+        </div>
+    </nav>
+
+    <section class="video-banner-container">
+        <video autoplay loop muted playsinline poster="https://via.placeholder.com/1440x576/6c2d91/ffffff?text=MyRepublic+Fiber+Sragen">
+            <source src="https://www.dropbox.com/scl/fi/wwck1545yfmqejik6w1nt/wifi-myrepublic-paket-mygamer-di-solo-raya-ping-bagus-anti-lag.webm?rlkey=fmtad4ey3isnnfqy9q62zmz3f&st=mqotvc2m&dl=1" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+    </section>
+
+    <header class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-5 fw-bold mb-3">Warga Sragen,<br>Saatnya Ganti ke Fiber!</h1>
+            <p class="mb-5 opacity-90 text-sm md:text-base">Nikmati Streaming & Gaming Tanpa Batas Kuota (FUP) dengan Jaringan Fiber Optic 100%.</p>
+            
+            <div class="row justify-content-center mb-5">
+                <div class="col-11 col-md-5 col-lg-4">
+                    <article class="promo-card featured-card text-center">
+                        <div class="best-seller-badge">PROMO TERLARIS</div>
+                        <div class="card-header-purple p-3">
+                            <h2 class="fw-bold m-0 h5">10Ring Mbps</h2>
+                        </div>
+                        <div class="p-4">
+                            <div class="mb-3 text-dark">
+                                <span class="text-muted text-decoration-line-through text-xs">Rp 150.000</span><br>
+                                <span class="h3 fw-bold" style="color: #d91b5c;">Rp 110.000</span>
+                                <p class="small text-muted mb-0" style="font-size: 0.7rem;">/ Bulan (Inc. PPN)</p>
+                            </div>
+                            <ul class="text-start mb-4 space-y-1 text-xs text-dark">
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Unlimited Tanpa FUP</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Daftar Sekarang pasang Sekarang</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Full Fiber Optic</li>
+                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Gratis Instalasi.</li>
+                            </ul>
+                            <button onclick="openRegistrationModal('10Ring')" class="btn btn-primary w-100 py-2 text-sm shadow-md">Daftar Sekarang</button>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <button onclick="togglePaket()" class="btn btn-warning btn-md px-5 py-3 fw-bold shadow-lg rounded-pill" style="background-color: #ffcc00; border: none; color: #6c2d91;" aria-label="Tampilkan Semua Paket Internet">
+                Lihat Semua Paket Lainnya ↓
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="search-container">
+            <div class="search-box-auto" onclick="handleAutoGpsSearch()" id="main-search-btn" role="button" aria-label="Cek Ketersediaan Area via GPS">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span class="location-text" id="status-gps-text">Cek Ketersediaan Area via GPS Otomatis</span>
+                </div>
+                <button id="btn-cek-lokasi" class="bg-[#6c2d91] text-white px-5 py-2 rounded-full text-xs font-bold transition-all active:scale-95 shadow-md">Cek Lokasi Saya</button>
+            </div>
+            <div id="search-result" class="search-result-box p-4 text-center text-sm font-semibold" aria-live="polite"></div>
         </div>
 
-        <div class="scrollable-content">
-            <div id="sectionTabel" class="w-full">
-                <div id="notifBilling" class="notif-banner" onclick="filterJatuhTempoHariIni()">
-                    <span class="text-xl">🔔</span>
-                    <div class="flex-1">
-                        <p id="notifText">Ada 0 Pelanggan masuk sikihan hari ini!</p>
-                        <p class="text-[9px] opacity-70">KLIK UNTUK LIHAT DAFTAR</p>
+        <div id="paket-container">
+            <section class="py-5 bg-light" id="daftar-harga-section">
+                <div class="container">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold h4" style="color: #6c2d91;">Daftar Harga Lengkap</h2>
+                        <p class="text-muted text-xs">Pilihan paket internet terbaik untuk setiap kebutuhan Anda</p>
                     </div>
-                    <span class="bg-amber-600 text-white px-2 py-1 rounded-lg text-[10px]">CEK</span>
-                </div>
-
-                <div class="glass-card p-6 overflow-hidden mb-6">
-                    <h2 class="text-2xl font-black text-indigo-900 uppercase mb-4 text-center">Rekapitulasi</h2>
                     
-                    <div class="bg-green-600 rounded-3xl p-6 text-center mb-6 shadow-lg shadow-green-200">
-                        <p class="text-green-100 font-bold uppercase text-xs mb-1">Bonus Estimasi</p>
-                        <h3 id="t-bonus" class="text-4xl font-black text-white">Rp0</h3>
-                    </div>
-
-                    <div class="stats-group">
-                        <div id="displayBulan" class="col-span-3 text-center font-black text-indigo-600 text-[11px] mb-3 uppercase tracking-[0.2em] border-b-2 border-slate-200 pb-2">BULAN ...</div>
-                        <div class="grid grid-cols-3 gap-2 w-full">
-                            <div class="text-center">
-                                <p class="text-slate-500 font-bold uppercase text-[10px] mb-1">Total SA</p>
-                                <p id="t-sa" class="text-xl font-black text-indigo-900">0</p>
-                            </div>
-                            <div class="text-center border-x-2 border-slate-200">
-                                <p class="text-red-600 font-bold uppercase text-[10px] mb-1">SA KURANG</p>
-                                <p id="t-point" class="text-xl font-black text-red-600">0</p>
-                            </div>
-                            <div class="text-center">
-                                <p id="label-kurang" class="text-indigo-600 font-bold uppercase text-[10px] mb-1">SA BLN LALU</p>
-                                <p id="t-kurang" class="text-xl font-black text-indigo-900">0</p>
-                            </div>
-                        </div>
-                        <div class="mt-4 pt-4 border-t border-slate-200">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-[10px] font-black text-slate-500 uppercase">Target Achievement</span>
-                                <span id="targetPercentText" class="text-[10px] font-black text-indigo-600">0%</span>
-                            </div>
-                            <div class="progress-container">
-                                <div id="targetProgressBar" class="progress-bar-fill bg-indigo-600"></div>
-                            </div>
+                    <div class="price-table-container">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">PAKET & HARGA</th>
+                                        <th scope="col" class="text-center">SPEED (EST)</th>
+                                        <th scope="col" class="text-center">AKSI</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="price-table-body">
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4 text-muted">
+                                            <span class="spinner-border spinner-border-sm me-2"></span> Memuat Daftar Harga...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
+            </section>
+        </div>
 
-                    <div class="overflow-hidden rounded-2xl border-2 border-indigo-50 mb-6">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th class="bg-red-600 text-white py-4 border-none text-center !text-white">STATUS OFF</th>
-                                    <th class="bg-green-600 text-white py-4 border-none text-center !text-white">AKTIF</th>
-                                    <th class="bg-indigo-600 text-white py-4 border-none text-center !text-white">ID BARU</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td id="t-off" class="text-red-600 text-3xl font-black px-4 py-8 border-r border-indigo-50 bg-white">0</td>
-                                    <td id="t-aktif" class="text-green-600 text-3xl font-black px-4 py-8 border-r border-indigo-50 bg-white">0</td>
-                                    <td id="t-baru" class="text-indigo-600 text-3xl font-black px-4 py-8 bg-white">0</td>
-                                </tr>
-                            </tbody>
-                        </table>
+        <section class="py-12 bg-gray-50" id="promo-gallery">
+            <div class="container">
+                <div class="text-center mb-8">
+                    <h2 class="fw-bold h4" style="color: #6c2d91;">Promo & Event Terbaru</h2>
+                    <div class="h-1 w-20 bg-warning mx-auto mt-2"></div>
+                </div>
+                <div class="row g-3 g-md-4 justify-content-center" id="gallery-wrapper">
+                    <div class="col-12 text-center text-muted py-5" id="promo-loading">
+                        <span class="spinner-border spinner-border-sm me-2"></span> Memuat Promo Terbaru...
                     </div>
+                </div>
+            </div>
+        </section>
 
-                    <button onclick="muatDataTabel(this)" id="btnRefreshTabel" class="w-full bg-indigo-900 hover:bg-black text-white font-bold py-4 rounded-2xl uppercase text-xs transition-all shadow-lg active:scale-95 mb-6">🔄 Sinkronisasi Data Aktif</button>
+        <section class="about-section">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <h2 class="display-6 fw-bold mb-4" style="color: var(--mr-purple);">Tentang MyRepublic Sragen</h2>
+                        <p class="text-gray-600 mb-4 leading-relaxed">
+                            Kami adalah pelopor penyedia layanan internet <strong>Ultra-Fast Fiber Optic</strong> di Bumi Sukowati. Sejak hadir di Sragen, fokus utama kami adalah memberikan pengalaman berinternet yang belum pernah dirasakan sebelumnya: <strong>Cepat, Stabil, dan Tanpa Batas.</strong>
+                        </p>
+                        <p class="text-gray-600 mb-5 leading-relaxed">
+                            Berbeda dengan penyedia layanan lain, MyRepublic menggunakan teknologi <strong>Fiber-to-the-Home (FTTH)</strong> murni 100%. Ini berarti sinyal internet dikirimkan melalui cahaya, memastikan kecepatan yang Anda bayar adalah kecepatan yang Anda dapatkan, bahkan di jam sibuk sekalipun.
+                        </p>
+                        
+                        <div class="row g-4">
+                            <div class="col-6 col-md-4">
+                                <div class="text-center">
+                                    <span class="block text-3xl font-bold text-purple-600">150+</span>
+                                    <span class="text-xs text-gray-500 font-semibold uppercase">Cluster Area</span>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <div class="text-center">
+                                    <span class="block text-3xl font-bold text-purple-600">24/7</span>
+                                    <span class="text-xs text-gray-500 font-semibold uppercase">Customer Care</span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <div class="text-center">
+                                    <span class="block text-3xl font-bold text-purple-600">0%</span>
+                                    <span class="text-xs text-gray-500 font-semibold uppercase">Tanpa FUP</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="about-icon-box">
+                                    <span class="about-icon" aria-hidden="true">🚀</span>
+                                    <h3 class="fw-bold mb-2 h5">Speed Maksimal</h3>
+                                    <p class="text-xs text-gray-500">Nikmati kecepatan hingga 1Gbps untuk download dan upload yang simetris.</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="about-icon-box">
+                                    <span class="about-icon" aria-hidden="true">🎮</span>
+                                    <h3 class="fw-bold mb-2 h5">Low Latency</h3>
+                                    <p class="text-xs text-gray-500">Optimasi khusus untuk gamer Sragen agar ping tetap hijau saat mabar.</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="about-icon-box">
+                                    <span class="about-icon" aria-hidden="true">💎</span>
+                                    <h3 class="fw-bold mb-2 h5">Kualitas Premium</h3>
+                                    <p class="text-xs text-gray-500">Hardware router terbaru (ONT) dengan jangkauan Wi-Fi lebih luas dan stabil.</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="about-icon-box">
+                                    <span class="about-icon" aria-hidden="true">🏷️</span>
+                                    <h3 class="fw-bold mb-2 h5">Harga Transparan</h3>
+                                    <p class="text-xs text-gray-500">Harga flat sesuai kontrak tanpa ada biaya tersembunyi atau kenaikan tiba-tiba.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                    <div class="mt-4 pt-4 border-t-2 border-slate-100">
-                        <button onclick="toggleSection('innerBonusContent', 'iconBonusDekade')" class="w-full text-center font-black text-indigo-900 text-xs uppercase mb-4 tracking-widest flex items-center justify-center gap-2 hover:bg-slate-50 p-2 rounded-lg transition-all">
-                            💰 SA PERBULAN & TRIWULAN <span id="iconBonusDekade">▼</span>
-                        </button>
-                        <div id="innerBonusContent" class="hidden">
-                            <div class="radio-grid">
-                                <div class="radio-item-chip"><input type="radio" name="quarter" id="q1" value="q1"><label for="q1">Q1 (JAN-MAR)</label></div>
-                                <div class="radio-item-chip"><input type="radio" name="quarter" id="q2" value="q2"><label for="q2">Q2 (APR-JUN)</label></div>
-                                <div class="radio-item-chip"><input type="radio" name="quarter" id="q3" value="q3"><label for="q3">Q3 (JUL-SEP)</label></div>
-                                <div class="radio-item-chip"><input type="radio" name="quarter" id="q4" value="q4"><label for="q4">Q4 (OKT-DES)</label></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-3 mb-6">
-                                <button onclick="resetQuarterFilter()" class="bg-white border-2 border-slate-200 py-3 rounded-xl font-black text-[10px] uppercase">Reset</button>
-                                <button onclick="hitungBonusDekade()" class="bg-indigo-600 text-white py-3 rounded-xl font-black text-[10px] uppercase shadow-md">Hitung Bonus</button>
-                            </div>
+        <section class="py-16 bg-white border-t border-gray-100">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-5">
+                        <div class="ps-lg-4">
+                            <span class="text-purple-600 font-bold uppercase tracking-widest text-xs mb-2 block">Lokasi Layanan</span>
+                            <h2 class="display-6 fw-bold mb-4" style="color: var(--mr-purple);">Peta Cakupan Fiber Sragen</h2>
+                            <p class="text-gray-600 mb-5">Klik pada area berwarna biru untuk melihat detail cakupan fiber optic kami. Area yang ditandai adalah wilayah yang sudah tersedia jaringan MyRepublic.</p>
                             
-                            <div id="hasilBonusDekade" class="hidden">
-                                <div class="stats-group bg-indigo-50 border-indigo-100 mb-4 p-3">
-                                    <h4 class="text-center font-black text-indigo-900 text-[9px] uppercase mb-2 tracking-widest">TOTAL SA 3 BLN DAN BONUS FINAL</h4>
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div class="text-center">
-                                            <p class="text-slate-500 font-bold uppercase text-[8px] mb-1">Total SA 3 Bln</p>
-                                            <p id="dk-total-sa" class="text-lg font-black text-indigo-900">0</p>
-                                        </div>
-                                        <div class="text-center border-l border-indigo-200">
-                                            <p class="text-green-600 font-bold uppercase text-[8px] mb-1">Sisa Bonus Final</p>
-                                            <p id="dk-total-rp" class="text-lg font-black text-green-600">Rp0</p>
-                                        </div>
+                            <div class="space-y-6">
+                                <div class="flex items-start">
+                                    <div class="bg-purple-100 p-3 rounded-2xl mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="fw-bold mb-1 h6">Kantor Layanan</h3>
+                                        <p class="text-sm text-gray-500">Jl. Raya Sukowati No. 120, Sragen Tengah.</p>
                                     </div>
                                 </div>
-
-                                <div class="mb-6">
-                                    <h4 class="text-center font-black text-indigo-900 text-[10px] uppercase mb-2 tracking-widest">📊 RINCIAN SA & BONUS BULANAN</h4>
-                                    <div class="overflow-hidden rounded-xl border-2 border-slate-200 shadow-sm">
-                                        <table class="w-full bg-white">
-                                            <thead class="rincian-bonus-header">
-                                                <tr>
-                                                    <th class="border">BULAN</th>
-                                                    <th class="border">SA</th>
-                                                    <th class="border">INSENTIF</th>
-                                                    <th class="border">EST (100%)</th>
-                                                    <th class="border">ADV (50%)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="dk-monthly-bonus-body" class="font-bold text-slate-700"></tbody>
-                                        </table>
+                                <div class="flex items-start">
+                                    <div class="bg-purple-100 p-3 rounded-2xl mr-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="fw-bold mb-1 h6">Status Area</h3>
+                                        <p class="text-sm text-gray-500">Biru = Tercover Fiber Optic<br>Merah = Area Maintenance</p>
                                     </div>
                                 </div>
-
-                                <div class="overflow-hidden rounded-xl border-2 border-indigo-50 mb-6">
-                                    <table>
-                                        <thead class="kategori-bonus-header">
-                                            <tr>
-                                                <th class="border">KATEGORI</th>
-                                                <th class="border">TOTAL SA</th>
-                                                <th class="border">BONUS PER ID (@)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="dk-table-body" class="bg-white"></tbody>
-                                    </table>
-                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="mt-4 pt-4 border-t-2 border-slate-100">
-                        <button onclick="toggleSection('innerGradeContent', 'iconGrade');" class="w-full text-center font-black text-indigo-900 text-xs uppercase mb-4 tracking-widest flex items-center justify-center gap-2 hover:bg-slate-50 p-2 rounded-lg transition-all">
-                            🏆 NILAI & HISTORY <span id="iconGrade">▼</span>
-                        </button>
-                        <div id="innerGradeContent" class="hidden">
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div class="bg-slate-100 p-4 rounded-2xl text-center border-2 border-slate-200">
-                                    <p class="text-[10px] font-black text-slate-500 uppercase">Grade Bulan Ini</p>
-                                    <div id="grade-container" class="mt-1"><span class="grade-badge grade-U">---</span></div>
-                                </div>
-                                <div class="bg-blue-50 p-4 rounded-2xl text-center border-2 border-blue-100">
-                                    <p class="text-[10px] font-black text-indigo-600 uppercase">D vz D</p>
-                                    <p id="dvzd-status" class="text-lg font-black text-indigo-700">0 vs 0</p>
-                                    <p class="text-[8px] font-bold text-indigo-400 uppercase mt-1">Apple to Apple</p>
-                                </div>
+                    <div class="col-lg-7">
+                        <div class="address-card">
+                            <div class="map-container">
+                                <div id="map-coverage" role="application" aria-label="Peta Cakupan Internet MyRepublic Sragen"></div>
                             </div>
-                            <div class="border-t-2 border-dashed border-slate-200 pt-6">
-                                <h4 class="text-center font-black text-slate-500 text-[10px] uppercase mb-4 tracking-widest">📜 Catatan History Performa Bulanan</h4>
-                                <div class="history-table-container overflow-x-auto">
-                                    <table class="history-table w-full">
-                                        <thead>
-                                            <tr class="bg-slate-100">
-                                                <th style="color:black !important">BULAN/TAHUN</th>
-                                                <th style="color:black !important">TOTAL SA</th>
-                                                <th style="color:black !important">MOB</th>
-                                                <th style="color:black !important">GRADE</th>
-                                                <th style="color:black !important">KETERANGAN</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="historyTableBody" class="bg-white">
-                                            <tr><td colspan="5" class="py-4 text-slate-400 italic text-[10px]">Klik Sinkronisasi untuk menghitung history...</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div class="p-4 bg-purple-900 text-white text-center">
+                                <p class="text-[10px] mb-2 opacity-80">Gunakan GPS di atas untuk cek otomatis di posisi Anda</p>
+                                <button id="btn-cek-lokasi-map" onclick="handleAutoGpsSearch()" class="text-sm font-bold flex items-center justify-center w-full bg-yellow-500 py-2 rounded-lg text-purple-900 shadow-lg transition-all active:scale-95">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    </svg>
+                                    <span id="btn-cek-lokasi-map-text">Cek Cover Area</span>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <div id="sectionCari" class="w-full hidden">
-                <button onclick="openLeadsModal()" class="w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white font-black py-4 rounded-2xl uppercase text-xs transition-all shadow-lg active:scale-95 mb-6 flex items-center justify-center gap-2">
-                    🔥 INPUT DATA LEADS (JANJI TEMU)
-                </button>
-
-                <div class="grid grid-cols-4 gap-2 mb-4">
-                    <div class="bg-orange-500 text-white rounded-2xl p-3 flex flex-col justify-center items-center shadow-lg">
-                        <span class="font-bold uppercase text-[7px] text-orange-100">Progress</span>
-                        <span id="totalProgressCount" class="text-xl font-black">0</span>
-                    </div>
-                    <div class="bg-amber-500 text-white rounded-2xl p-3 flex flex-col justify-center items-center shadow-lg">
-                        <span class="font-bold uppercase text-[7px] text-amber-100">Pending</span>
-                        <span id="totalPendingCount" class="text-xl font-black">0</span>
-                    </div>
-                    <div class="bg-red-600 text-white rounded-2xl p-3 flex flex-col justify-center items-center shadow-lg">
-                        <span class="font-bold uppercase text-[7px] text-red-100">Fast</span>
-                        <span id="totalFastCount" class="text-xl font-black">0</span>
-                    </div>
-                    <button onclick="cariData('leads', this)" class="bg-pink-600 text-white rounded-2xl p-3 flex flex-col justify-center items-center shadow-lg active:scale-95">
-                        <span class="font-bold uppercase text-[7px] text-pink-100">Leads Data</span>
-                        <span id="totalLeadsCount" class="text-xl font-black">0</span>
-                    </button>
-                </div>
-                <div class="glass-card p-6 mb-6">
-                    <input type="text" id="userInput" placeholder="Nama, ID, atau Alamat..." class="input-field mb-3" oninput="cariDataRealTime()">
-                    <input type="text" id="dateInput" inputmode="numeric" pattern="[0-9]*" placeholder="Filter Tanggal (1-31)" class="input-field mb-3" oninput="cariDataRealTime()">
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="cariData('progress', this)" class="bg-orange-600 text-white font-black py-4 rounded-xl uppercase text-[10px] transition-all active:scale-95">Progress</button>
-                        <button onclick="cariData('pending', this)" class="bg-amber-600 text-white font-black py-4 rounded-xl uppercase text-[10px] transition-all active:scale-95">Pending</button>
-                        <button onclick="cariData('fast', this)" class="bg-red-600 text-white font-black py-4 rounded-xl uppercase text-[10px] transition-all active:scale-95">Fast</button>
-                    </div>
-                    <div id="searchInfo" class="mt-4 hidden text-center">
-                        <span class="bg-indigo-100 text-indigo-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase">Ditemukan: <span id="searchResultCount">0</span> Pelanggan</span>
-                    </div>
-                </div>
-                <div id="resultsList" class="space-y-4 flex flex-col"></div>
-            </div>
-
-            <div id="sectionInput" class="w-full glass-card p-6 hidden">
-                <h2 class="text-2xl font-black text-center text-indigo-900 uppercase mb-4">Input Pelanggan</h2>
-                
-                <form id="rekapanForm" class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
-                    <div class="relative">
-                        <label class="absolute left-4 top-1 text-[9px] font-black text-black uppercase z-10">⌨️ Keterangan</label>
-                        <input type="text" name="command" id="inputManual" placeholder="CONTOH: PROMO" class="input-field pt-6 force-caps">
-                    </div>
-                    <div class="relative"><label class="absolute left-4 top-1 text-[9px] font-black text-black uppercase z-10">📅 Tanggal</label><input type="date" name="tanggal" id="inputTanggal" class="input-field pt-6" required></div>
-                    <input type="text" name="nama" placeholder="NAMA PELANGGAN" class="input-field force-caps" required>
-                    <input type="number" name="id_cst" placeholder="ID CST (DARI BILLING)" class="input-field" required>
-                    <input type="email" name="email" placeholder="email@gmail.com" class="input-field" required>
-                    <input type="tel" name="hp" id="inputHp" placeholder="NO HP (+628XXX)" class="input-field" required>
-                    <select name="paket" id="selectPaket" class="input-field md:col-span-2" required>
-                        <option value="">-- PAKET LAYANAN --</option>
-                        <option value="10Ring">10Ring</option>
-                        <option value="Eco15">Eco15</option>
-                        <option value="Eco20">Eco20</option>
-                        <option value="Jet20">Jet20</option>
-                        <option value="30ValueLite">30ValueLite</option>
-                        <option value="Neo100">Neo100</option>
-                        <option value="Value30">Value30</option>
-                        <option value="Fast50">Fast50</option>
-                        <option value="Velo150">Velo150</option>
-                        <option value="Nova100">Nova100</option>
-                        <option value="Nexus300">Nexus300</option>
-                        <option value="Gamer250">Gamer250</option>
-                        <option value="Prime500">Prime500</option>
-                        <option value="Gamer500">Gamer500</option>
-                        <option value="Wonder750">Wonder750</option>
-                        <option value="Gamer750">Gamer750</option>
-                        <option value="Ultra1Gbps">Ultra1Gbps</option>
-                        <option value="Gamer1Gbps">Gamer1Gbps</option>
-                    </select>
-                    <textarea name="alamat" placeholder="ALAMAT LENGKAP INSTALASI" rows="2" class="input-field md:col-span-2 force-caps" required></textarea>
-                    
-                    <div class="md:col-span-2 grid grid-cols-2 gap-4">
-                        <div class="flex items-center p-4 bg-indigo-50 rounded-xl border-2 border-indigo-100">
-                            <input type="checkbox" id="onProgress" name="command_billing_check" value="on progress" class="w-6 h-6 accent-indigo-600" onclick="toggleCheckbox('pending', this)">
-                            <label for="onProgress" class="ml-3 font-bold text-indigo-900 uppercase text-xs">On Progress</label>
-                        </div>
-                        <div class="flex items-center p-4 bg-amber-50 rounded-xl border-2 border-amber-100">
-                            <input type="checkbox" id="pending" name="command_billing_check" value="pending" class="w-6 h-6 accent-amber-600" onclick="toggleCheckbox('onProgress', this)">
-                            <label for="pending" class="ml-3 font-bold text-amber-900 uppercase text-xs">Pending</label>
-                        </div>
-                    </div>
-                    <button type="submit" id="btnKirim" class="md:col-span-2 bg-indigo-600 text-white font-black py-4 rounded-xl shadow-lg uppercase hover:bg-indigo-700 transition-all">Simpan Data</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="bottom-nav">
-            <button onclick="switchTab('tabel')" id="tabTabel" class="tab-btn tab-active">
-                <span class="tab-icon text-xl">📊</span>
-                <span>TABEL</span>
-            </button>
-            <button onclick="switchTab('cari')" id="tabCari" class="tab-btn">
-                <span class="tab-icon text-xl">🔍</span>
-                <span>CARI</span>
-            </button>
-            <button onclick="switchTab('input')" id="tabInput" class="tab-btn">
-                <span class="tab-icon text-xl">📝</span>
-                <span>INPUT</span>
-            </button>
-        </div>
-    </div>
-
-    <div id="customModal">
-        <div class="modal-box shadow-2xl">
-            <div id="modalHeader" class="p-4 text-center">
-                <h3 id="modalTitle" class="text-white font-black tracking-widest uppercase text-sm"></h3>
-            </div>
-            <div id="modalContainer" class="p-6 text-center">
-                <div id="modalBody" class="text-slate-700 font-bold space-y-1 mb-6 text-sm uppercase"></div>
-                <p id="modalSubtext" class="text-[10px] text-slate-400 font-black mb-4 uppercase"></p>
-                <div class="grid grid-cols-2 gap-3" id="modalButtons"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="leadsModal" class="fixed inset-0 z-[10001] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-[400px] rounded-[32px] overflow-hidden shadow-2xl">
-            <div class="bg-gradient-to-r from-pink-600 to-purple-600 p-6 text-center">
-                <h3 class="text-white font-black uppercase tracking-widest">Input Data Leads</h3>
-                <p class="text-pink-100 text-[10px] font-bold">Janji Temu Calon Pelanggan</p>
-            </div>
-            <form id="leadsForm" class="p-6 space-y-4">
-                <div class="leads-input-group">
-                    <label class="leads-label">👤 Nama Lengkap (A1)</label>
-                    <input type="text" name="nama_leads" placeholder="NAMA CALON" class="input-field force-caps" required>
+        <section class="py-16 bg-gray-50 border-t border-b border-gray-100">
+            <div class="container">
+                <div class="text-center mb-12">
+                    <h2 class="fw-bold h3" style="color: #6c2d91;">Apa Kata Warga Sragen?</h2>
+                    <div class="h-1 w-16 bg-warning mx-auto mt-2"></div>
+                    <p class="text-gray-500 text-sm mt-3">Telah dipercaya oleh ribuan pelanggan di Sukowati</p>
                 </div>
                 
-                <div class="leads-input-group">
-                    <label class="leads-label">📅 Tanggal Kunjungan (B1 - Otomatis)</label>
-                    <input type="date" id="leads_tgl_kunjungan_input" name="tgl_kunjungan" class="input-field bg-slate-50" readonly required>
+                <div class="row g-4" id="review-container">
                 </div>
-
-                <div class="leads-input-group">
-                    <label class="leads-label">📅 Tanggal Janji Temu (C1)</label>
-                    <input type="date" name="tgl_janji_temu" class="input-field" required>
-                </div>
-
-                <div class="leads-input-group">
-                    <label class="leads-label">📞 Nomor WhatsApp (F1)</label>
-                    <input type="tel" name="wa_leads" placeholder="08XXXXXXXXXX" class="input-field" required>
-                </div>
-
-                <div class="leads-input-group">
-                    <label class="leads-label">📍 Titik Koordinat & Alamat (E1 & D1)</label>
-                    <div class="flex gap-2 mb-2">
-                        <input type="text" id="leads_koordinat" name="koordinat" placeholder="GMAPS TIKOR (LAT, LONG)" class="input-field text-[11px]" readonly>
-                        <button type="button" onclick="getLeadsLocation(event)" class="bg-indigo-600 text-white px-4 rounded-xl text-[10px] font-black">AMBIL TIKOR</button>
-                    </div>
-                    <textarea name="alamat_leads" id="leads_alamat" placeholder="ALAMAT EKSTRAK OTOMATIS" rows="3" class="input-field text-[11px] force-caps"></textarea>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 mt-6">
-                    <button type="button" onclick="closeLeadsModal()" class="bg-slate-100 text-slate-500 py-4 rounded-2xl font-black text-xs uppercase">Batal</button>
-                    <button type="submit" id="btnSimpanLeads" class="bg-indigo-600 text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg">Simpan Leads</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div id="undoToast" class="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4">
-        <span class="text-sm font-bold">Data disembunyikan</span>
-        <button onclick="undoBilling()" class="bg-yellow-500 text-black px-3 py-1 rounded-lg font-black text-xs uppercase">Undo</button>
-    </div>
-
-    <div id="lockScreen" class="fixed inset-0 z-[10002] bg-indigo-950 flex flex-col items-center justify-center p-6 transition-all duration-500">
-        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-[380px] text-center">
-            <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span class="text-4xl">🔒</span>
             </div>
-            <h2 class="text-2xl font-black text-indigo-900 mb-2">SISTEM TERKUNCI</h2>
-            <p class="text-slate-500 text-sm mb-6 font-semibold">Masukkan 4 Digit PIN</p>
-            <input type="password" id="pinInput" maxlength="4" readonly class="w-full text-center text-3xl tracking-[1em] font-black border-2 border-indigo-200 rounded-xl py-3 outline-none mb-4">
-            <div class="grid grid-cols-3 gap-3">
-                <button onclick="pressPin('1')" class="bg-slate-100 py-4 rounded-xl font-bold">1</button>
-                <button onclick="pressPin('2')" class="bg-slate-100 py-4 rounded-xl font-bold">2</button>
-                <button onclick="pressPin('3')" class="bg-slate-100 py-4 rounded-xl font-bold">3</button>
-                <button onclick="pressPin('4')" class="bg-slate-100 py-4 rounded-xl font-bold">4</button>
-                <button onclick="pressPin('5')" class="bg-slate-100 py-4 rounded-xl font-bold">5</button>
-                <button onclick="pressPin('6')" class="bg-slate-100 py-4 rounded-xl font-bold">6</button>
-                <button onclick="pressPin('7')" class="bg-slate-100 py-4 rounded-xl font-bold">7</button>
-                <button onclick="pressPin('8')" class="bg-slate-100 py-4 rounded-xl font-bold">8</button>
-                <button onclick="pressPin('9')" class="bg-slate-100 py-4 rounded-xl font-bold">9</button>
-                <button onclick="clearPin()" class="bg-red-50 text-red-600 py-4 rounded-xl font-bold">C</button>
-                <button onclick="pressPin('0')" class="bg-slate-100 py-4 rounded-xl font-bold">0</button>
-                <button onclick="checkPin()" id="btnEnter" class="bg-indigo-600 text-white py-4 rounded-xl font-bold">OK</button>
-            </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <div class="mr-template-wrapper">
-        <div id="canvasTemplate" style="width: 600px; height: 500px; position: relative; font-family: 'Segoe UI', Arial, sans-serif; background: #fff; background-image: url('card.png'); background-size: cover; background-position: center; box-sizing: border-box; color: #000000; border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 40px 40px 20px 60px;">
-            <div style="margin-bottom: 15px; width: 100%;">
-                <p id="c-nama" style="font-size: 26px; font-weight: 900; margin: 0; text-transform: uppercase;">-</p>
-                <div style="height: 4px; width: 60px; background: linear-gradient(to right, #fa9949, #7332da); margin-top: 6px;"></div>
-            </div>
-            <div style="display: inline-flex; flex-direction: column; gap: 10px; width: 480px;">
-                <div style="background: rgba(248, 250, 252, 0.92); padding: 18px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.6);">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div>
-                            <p style="font-size: 9px; font-weight: 800; color: #116b1a; margin: 0;">ID PEMBAYARAN</p>
-                            <p id="c-id-bayar" style="font-size: 16px; font-weight: 900; margin: 2px 0 0 0;">-</p>
-                            <p style="font-size: 9px; font-weight: 800; color: #7332da; margin: 10px 0 0 0;">NOMOR HP</p>
-                            <p id="c-hp" style="font-size: 14px; font-700; margin: 2px 0 0 0;">-</p>
-                        </div>
-                        <div style="border-left: 1px solid rgba(0,0,0,0.08); padding-left: 20px;">
-                            <p style="font-size: 9px; font-weight: 800; color: #116b1a; margin: 0;">PAKET</p>
-                            <p id="c-paket" style="font-size: 14px; font-700; margin: 2px 0 0 0;">-</p>
-                            <p style="font-size: 9px; font-weight: 800; color: #7332da; margin: 10px 0 0 0;">EMAIL</p>
-                            <p id="c-email" style="font-size: 11px; font-weight: 700; margin: 2px 0 0 0; word-break: break-all;">-</p>
-                        </div>
+    <footer role="contentinfo">
+        <div class="container">
+            <div class="row g-4 text-xs md:text-sm">
+                <div class="col-lg-5">
+                    <h2 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Tentang Kami</h2>
+                    <div class="text-gray-400 mt-3 mb-4 space-y-3">
+                        <p><strong>MyRepublic Sragen</strong> merupakan ISP terkemuka yang hadir untuk menjawab kebutuhan konektivitas tinggi bagi masyarakat Sragen dengan teknologi <strong>Full Fiber Optic</strong> murni.</p>
+                        <p>Tanpa FUP (Fair Usage Policy), Anda bebas melakukan streaming 4K dan gaming tanpa batas.</p>
                     </div>
                 </div>
-                <div style="background: rgba(255, 241, 242, 0.94); padding: 12px 18px; border-radius: 12px;">
-                    <p style="font-size: 9px; font-weight: 800; color: #fa9949; margin: 0;">ALAMAT INSTALASI</p>
-                    <p id="c-alamat" style="font-size: 11px; font-weight: 700; margin: 4px 0 0 0;">-</p>
+                <div class="col-lg-3">
+                    <h2 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Kenapa MyRepublic?</h2>
+                    <ul class="list-unstyled text-gray-400 mt-3 space-y-2">
+                        <li>🚀 Speed Simetris 1:1</li>
+                        <li>🎮 Optimasi Latency Gaming</li>
+                        <li>🎬 Streaming Lancar Jaya</li>
+                        <li>💰 Harga Flat Selamanya</li>
+                        <li>🛠️ CS Responsif via Chat</li>
+                    </ul>
+                </div>
+                <div class="col-lg-4">
+                    <h2 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Kontak Sragen</h2>
+                    <ul class="list-unstyled text-gray-400 mt-3">
+                        <li class="mb-2">📍 <strong>Area Layanan:</strong> Cakupan merata di pusat kota Sragen, Karangmalang, Sidoharjo, Ngrampal, dan sekitarnya.</li>
+                        <li class="mb-2">💬 <strong>Konsultasi:</strong> Gunakan tombol chat di pojok kanan bawah.</li>
+                    </ul>
                 </div>
             </div>
-            <div style="width: 480px; display: flex; justify-content: center; gap: 30px; margin-top: 18px;">
-                <p style="font-size: 10px; font-weight: 800;">AKTIVASI: <span id="c-tgl">-</span></p>
-                <p style="font-size: 10px; font-weight: 800;">JATUH TEMPO: TGL <span id="c-japo">-</span></p>
+            <hr class="mt-5 mb-4 border-gray-700">
+            <div class="text-center text-gray-500 text-[10px]">
+                © 2026 MyRepublic Sragen. All Rights Reserved. Internet Cepat, Harga Sahabat.
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="modalDaftar" tabindex="-1" aria-labelledby="modalDaftarLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-2xl">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold text-sm" id="modalDaftarLabel">Form Registrasi Cepat</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 relative" id="registration-body">
+                    <div id="reg-success-note" class="p-3 rounded-lg text-xs font-bold mb-4 text-center">
+                        ✅ Pendaftaran Berhasil! <br> Mohon tunggu Tim MyRepublic menghubungi anda.
+                    </div>
+
+                    <div id="reg-form-fields">
+                        <div class="mb-3 text-sm">
+                            <label for="reg-nama" class="form-label fw-semibold">Nama Lengkap</label>
+                            <input type="text" id="reg-nama" class="form-control rounded-pill text-sm" placeholder="Nama sesuai KTP">
+                        </div>
+                        <div class="mb-3 text-sm">
+                            <label for="reg-wa" class="form-label fw-semibold">Nomor WhatsApp</label>
+                            <input type="number" id="reg-wa" class="form-control rounded-pill text-sm" placeholder="08xxxxxxxxxx">
+                        </div>
+                        <div class="mb-3 text-sm">
+                            <label for="reg-paket" class="form-label fw-semibold">Paket yang Dipilih</label>
+                            <input type="text" id="reg-paket" class="form-control bg-light rounded-pill fw-bold text-sm" readonly>
+                        </div>
+                        <div class="mb-3 text-sm">
+                            <label for="reg-alamat" class="form-label fw-semibold">Alamat Pemasangan</label>
+                            <textarea id="reg-alamat" class="form-control text-sm" rows="3" placeholder="Contoh: Jl. Raya Sukowati No. 1..."></textarea>
+                        </div>
+                        <button onclick="submitRegistrationToBot()" id="btn-submit-reg" class="btn btn-primary p-2 mt-2 shadow-lg text-sm w-100">Kirim Data Pendaftaran</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-<script>
-    // --- KONFIGURASI ---
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxaFPk1TMavtSyyc0ukNzXOlYdwiAFxAFEdTjRzfSBauePi8KqLdu0ZtYJeGl_1Ib3-/exec'; 
-    const TGL_JOIN = new Date('2025-07-25'); 
+    <button id="chat-toggle-btn" onclick="toggleChat()" class="fixed bottom-6 right-6 bg-purple-600 p-4 rounded-full shadow-2xl z-[9999] hover:scale-110 transition-transform" style="background-color: #6c2d91;" aria-label="Buka Chat Bantuan">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+    </button>
 
-    let lastDeletedId = null;
-    let hiddenBillingIds = JSON.parse(localStorage.getItem('hiddenBillingIds')) || [];
-    let currentTotalSA = 0; 
-    let fullRawData = JSON.parse(localStorage.getItem('fullRawData')) || []; 
-    let leadsData = [];
+    <div id="chat-widget" class="chat-container">
+        <div id="chat-blocked-overlay" class="blocked-overlay">
+            <span class="text-4xl mb-2" aria-hidden="true">⏳</span>
+            <h3 class="font-bold text-purple-900 text-sm">Pesan Belum Dibalas</h3>
+            <p class="text-[10px] text-gray-500 px-4">Tunggu admin membalas pesan Anda sebelumnya (Maks. 5 pesan tanpa balasan).</p>
+            <button onclick="toggleChat()" class="mt-4 text-xs underline text-purple-600">Tutup</button>
+        </div>
 
-    const SKEMA_DEKADE = {
-        'RingEco': { prices: { '45': 25000, '60': 30000, '75': 35000 } },
-        'Jet': { prices: { '45': 80000, '60': 95000, '75': 110000 } },
-        'ValueLite': { prices: { '45': 90000, '60': 105000, '75': 120000 } },
-        'ValueUp': { prices: { '45': 145000, '60': 165000, '75': 185000 } }
-    };
+        <div id="chat-form-overlay">
+            <button onclick="toggleChat()" class="absolute top-4 left-4 text-purple-600 hover:text-purple-800 transition-colors" aria-label="Kembali">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
 
-    // --- FUNGSI DASAR SISTEM ---
-    function cleanId(idStr) {
-        return String(idStr || "").replace(/\s*S\s*$/i, "").trim();
-    }
+            <div class="text-center mb-6">
+                <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><span class="text-xl" aria-hidden="true">👋</span></div>
+                <h3 class="font-bold text-purple-900 text-sm">Konsultasi Gratis</h3>
+                <p class="text-[10px] text-gray-500">Mulai berbicara dengan Admin Sragen</p>
+            </div>
+            <div class="space-y-3 pb-20">
+                <input type="text" id="chat-reg-nama" placeholder="Nama Lengkap" class="w-full border p-2 rounded-xl text-xs outline-none" aria-label="Nama Lengkap">
+                <input type="email" id="chat-reg-email" placeholder="Alamat Email" class="w-full border p-2 rounded-xl text-xs outline-none" aria-label="Alamat Email">
+                <input type="number" id="chat-reg-wa" placeholder="No WhatsApp" class="w-full border p-2 rounded-xl text-xs outline-none" aria-label="Nomor WhatsApp">
+                <button id="btn-start-chat" onclick="submitChatForm()" class="w-full bg-[#6c2d91] text-white font-bold py-3 rounded-xl text-xs shadow-lg">Mulai Chat Sekarang</button>
+            </div>
+        </div>
 
-    function isAuditOFF(item) {
-        const cmd = String(item.command || "").toUpperCase();
-        const idRaw = String(item.idCst || "").toLowerCase();
-        return idRaw.includes('off') || cmd.includes('OFF');
-    }
+        <div class="chat-header">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold text-xs">MR</div>
+                <div>
+                    <h3 class="font-bold text-xs leading-none">Admin MyRepublic Sragen</h3>
+                    <p class="text-[9px] opacity-80 mt-1">● Online</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-1">
+                <button onclick="toggleChat()" class="hover:bg-white/10 p-2 rounded-full" aria-label="Minimize Chat"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg></button>
+                <button onclick="clearChatSessionPrompt()" class="hover:bg-white/10 p-2 rounded-full" aria-label="Tutup Sesi Chat"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+            </div>
+        </div>
 
-    function formatWaMeLink(num) {
-        let clean = num.toString().replace(/\D/g, "");
-        if (clean.startsWith("0")) clean = "62" + clean.slice(1);
-        else if (clean.startsWith("8")) clean = "62" + clean;
-        else if (!clean.startsWith("62")) clean = "62" + clean;
-        return clean;
-    }
+        <div id="chat-content"></div>
 
-    function loadOfflineData() {
-        const cachedSummary = localStorage.getItem('tableSummary');
-        const rawData = localStorage.getItem('fullRawData');
-        
-        const bnFull = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
-        const nowHeader = new Date();
-        document.getElementById('currentDateDisplay').innerText = `${bnFull[nowHeader.getMonth()]} ${nowHeader.getFullYear()}`;
+        <div class="chat-input-area" id="input-container-chat">
+            <input type="text" id="user-input" placeholder="Tulis pesan..." onkeypress="if(event.key === 'Enter') sendMessage()" aria-label="Ketik pesan anda">
+            <button id="send-msg-btn" onclick="sendMessage()" class="bg-[#6c2d91] text-white p-2 rounded-full shadow-md" aria-label="Kirim Pesan">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-90" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
+            </button>
+        </div>
+        <div id="reset-session-area" class="hidden p-2 text-center">
+            <button onclick="clearChatSession()" class="text-[9px] text-gray-400 underline italic">Mulai percakapan baru</button>
+        </div>
+    </div>
 
-        if (rawData) {
-            fullRawData = JSON.parse(rawData);
-            const now = new Date(); 
-            let lm = now.getMonth() - 1; 
-            let ty = now.getFullYear(); 
-            if(lm < 0) { lm = 11; ty--; }
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // CONFIGURATION
+        const BOT_TOKEN = '8330506170:AAGibEbDqetkYsw5zzY1YS03--jbCnV5iww'; 
+        const CHAT_ID = '836686436';
+        const STORAGE_KEY = 'chat_history_sragen';
+        const USER_DATA_KEY = 'user_registered_chat';
+        const SESSION_STATUS_KEY = 'chat_session_active';
+        const LAST_UPDATE_KEY = 'last_update_id_sragen';
+        const UNREPLIED_COUNT_KEY = 'unreplied_msg_count';
+        const COORDS_CACHE_KEY = 'user_location_coords';
+        const COVERAGE_STORAGE_KEY = 'sragen_coverage_cache';
+        const SESSION_ID_KEY = 'mr_sragen_sid';
+        const REG_SUCCESS_KEY = 'is_registered_success';
 
-            let totalSA_filtered = 0;
-            let countLM = 0;
-            let countBillingToday = 0;
-            const todayDay = now.getDate();
+        // GOOGLE SHEETS SETTINGS
+        const URL_SHEET1_PROMO = "https://docs.google.com/spreadsheets/d/e/2PACX-1vStVKNVl4FfeX193YQRDEFGE32rSDirwTdTY-unjHs5OseIiBROW0KKaMRtVTmMhQg0bnqmo3gaAejO/pub?gid=0&single=true&output=csv";
+        const URL_SHEET2_HARGA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vStVKNVl4FfeX193YQRDEFGE32rSDirwTdTY-unjHs5OseIiBROW0KKaMRtVTmMhQg0bnqmo3gaAejO/pub?gid=500363833&single=true&output=csv";
 
-            fullRawData.forEach(item => {
-                const cmd = String(item.command || "").toLowerCase();
-                if(item.tanggal) {
-                    const sep = item.tanggal.includes('/') ? '/' : '-';
-                    const p = item.tanggal.split(sep);
-                    if(p.length >= 3) {
-                        const m = parseInt(p[1])-1; 
-                        const y = (sep === '/' ? parseInt(p[2]) : parseInt(p[0]));
-                        const dayPemasangan = (sep === '/' ? parseInt(p[0]) : parseInt(p[2]));
-                        if(!cmd.includes("pending") && !cmd.includes("progress")) {
-                            if(m === now.getMonth() && y === now.getFullYear()) totalSA_filtered++;
-                            if(m === lm && y === ty) countLM++;
-                            if(dayPemasangan === todayDay) countBillingToday++;
+        let lastUpdateId = parseInt(localStorage.getItem(LAST_UPDATE_KEY)) || 0;
+        let isProcessingPolling = false;
+        let map; 
+
+        let globalReviews = [];
+        let currentlyDisplayedNames = [];
+
+        if(!localStorage.getItem(SESSION_ID_KEY)) {
+            localStorage.setItem(SESSION_ID_KEY, 'SID-' + Date.now());
+        }
+
+        function handleKeyboardShow() {
+            const chatWidget = document.getElementById('chat-widget');
+            const visualViewport = window.visualViewport;
+
+            if (visualViewport) {
+                const onResize = () => {
+                    if (chatWidget.style.display === 'flex') {
+                        const viewportHeight = visualViewport.height;
+                        const windowHeight = window.innerHeight;
+                        
+                        // Deteksi keyboard muncul (viewport mengecil lebih dari 20%)
+                        if (viewportHeight < windowHeight * 0.8) {
+                            chatWidget.style.height = `${viewportHeight}px`;
+                            chatWidget.style.bottom = `${windowHeight - viewportHeight}px`;
+                            setTimeout(scrollBottom, 100);
+                        } else {
+                            // Reset ke posisi normal
+                            if (window.innerWidth >= 640) {
+                                chatWidget.style.height = '550px';
+                                chatWidget.style.bottom = '25px';
+                            } else {
+                                chatWidget.style.height = '80vh';
+                                chatWidget.style.bottom = '0';
+                            }
                         }
                     }
-                }
-            });
-
-            currentTotalSA = totalSA_filtered;
-            const summaryObj = cachedSummary ? JSON.parse(cachedSummary) : {};
-            summaryObj.totalSA = totalSA_filtered;
-            summaryObj.pointKurang = countLM;
-
-            renderRekapUI(summaryObj);
-            updateStatsCounts();
-            generateHistoryFromData(fullRawData);
-            triggerGradeCalc();
-
-            document.getElementById('displayBulan').innerText = "BULAN " + bnFull[now.getMonth()];
-            document.getElementById('label-kurang').innerText = "SA " + bnFull[lm];
-            
-            const notifBanner = document.getElementById('notifBilling');
-            if(countBillingToday > 0) {
-                notifBanner.style.display = 'flex';
-                document.getElementById('notifText').innerText = `Ada ${countBillingToday} Pelanggan masuk siklus tagihan hari ini!`;
-            } else { notifBanner.style.display = 'none'; }
-        } else if (cachedSummary) {
-            renderRekapUI(JSON.parse(cachedSummary));
-        }
-    }
-
-    function filterJatuhTempoHariIni() {
-        const today = new Date().getDate();
-        switchTab('cari');
-        document.getElementById('dateInput').value = today;
-        cariData('search');
-    }
-
-    function toggleCheckbox(otherId, current) {
-        if (current.checked) { document.getElementById(otherId).checked = false; }
-    }
-
-    function toggleSection(contentId, iconId) {
-        const content = document.getElementById(contentId);
-        const icon = document.getElementById(iconId);
-        if (content.classList.contains('hidden')) { content.classList.remove('hidden'); icon.innerText = '▲'; }
-        else { content.classList.add('hidden'); icon.innerText = '▼'; }
-    }
-
-    function triggerGradeCalc() {
-        const resGrade = hitungGradeDanHold(currentTotalSA, new Date());
-        document.getElementById('grade-container').innerHTML = `<span class="grade-badge grade-${resGrade.grade}">${resGrade.grade}</span>`;
-        hitungDvD();
-    }
-
-    function hitungDvD() {
-        if (!fullRawData || fullRawData.length === 0) return;
-        const skrg = new Date();
-        const tglHariIni = skrg.getDate();
-        const blnSkrg = skrg.getMonth();
-        const thnSkrg = skrg.getFullYear();
-        let blnLalu = blnSkrg - 1;
-        let thnLalu = thnSkrg;
-        if (blnLalu < 0) { blnLalu = 11; thnLalu--; }
-        let countBulanIni = 0;
-        let countBulanLalu = 0;
-        fullRawData.forEach(item => {
-            if (!item.tanggal || item.tanggal.trim() === "") return;
-            const cmd = String(item.command || "").toLowerCase();
-            if (cmd.includes("pending") || cmd.includes("progress")) return;
-            const sep = item.tanggal.includes('/') ? '/' : '-';
-            const p = item.tanggal.split(sep);
-            if (p.length < 3) return;
-            const d = parseInt(p[sep === '/' ? 0 : 2]);
-            const m = parseInt(p[1]) - 1;
-            const y = (sep === '/') ? parseInt(p[2]) : parseInt(p[0]);
-            if (d <= tglHariIni) {
-                if (m === blnSkrg && y === thnSkrg) countBulanIni++;
-                else if (m === blnLalu && y === thnLalu) countBulanLalu++;
+                };
+                visualViewport.addEventListener('resize', onResize);
             }
-        });
-        const el = document.getElementById('dvzd-status');
-        el.innerText = `${countBulanLalu} vs ${countBulanIni}`;
-        el.className = (countBulanIni >= countBulanLalu) ? "text-lg font-black text-green-600" : "text-lg font-black text-red-600";
-    }
 
-    function generateHistoryFromData(data) {
-        const tbody = document.getElementById('historyTableBody');
-        const historyMap = {};
-        data.forEach(item => {
-            if(!item.tanggal || item.tanggal.trim() === "") return;
-            const cmd = String(item.command || "").toLowerCase();
-            if(cmd.includes("pending") || cmd.includes("progress")) return; 
-            const sep = item.tanggal.includes('/') ? '/' : '-';
-            const p = item.tanggal.split(sep);
-            if(p.length < 3) return;
-            const m = parseInt(p[1]);
-            const y = (sep === '/' ? parseInt(p[2]) : parseInt(p[0]));
-            const key = `${y}-${m.toString().padStart(2, '0')}`;
-            if(!historyMap[key]) historyMap[key] = 0;
-            historyMap[key]++;
-        });
-        const sortedKeys = Object.keys(historyMap).sort().reverse();
-        const monthNames = ["", "JAN", "FEB", "MAR", "APR", "MEI", "JUN", "JUL", "AGU", "SEP", "OKT", "NOV", "DES"];
-        let html = "";
-        sortedKeys.forEach((key, index) => {
-            const [year, month] = key.split('-');
-            const totalSA = historyMap[key];
-            const lastDay = new Date(year, month, 0);
-            const res = hitungGradeDanHold(totalSA, lastDay);
-            let keterangan = "";
-            if (index < sortedKeys.length - 1) {
-                const prevMonthKey = sortedKeys[index + 1];
-                const prevSA = historyMap[prevMonthKey];
-                if (totalSA > prevSA) keterangan = `<span class="text-green-600">Meningkat (+${totalSA - prevSA}) 📈</span>`;
-                else if (totalSA < prevSA) keterangan = `<span class="text-red-500">Menurun (-${prevSA - totalSA}) 📉</span>`;
-                else keterangan = `<span class="text-indigo-600">Stabil (sama) ⚖️</span>`;
-            } else { keterangan = `<span class="text-slate-400">Bulan Awal ✨</span>`; }
-            html += `<tr class="border-b"><td class="text-[10px] font-black uppercase">${monthNames[parseInt(month)]} ${year}</td><td class="font-black text-indigo-900">${totalSA}</td><td class="text-[9px] font-bold text-slate-500">${res.mob}</td><td><span class="grade-badge grade-${res.grade}">${res.grade}</span></td><td class="text-center text-[9px] font-bold italic">${keterangan}</td></tr>`;
-        });
-        tbody.innerHTML = html || '<tr><td colspan="5" class="py-4 text-slate-400 italic text-[10px]">Klik Sinkronisasi untuk menghitung history...</td></tr>';
-    }
-
-    function hitungGradeDanHold(totalSA, targetDate) {
-        const diffDays = Math.ceil((targetDate - TGL_JOIN) / (1000 * 60 * 60 * 24));
-        let mob = (diffDays < 30) ? "MOB0" : (diffDays <= 59) ? "MOB1" : (diffDays <= 89) ? "MOB2" : (diffDays <= 119) ? "MOB3" : (diffDays <= 179) ? "MOB4-6" : (diffDays <= 269) ? "MOB7-9" : (diffDays <= 359) ? "MOB10-12" : "MOB>12";
-        let grade = "U";
-        if (mob === "MOB0") grade = "-";
-        else if (mob === "MOB1") { if (totalSA >= 5) grade = "A"; else if (totalSA == 4) grade = "B"; else if (totalSA == 3) grade = "C"; }
-        else if (mob === "MOB2") { if (totalSA >= 6) grade = "A"; else if (totalSA == 5) grade = "B"; else if (totalSA >= 3) grade = "C"; }
-        else if (mob === "MOB3") { if (totalSA >= 7) grade = "A"; else if (totalSA == 6) grade = "B"; else if (totalSA >= 4) grade = "C"; }
-        else if (mob === "MOB4-6") { if (totalSA >= 9) grade = "A"; else if (totalSA >= 7) grade = "B"; else if (totalSA >= 5) grade = "C"; }
-        else if (mob === "MOB7-9") { if (totalSA >= 10) grade = "A"; else if (totalSA >= 8) grade = "B"; else if (totalSA >= 5) grade = "C"; }
-        else if (mob === "MOB10-12") { if (totalSA >= 12) grade = "A"; else if (totalSA >= 9) grade = "B"; else if (totalSA >= 6) grade = "C"; }
-        else { if (totalSA >= 15) grade = "A"; else if (totalSA >= 12) grade = "B"; else if (totalSA >= 8) grade = "C"; }
-        return { grade, mob };
-    }
-
-    function openModal(config) {
-        const modal = document.getElementById('customModal');
-        document.getElementById('modalHeader').className = `p-4 text-center ${config.headerClass}`;
-        document.getElementById('modalTitle').innerText = config.title;
-        document.getElementById('modalBody').innerHTML = config.body;
-        document.getElementById('modalSubtext').innerText = config.subtext;
-        const btnBox = document.getElementById('modalButtons'); btnBox.innerHTML = '';
-        config.buttons.forEach(btn => {
-            const b = document.createElement('button'); b.innerText = btn.text; b.className = btn.class;
-            b.onclick = () => { btn.action(); closeModal(); }; btnBox.appendChild(b);
-        });
-        modal.style.display = 'flex';
-    }
-    function closeModal() { document.getElementById('customModal').style.display = 'none'; }
-
-    // --- FITUR LEADS REVISI ---
-    function openLeadsModal() { 
-        document.getElementById('leadsModal').style.display = 'flex'; 
-        // B1: Tanggal Kunjungan - Otomatis Hari Ini
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
-        const todayFormatted = `${year}-${month}-${day}`;
-        document.getElementById('leads_tgl_kunjungan_input').value = todayFormatted;
-        
-        // Simpan ke local storage sesuai permintaan sistem
-        localStorage.setItem('last_leads_visit_date', todayFormatted);
-    }
-
-    function closeLeadsModal() { document.getElementById('leadsModal').style.display = 'none'; }
-
-    async function getLeadsLocation(e) {
-        if ("geolocation" in navigator) {
-            const btn = e.target;
-            btn.innerText = "⏳...";
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                const lat = pos.coords.latitude;
-                const lon = pos.coords.longitude;
-                // E1: GMAPS TIKOR
-                document.getElementById('leads_koordinat').value = `${lat}, ${lon}`;
-                try {
-                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-                    const data = await response.json();
-                    if(data && data.display_name) {
-                        // D1: Alamat Ekstrak otomatis
-                        document.getElementById('leads_alamat').value = data.display_name.toUpperCase();
-                    }
-                } catch(e) { console.error("Geocode error", e); }
-                btn.innerText = "AMBIL TIKOR";
-            }, (err) => {
-                alert("Gagal mengambil lokasi. Pastikan GPS aktif.");
-                btn.innerText = "AMBIL TIKOR";
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    setTimeout(() => {
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                });
             });
-        } else { alert("Browser tidak mendukung lokasi."); }
-    }
-
-    document.getElementById('leadsForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('btnSimpanLeads');
-        btn.disabled = true; btn.innerText = "🚀 MENGIRIM...";
-        const formData = new FormData(e.target);
-        
-        // Kirim action ke AppScript
-        formData.append('action', 'submitLeads'); 
-        
-        try {
-            const r = await fetch(scriptURL, { method: 'POST', body: formData });
-            const res = await r.text();
-            if(res.trim() === "Success") {
-                alert("Data Leads Berhasil Disimpan!");
-                e.target.reset(); closeLeadsModal(); muatDataTabel();
-            } else { alert("Gagal Simpan: " + res); }
-        } catch(e) { alert("Error: " + e.message); }
-        finally { btn.disabled = false; btn.innerText = "Simpan Leads"; }
-    });
-
-    function renderLeadsCard(item) {
-        const cleanWA = getPureWaNumber(item.wa);
-        return `
-        <div id="leads-card-${item.row}" class="glass-card p-5 shadow-xl border-l-[12px] border-pink-500 mb-4 card-pink">
-            <div class="mb-3 flex justify-between items-start">
-                <div><h3 class="font-black text-pink-900 uppercase text-lg leading-tight">🔥 ${item.nama}</h3></div>
-                <span class="bg-pink-600 text-white px-2 py-0.5 rounded text-[10px] font-black">LEADS</span>
-            </div>
-            <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[11px] text-slate-600 bg-white/50 p-3 rounded-xl mb-3 border border-pink-100">
-                <p class="col-span-2">📅 Janji Temu: <b class="text-pink-700">${item.tgl_janji_temu || item.tanggal}</b></p>
-                <p class="col-span-2">📞 WhatsApp: <b>${item.wa}</b></p>
-                <p class="col-span-2">📍 Alamat: <b>${item.alamat}</b></p>
-                <p class="col-span-2">🌐 Tikor: <b class="text-blue-600 underline text-[9px]">${item.koordinat}</b></p>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="handleFinishLeads(${item.row}, '${item.nama}')" class="bg-indigo-600 text-white px-4 py-3 rounded-xl font-black uppercase text-[10px] shadow-sm flex-1">Selesai</button>
-                <button onclick="followUpLeads('${cleanWA}', '${item.nama}', '${item.tgl_janji_temu || item.tanggal}', '${item.alamat}')" class="flex-[2] bg-green-500 text-white font-black py-3 rounded-xl text-[10px] hover:bg-green-600 shadow-lg transition-all active:scale-95 uppercase">Follow Up Janji Temu</button>
-            </div>
-        </div>`;
-    }
-
-    function followUpLeads(wa, nama, tgl, alamat) {
-        const now = new Date(); const hour = now.getHours();
-        let salam = (hour < 11) ? "Selamat Pagi" : (hour < 15) ? "Selamat Siang" : (hour < 18) ? "Selamat Sore" : "Selamat Malam";
-        let text = `${salam} Bapak/Ibu *${nama}*,%0AKami dari *MyRepublic Indonesia* mengonfirmasi kembali terkait jadwal janji temu kunjungan pada tanggal *${tgl}* di alamat *${alamat}*.%0A%0AApakah jadwal tersebut sudah sesuai atau ada perubahan waktu? Kami siap membantu proses pendaftaran internet Anda agar lebih cepat aktif.%0A%0ATerima kasih!`;
-        window.open(`https://api.whatsapp.com/send?phone=${wa}&text=${text}`, '_blank');
-    }
-
-    function handleFinishLeads(row, nama) {
-        openModal({
-            title: '⚠️ KONFIRMASI SELESAI', headerClass: 'bg-indigo-600',
-            body: `<p>Data Leads <b>${nama}</b> akan dihapus permanen dari server.</p><p class="text-red-600">Lanjutkan?</p>`,
-            subtext: 'ROW: ' + row,
-            buttons: [
-                { text: 'BATAL', class: 'bg-slate-100 py-3 rounded-xl font-black text-xs', action: () => {} },
-                { text: 'YA, SELESAI', class: 'bg-indigo-600 text-white py-3 rounded-xl font-black text-xs', action: () => executeFinishLeads(row) }
-            ]
-        });
-    }
-
-    async function executeFinishLeads(row) {
-        const card = document.getElementById(`leads-card-${row}`);
-        if(card) card.classList.add('card-exit-anim');
-        try {
-            const r = await fetch(`${scriptURL}?action=deleteLeads&row=${row}`);
-            const res = await r.json();
-            if(res.status === "success") { 
-                setTimeout(() => { muatDataTabel(); }, 500);
-            } else { alert("Gagal hapus: " + res.message); if(card) card.classList.remove('card-exit-anim'); }
-        } catch(e) { alert("Error koneksi"); if(card) card.classList.remove('card-exit-anim'); }
-    }
-    // --- AKHIR FITUR LEADS ---
-
-    function formatBeautifulNumber(num) {
-        if (!num) return "-";
-        let clean = num.toString().replace("wa.me/+", "").replace(/\D/g, "");
-        if (clean.startsWith("62")) clean = "0" + clean.slice(2);
-        else if (!clean.startsWith("0")) clean = "0" + clean;
-        if (clean.length >= 11) { return clean.replace(/(\d{4})(\d{4})(\d{4,})/, '$1-$2-$3'); }
-        return clean;
-    }
-
-    function getPureWaNumber(num) {
-        let clean = num.toString().replace("wa.me/+", "").replace(/\D/g, "");
-        if (clean.startsWith("0")) clean = "62" + clean.slice(1);
-        else if (clean.startsWith("8")) clean = "62" + clean;
-        return clean;
-    }
-
-    function renderCard(item, mode) {
-        if (mode === 'fast' && hiddenBillingIds.includes(item.idCst)) return "";
-        const parts = item.tanggal.includes('/') ? item.tanggal.split('/') : item.tanggal.split('-');
-        if(parts.length < 3) return ""; 
-        const pasangDate = (parts[0].length === 4) ? new Date(parts[0], parts[1]-1, parts[2]) : new Date(parts[2], parts[1]-1, parts[0]);
-        const diffDays = Math.ceil(Math.abs(new Date() - pasangDate) / (1000 * 60 * 60 * 24));
-        let cardColor = (diffDays <= 10) ? "card-red border-red-200" : (diffDays <= 60 ? "card-orange border-orange-200" : "card-blue border-blue-200");
-        let statusLabel = (diffDays <= 10) ? `<span class="bg-red-600 text-white px-2 py-0.5 rounded text-[10px] font-black ml-2">${diffDays} HARI</span>` : (diffDays <= 60 ? '<span class="bg-orange-500 text-white px-2 py-0.5 rounded text-[10px] font-black ml-2">BARU</span>' : '<span class="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px] font-black ml-2">LAMA</span>');
-        const cmdLow = (item.command || "").toLowerCase();
-        const isPending = cmdLow.includes('pending');
-        if(isPending) { cardColor = "card-yellow border-amber-200"; }
-        let progressBadge = "";
-        if(mode === 'progress') {
-            if(diffDays <= 5) progressBadge = `<span class="progress-badge-new ml-2">NEW (${diffDays}H)</span>`;
-            else if(diffDays <= 10) progressBadge = `<span class="progress-badge-mid ml-2">WARNING (${diffDays}H)</span>`;
         }
-        if(isPending) progressBadge += `<span class="pending-badge ml-2">PENDING</span>`;
-        let hargaTampil = item.harga || "0";
-        if (hargaTampil === "0" || hargaTampil === "" || hargaTampil === "Harga Tidak Ada") hargaTampil = "Cek Billing";
-        else if (!hargaTampil.toString().toLowerCase().includes('rp')) hargaTampil = 'Rp' + parseInt(hargaTampil).toLocaleString();
-        const billingBtn = (mode === 'fast') ? `<button onclick="handleBillingClick('${item.idCst}')" class="bg-red-600 text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] shadow-sm flex-1">Bayar Billing</button>` : "";
-        const copyBtn = `<button onclick="handleCopyClick('${item.idCst}')" class="ml-2 bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-lg border border-indigo-200 text-[9px] font-black active:scale-90 transition-transform">SALIN ID</button>`;
-        let setProgressBtn = "";
-        if (isPending) { setProgressBtn = `<button onclick="handleSetProgress('${item.idCst}', '${item.nama}')" class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] shadow-sm flex-1">Set Progress</button>`; }
-        const commandHtml = (item.billing && item.billing.trim() !== "") ? `<p class="col-span-2 border-t pt-1 mt-1 text-indigo-700 font-semibold">📝 Note: <i>${item.billing}</i></p>` : "";
-        const beautifulHp = formatBeautifulNumber(item.hp);
-        const displayId = cleanId(item.idCst);
-        return `
-        <div id="card-${item.idCst}" data-email="${item.email || '-'}" data-harga="${hargaTampil}" data-command="${(item.command || '')}" class="glass-card p-5 shadow-xl border-l-[12px] mb-4 ${cardColor}">
-            <div class="mb-3 flex justify-between items-start">
-                <div><h3 class="font-black text-indigo-900 uppercase text-lg leading-tight blink-name">${item.nama}${progressBadge}</h3></div>
-            </div>
-            <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[11px] text-slate-600 bg-white/50 p-3 rounded-xl mb-3 border border-slate-200">
-                <p class="col-span-2 flex items-center bg-white p-1.5 rounded border border-indigo-100 mb-1">
-                    <span>🆔 ID: <b class="text-indigo-900">${displayId}</b></span>
-                    ${copyBtn}${statusLabel}
-                </p>
-                <p>🗓️ Pasang: <b>${item.tanggal}</b></p>
-                <p>🔔 JAPO: <b class="text-red-500">Tgl ${item.japo}</b></p>
-                <p class="col-span-2">🚀 Paket: <b>${item.paket}</b></p>
-                <p class="col-span-2 text-indigo-700">💰 Harga: <b class="text-[12px] font-black uppercase">${hargaTampil}</b></p>
-                <p class="col-span-2">📧 Email: <b class="lowercase">${item.email || '-'}</b></p>
-                <p class="col-span-2">📞 No. HP: <b class="text-indigo-800">${beautifulHp}</b></p>
-                <p class="col-span-2">📍 Alamat: <b>${item.alamat}</b></p>
-                ${commandHtml}
-            </div>
-            <div class="flex gap-2">
-                ${billingBtn}${setProgressBtn}
-                <button onclick="prosesWa('${item.hp}', '${item.idCst}', '${item.nama}', '${item.japo}', '${item.paket}', '${mode}')" class="${(billingBtn || setProgressBtn) ? 'flex-1' : 'w-full'} bg-green-500 text-white font-black py-3 rounded-xl text-[10px] hover:bg-green-600 shadow-lg transition-all active:scale-95 uppercase">Kirim Notifikasi WA</button>
-            </div>
-        </div>`;
-    }
 
-    function handleSetProgress(id, nama) {
-        const idTampil = cleanId(id);
-        openModal({
-            title: '⚠️ KONFIRMASI', headerClass: 'bg-orange-500',
-            body: `<p>Ubah status <b>${nama}</b></p><p>Dari Pending menjadi On Progress?</p>`,
-            subtext: 'ID: ' + idTampil,
-            buttons: [
-                { text: 'BATAL', class: 'bg-slate-100 py-3 rounded-xl font-black text-xs', action: () => {} },
-                { text: 'YA, UBAH', class: 'bg-orange-500 text-white py-3 rounded-xl font-black text-xs', action: () => executeSetProgress(id) }
-            ]
-        });
-    }
+        async function initCoverageMap() {
+            const sragenCenter = [-7.4277, 111.0225];
+            map = L.map('map-coverage', {
+                preferCanvas: true 
+            }).setView(sragenCenter, 13);
 
-    async function executeSetProgress(id) {
-        const card = document.getElementById(`card-${id}`);
-        if(card) card.style.opacity = '0.5';
-        hiddenBillingIds = hiddenBillingIds.filter(hid => String(hid) !== String(id));
-        localStorage.setItem('hiddenBillingIds', JSON.stringify(hiddenBillingIds));
-        const targetData = fullRawData.find(item => String(item.idCst) === String(id));
-        const rowOrderParam = targetData && targetData.rowOrder ? `&rowOrder=${targetData.rowOrder}` : "";
-        try {
-            const r = await fetch(`${scriptURL}?action=setProgress&idCst=${id}&hapusCmd=true${rowOrderParam}`);
-            const res = await r.json();
-            if(res.status === "success") { alert("Berhasil! Status menjadi On Progress."); muatDataTabel(); } 
-            else { alert("Gagal: " + res.message); if(card) card.style.opacity = '1'; }
-        } catch(e) { alert("Gagal menghubungkan ke server."); if(card) card.style.opacity = '1'; }
-    }
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© MyRepublic Sragen'
+            }).addTo(map);
 
-    function cariDataRealTime() { 
-        const dateInput = document.getElementById('dateInput');
-        const userInput = document.getElementById('userInput');
-        const val = dateInput.value.trim();
-        if (val.length > 2 && /^\d+$/.test(val)) {
-            userInput.value = val;
-            dateInput.value = "";
-            userInput.focus();
+            try {
+                const response = await fetch('sragen_coverage.json');
+                if (!response.ok) throw new Error("File JSON tidak ditemukan");
+                
+                const coverageData = await response.json();
+                localStorage.setItem(COVERAGE_STORAGE_KEY, JSON.stringify(coverageData));
+
+                coverageData.forEach(point => {
+                    const lat = point[1];
+                    const lng = point[0];
+                    L.circleMarker([lat, lng], {
+                        radius: 4,               
+                        fillColor: "#6c2d91",    
+                        color: "#fff",           
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map).bindPopup("Area Tercover MyRepublic");
+                });
+
+                L.marker(sragenCenter).addTo(map)
+                    .bindPopup("<b>Pusat Layanan Sragen</b><br>Jl. Raya Sukowati No. 120")
+                    .openPopup();
+
+            } catch (error) {
+                console.error("Gagal memuat peta coverage:", error);
+            }
         }
-        cariData('search'); 
-    }
 
-    async function muatDataTabel(btnEl) {
-        if(btnEl) triggerAnimate(btnEl); 
-        const btn = document.getElementById('btnRefreshTabel'); 
-        if(btn) btn.innerText = "⏳ SINKRONISASI...";
-        try {
-            const [resSum, resFull, resLeads] = await Promise.all([
-                fetch(`${scriptURL}?action=getTableSummary`),
-                fetch(`${scriptURL}`),
-                fetch(`${scriptURL}?action=getLeads`)
-            ]);
-            const summary = await resSum.json();
-            const fullJson = await resFull.json();
-            leadsData = await resLeads.json();
-            
-            fullRawData = fullJson.data || []; 
-            localStorage.setItem('fullRawData', JSON.stringify(fullRawData));
-            localStorage.setItem('tableSummary', JSON.stringify(summary));
-            
-            const now = new Date(); let lm = now.getMonth() - 1; let ty = now.getFullYear(); if(lm < 0) { lm = 11; ty--; }
-            const bn = ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"];
-            document.getElementById('displayBulan').innerText = "BULAN " + bn[now.getMonth()];
-            document.getElementById('label-kurang').innerText = "SA " + bn[lm];
-            
-            let countBillingToday = 0;
-            const todayDay = now.getDate();
-            let countLM = 0;
-            let totalSA_filtered = 0;
+        async function fetchPricesFromSheets() {
+            const tableBody = document.getElementById('price-table-body');
+            if(!tableBody) return;
 
-            fullRawData.forEach(item => {
-                const cmd = String(item.command || "").toLowerCase();
-                if(item.tanggal) {
-                    const sep = item.tanggal.includes('/') ? '/' : '-';
-                    const p = item.tanggal.split(sep);
-                    if(p.length >= 3) {
-                        const m = parseInt(p[1])-1; 
-                        const y = (sep === '/' ? parseInt(p[2]) : parseInt(p[0]));
-                        const dayPemasangan = (sep === '/' ? parseInt(p[0]) : parseInt(p[2]));
-                        if(!cmd.includes("pending") && !cmd.includes("progress")) {
-                            if(m === now.getMonth() && y === now.getFullYear()) totalSA_filtered++;
-                            if(m === lm && y === ty) countLM++;
-                            if(dayPemasangan === todayDay) countBillingToday++;
+            try {
+                const response = await fetch(URL_SHEET2_HARGA + '&cb=' + Date.now());
+                const data = await response.text();
+                // Memisahkan baris CSV dengan regex agar aman dari line break di dalam sel
+                const rows = data.split(/\r?\n/).filter(r => r.trim() !== '');
+
+                if (rows.length <= 1) {
+                    tableBody.innerHTML = '<tr><td colspan="3" class="text-center py-4">Belum ada paket tersedia di database.</td></tr>';
+                    return;
+                }
+
+                const contentRows = rows.slice(1);
+                let htmlContent = '';
+
+                contentRows.forEach(row => {
+                    // Regex split CSV sederhana (nama, speed, harga)
+                    let cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    if (cols.length >= 3) {
+                        const namaPaket = cols[0].replace(/"/g, '').trim();
+                        const speed = cols[1].replace(/"/g, '').trim();
+                        const harga = cols[2].replace(/"/g, '').trim();
+                        
+                        let badgeColor = "bg-secondary";
+                        const speedVal = parseInt(speed);
+                        if(speedVal >= 30) badgeColor = "bg-primary";
+                        if(speedVal >= 100) badgeColor = "bg-info text-dark";
+                        if(speedVal >= 200) badgeColor = "bg-danger";
+
+                        htmlContent += `
+                        <tr class="table-row-hover">
+                            <td>
+                                <div class="cell-stack">
+                                    <span class="top-text">${namaPaket}</span>
+                                    <span class="bottom-text">${harga}</span>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge ${badgeColor} rounded-pill badge-speed-table">${speed} Mbps</span>
+                            </td>
+                            <td class="text-center">
+                                <button onclick="openRegistrationModal('${namaPaket}')" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 text-xs">Pilih</button>
+                            </td>
+                        </tr>`;
+                    }
+                });
+
+                tableBody.innerHTML = htmlContent || '<tr><td colspan="3" class="text-center py-4">Data tidak ditemukan.</td></tr>';
+            } catch (error) {
+                console.error("Error Sheet Harga:", error);
+                tableBody.innerHTML = '<tr><td colspan="3" class="text-center text-danger py-4">Gagal terhubung ke Database Harga.</td></tr>';
+            }
+        }
+
+        // PERBAIKAN FUNGSI PROMO
+        async function fetchPromoFromSheets() {
+            const wrapper = document.getElementById('gallery-wrapper');
+            if(!wrapper) return;
+            try {
+                const response = await fetch(URL_SHEET1_PROMO + '&cb=' + Date.now());
+                const data = await response.text();
+                
+                // REVISI: Menggunakan regex untuk parsing CSV yang lebih kuat
+                // Baris dipisah berdasarkan newline yang tidak berada di dalam tanda kutip
+                const rows = data.match(/(".*?"|[^",\r\n]+)(?=\s*,|\s*\r?\n|$)/g);
+                
+                // Logika fallback: Jika regex gagal, gunakan metode split lama
+                let rowArray = data.split(/\r?\n/).filter(r => r.trim() !== '');
+                
+                if (rowArray.length <= 1) {
+                    wrapper.innerHTML = '<div class="col-12 text-center text-muted py-4">Belum ada promo aktif.</div>';
+                    return;
+                }
+
+                // Ambil data (tanpa header) lalu balik urutannya (data terbawah jadi pertama)
+                let contentRows = rowArray.slice(1).reverse();
+
+                let htmlContent = '';
+                contentRows.forEach(row => {
+                    // Split kolom berdasarkan koma yang tidak di dalam tanda kutip
+                    const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    if (columns.length >= 3) {
+                        const nama = columns[0].replace(/"/g, '').trim();
+                        const deskripsi = columns[1].replace(/"/g, '').trim(); 
+                        let imgRaw = columns[2].replace(/"/g, '').trim();
+                        const imgDirect = convertToDirectLink(imgRaw);
+
+                        if (imgDirect && imgDirect !== "") {
+                            htmlContent += `
+                                <div class="col-6 col-md-4 col-lg-3 gallery-item">
+                                    <div class="promo-img-wrapper">
+                                        <img src="${imgDirect}" alt="${nama}" loading="lazy" onerror="handleImageError(this)" onclick="openLightbox(this.src)">
+                                    </div>
+                                    <h4 class="promo-title">${nama}</h4>
+                                    <p class="promo-desc">${deskripsi}</p>
+                                </div>`;
                         }
                     }
+                });
+                wrapper.innerHTML = htmlContent || '<div class="col-12 text-center text-muted py-4">Data promo tidak ditemukan.</div>';
+            } catch (error) {
+                console.error("Promo error:", error);
+                wrapper.innerHTML = '<div class="col-12 text-center text-red-500 py-4">Gagal memuat promo.</div>';
+            }
+        }
+
+        function initReviewDatabase() {
+            const firstNames = ["Budi", "Siti", "Agus", "Rahmat", "Dewi", "Lilik", "Eko", "Andi", "Sri", "Hadi", "Indah", "Aris", "Yulia", "Wahyu", "Tono", "Wati", "Gatot", "Sari", "Roni", "Asep", "Dedi", "Maya", "Bambang", "Ratna", "Surya"];
+            const lastNames = ["Santoso", "Hidayat", "Wijaya", "Kurniawan", "Aminah", "Lestari", "Mulyono", "Saputra", "Pratama", "Susanto", "Rahayu", "Wibowo", "Nugroho", "Setyawan", "Purnomo", "Utomo", "Kusuma", "Budiman", "Gunawan", "Yulianto"];
+            const comments = [
+                "Internetnya kenceng banget buat mabar ML di Karangmalang gak pernah lag!",
+                "Proses pasangnya cepet, teknisinya ramah. Recomended buat warga Sragen.",
+                "Harga flat terus gak naik-naik, mantap MyRepublic!",
+                "Akhirnya ada fiber murni di Sidoharjo, streaming Netflix 4K lancar jaya.",
+                "Gak nyesel ganti dari sebelah, di sini beneran tanpa batasan kuota.",
+                "Ping kecil banget, cocok buat main Valorant atau CSGO.",
+                "Pelayanan admin Sragen ramah and gercep kalau ada kendala.",
+                "Sudah pasang 6 bulan, koneksi stabil biarpun hujan deras.",
+                "Wifi jangkauannya luas sampai ke lantai atas rumah.",
+                "Harga promo 10Ring bener-bener nolong buat mahasiswa kayak saya.",
+                "Area Ngrampal sudah masuk, sinyal full terus!",
+                "Streaming Youtube 4K anak-anak lancar nggak pake buffering.",
+                "MyRepublic Sragen top bgt, sukses terus layanannya.",
+                "Akses kerja dari rumah (WFH) jadi lebih tenang pake MyRepublic.",
+                "Baru pasang kemarin, langsung dipake download file gede beres cepet."
+            ];
+
+            let database = [];
+            let nameSet = new Set();
+            while(database.length < 500) {
+                let fname = firstNames[Math.floor(Math.random() * firstNames.length)];
+                let lname = lastNames[Math.floor(Math.random() * lastNames.length)];
+                let fullName = fname + " " + lname;
+                if(!nameSet.has(fullName)) {
+                    nameSet.add(fullName);
+                    database.push({
+                        name: fullName,
+                        comment: comments[Math.floor(Math.random() * comments.length)],
+                        rating: (Math.random() * (5 - 4.5) + 4.5).toFixed(1)
+                    });
                 }
+            }
+            globalReviews = database;
+        }
+
+        function refreshReviews() {
+            const container = document.getElementById('review-container');
+            if(!container) return;
+            
+            let selected = [];
+            let tempPool = [...globalReviews].sort(() => Math.random() - 0.5);
+
+            for (let item of tempPool) {
+                if (!currentlyDisplayedNames.includes(item.name)) {
+                    selected.push(item);
+                }
+                if (selected.length === 3) break;
+            }
+
+            currentlyDisplayedNames = selected.map(s => s.name);
+            let html = '';
+            selected.forEach(rev => {
+                const initial = rev.name.charAt(0);
+                const ratingNum = parseFloat(rev.rating);
+                const fullStars = Math.floor(ratingNum);
+                let starString = "";
+                for(let i=1; i<=5; i++) {
+                    starString += i <= fullStars ? "★" : "☆";
+                }
+
+                html += `
+                <div class="col-md-4 animate__animated animate__fadeIn">
+                    <article class="review-card">
+                        <div class="flex items-center mb-3">
+                            <div class="user-avatar mr-3">${initial}</div>
+                            <div>
+                                <h3 class="fw-bold m-0 text-sm h6">${rev.name}</h3>
+                                <div class="star-rating" aria-label="Rating ${rev.rating} dari 5">
+                                    ${starString} 
+                                    <span class="text-xs text-gray-400 font-bold ml-1">(${rev.rating})</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 italic">"${rev.comment}"</p>
+                    </article>
+                </div>`;
             });
 
-            const notifBanner = document.getElementById('notifBilling');
-            if(countBillingToday > 0) {
-                notifBanner.style.display = 'flex';
-                document.getElementById('notifText').innerText = `Ada ${countBillingToday} Pelanggan masuk siklus tagihan hari ini!`;
-            } else { notifBanner.style.display = 'none'; }
-
-            summary.pointKurang = countLM; 
-            summary.totalSA = totalSA_filtered;
-            currentTotalSA = totalSA_filtered;
-            
-            renderRekapUI(summary); 
-            updateStatsCounts();
-            generateHistoryFromData(fullRawData); 
-            triggerGradeCalc();
-        } catch (e) { 
-            console.error("Sync Error:", e);
-            loadOfflineData();
-        } finally { if(btn) btn.innerText = "🔄 Sinkronisasi Data Aktif"; }
-    }
-
-    async function cariData(mode, btnEl) {
-        if(btnEl) triggerAnimate(btnEl); 
-
-        if (mode === 'progress' || mode === 'pending' || mode === 'fast' || mode === 'leads') {
-            const originalText = btnEl ? btnEl.innerText : "";
-            if (btnEl) btnEl.innerText = "⏳...";
-            await muatDataTabel(); 
-            if (btnEl) btnEl.innerText = originalText;
+            container.style.opacity = 0;
+            setTimeout(() => {
+                container.innerHTML = html;
+                container.style.opacity = 1;
+            }, 500);
         }
 
-        const query = document.getElementById('userInput').value.toLowerCase().trim();
-        const tglFilter = document.getElementById('dateInput').value;
-        const list = document.getElementById('resultsList');
-        const searchInfo = document.getElementById('searchInfo');
-        const searchCountEl = document.getElementById('searchResultCount');
-        
-        if (mode === 'search' && query === "" && tglFilter === "") { list.innerHTML = ""; searchInfo.classList.add('hidden'); return; }
-        
-        let html = "";
-        let items = fullRawData.slice();
+        function convertToDirectLink(url) {
+            if (!url) return "";
+            if (url.includes("canva.com")) return url.trim(); 
+            const regex = /(?:\/file\/d\/|id=)([\w-]+)/;
+            const match = url.match(regex);
+            if (match && match[1]) return `https://docs.google.com/uc?export=view&id=${match[1]}`;
+            return url.trim();
+        }
 
-        if (mode === 'leads') {
-            searchCountEl.innerText = leadsData.length;
-            searchInfo.classList.remove('hidden');
-            if (leadsData.length > 0) {
-                html += `<div class="leads-group-header"><span>💎 DATA LEADS JANJI TEMU</span></div>`;
-                leadsData.forEach(l => html += renderLeadsCard(l));
-            }
-        } 
-        else if (mode === 'progress') { items = items.filter(i => (i.command || "").toLowerCase().includes('progress')); } 
-        else if (mode === 'pending') { items = items.filter(i => (i.command || "").toLowerCase().includes('pending')); } 
-        else if (mode === 'fast') { 
-            items = items.filter(i => {
-                const cmd = String(i.command || "").toLowerCase();
-                if (cmd.includes('pending') || cmd.includes('progress') || isAuditOFF(i)) return false;
-                if (!i.tanggal) return false;
-                const parts = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
-                if(parts.length < 3) return false;
-                const d = (parts[0].length === 4) ? new Date(parts[0], parts[1]-1, parts[2]) : new Date(parts[2], parts[1]-1, parts[0]);
-                return Math.ceil(Math.abs(new Date() - d) / (1000 * 60 * 60 * 24)) <= 10;
-            }); 
-        } 
-        else {
-            if (query) { items = items.filter(i => i.nama.toLowerCase().includes(query) || i.idCst.toString().toLowerCase().includes(query) || (i.alamat && i.alamat.toLowerCase().includes(query))); }
-            if (tglFilter && !isNaN(tglFilter)) { 
-                items = items.filter(i => {
-                    const parts = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
-                    const day = (parts[0].length === 4) ? parseInt(parts[2]) : parseInt(parts[0]);
-                    return day == parseInt(tglFilter);
-                }); 
+        function checkRegistrationStatus() {
+            const isRegistered = localStorage.getItem(REG_SUCCESS_KEY) === 'true';
+            if (isRegistered) {
+                const fields = document.getElementById('reg-form-fields');
+                const note = document.getElementById('reg-success-note');
+                if(fields) fields.style.display = 'none';
+                if(note) note.style.display = 'block';
             }
         }
 
-        if (mode !== 'leads') {
-            searchCountEl.innerText = items.length;
-            searchInfo.classList.remove('hidden');
-            if (mode === 'fast') {
-                let group1 = items.filter(i => {
-                    const p = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
-                    const d = (p[0].length === 4) ? new Date(p[0], p[1]-1, p[2]) : new Date(p[2], p[1]-1, p[0]);
-                    const diff = Math.ceil(Math.abs(new Date() - d) / (1000 * 60 * 60 * 24));
-                    return diff > 5 && diff <= 10;
-                });
-                let group2 = items.filter(i => {
-                    const p = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
-                    const d = (p[0].length === 4) ? new Date(p[0], p[1]-1, p[2]) : new Date(p[2], p[1]-1, p[0]);
-                    return Math.ceil(Math.abs(new Date() - d) / (1000 * 60 * 60 * 24)) <= 5;
-                });
-                if (group1.length > 0) { html += `<div class="fast-group-header" style="background:#f59e0b"><span>⏳ FAST 2 (6-10 HARI)</span></div>`; group1.forEach(i => html += renderCard(i, 'fast')); }
-                if (group2.length > 0) { html += `<div class="fast-group-header"><span>🚀 FAST 1 (0-5 HARI)</span></div>`; group2.forEach(i => html += renderCard(i, 'fast')); }
-            } else if (mode === 'pending') {
-                const now = new Date(); const cm = now.getMonth(); const cy = now.getFullYear();
-                let pb = items.filter(i => {
-                    const p = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
-                    const d = (p[0].length === 4) ? new Date(p[0], p[1]-1, p[2]) : new Date(p[2], p[1]-1, p[0]);
-                    return d.getMonth() === cm && d.getFullYear() === cy;
-                });
-                let pl = items.filter(i => {
-                    const p = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
-                    const d = (p[0].length === 4) ? new Date(p[0], p[1]-1, p[2]) : new Date(p[2], p[1]-1, p[0]);
-                    return d.getFullYear() < cy || (d.getFullYear() === cy && d.getMonth() < cm);
-                });
-                if (pb.length > 0) { html += `<div class="pending-old-header" style="background:#f59e0b"><span>📝 PENDING BULAN INI</span></div>`; pb.forEach(i => html += renderCard(i, 'pending')); }
-                if (pl.length > 0) { html += `<div class="pending-old-header"><span>⚠️ PENDING LAMA (BULAN LALU)</span></div>`; pl.forEach(i => html += renderCard(i, 'pending')); }
-            } else { items.forEach(i => html += renderCard(i, mode)); }
+        function openLightbox(src) {
+            const overlay = document.getElementById('lightbox-overlay');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.classList.add('show'), 10);
+            document.body.style.overflow = 'hidden'; 
         }
-        
-        list.innerHTML = html || "<p class='text-white text-center font-bold bg-white/10 p-4 rounded-xl'>Data tidak ditemukan.</p>";
-    }
+        function closeLightbox() {
+            const overlay = document.getElementById('lightbox-overlay');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                document.body.style.overflow = 'auto'; 
+            }, 300);
+        }
+        function handleImageError(img) {
+            const galleryItem = img.closest('.gallery-item');
+            if (galleryItem) galleryItem.style.display = 'none';
+        }
 
-    function renderRekapUI(d) {
-        const sa = parseInt(d.totalSA) || 0;
-        const bulanLalu = parseInt(d.pointKurang) || 0;
-        const saKurang = bulanLalu - sa;
-        document.getElementById('t-sa').innerText = sa;
-        document.getElementById('t-off').innerText = d.totalOff || 0;
-        document.getElementById('t-aktif').innerText = d.pelangganAktif || 0;
-        document.getElementById('t-baru').innerText = d.totalIdBaru || 0;
-        document.getElementById('t-point').innerText = (saKurang > 0) ? saKurang : 0;
-        document.getElementById('t-kurang').innerText = bulanLalu; 
-        document.getElementById('t-bonus').innerText = d.totalBonus || 'Rp0';
-        let percent = (bulanLalu > 0) ? ((sa) / bulanLalu) * 100 : 0;
-        document.getElementById('targetProgressBar').style.width = Math.min(Math.max(0, Math.round(percent)), 100) + '%';
-        document.getElementById('targetPercentText').innerText = Math.round(percent) + '%';
-    }
-
-    function hitungBonusDekade() {
-        const q = document.querySelector('input[name="quarter"]:checked');
-        if(!q) { alert("Pilih Quarter!"); return; }
-        const monthNames = ["", "JAN", "FEB", "MAR", "APR", "MEI", "JUN", "JUL", "AGU", "SEP", "OKT", "NOV", "DES"];
-        let months = (q.value === 'q1') ? [1,2,3] : (q.value === 'q2') ? [4,5,6] : (q.value === 'q3') ? [7,8,9] : [10,11,12];
-        let statsTriwulan = { 'RingEco': 0, 'Jet': 0, 'ValueLite': 0, 'ValueUp': 0 };
-        let monthlyData = {}; 
-        months.forEach(m => { monthlyData[m] = { 'RingEco': 0, 'Jet': 0, 'ValueLite': 0, 'ValueUp': 0, total: 0, insentif: 0 }; });
-        fullRawData.forEach(item => {
-            if(!item.tanggal) return;
-            const cmd = String(item.command || "").toLowerCase();
-            if(cmd.includes("pending") || cmd.includes("progress")) return; 
-            const sep = item.tanggal.includes('/') ? '/' : '-';
-            const m = parseInt(item.tanggal.split(sep)[1]);
-            if(months.includes(m)) {
-                const pkt = (item.paket || "").toLowerCase();
-                let category = 'ValueUp';
-                if(pkt === '10ring' || pkt === 'eco15' || pkt === 'eco20') category = 'RingEco';
-                else if(pkt === 'jet20') category = 'Jet';
-                else if(pkt === '30valuelite') category = 'ValueLite';
-                statsTriwulan[category]++;
-                monthlyData[m][category]++;
-                monthlyData[m].total++;
-                let valJ = item.bonus || "0"; 
-                let cleanBonus = parseInt(String(valJ).replace(/[^0-9]/g, "")) || 0;
-                monthlyData[m].insentif += cleanBonus;
+        function forcePrecisionLocation() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(() => {}, () => {}, { enableHighAccuracy: true });
+                navigator.geolocation.watchPosition(
+                    (pos) => {
+                        const lat = pos.coords.latitude;
+                        const lon = pos.coords.longitude;
+                        const accuracy = pos.coords.accuracy;
+                        if (accuracy < 100) {
+                            const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                            localStorage.setItem(COORDS_CACHE_KEY, mapLink);
+                            localStorage.setItem('raw_lat', lat);
+                            localStorage.setItem('raw_lng', lon);
+                        }
+                    },
+                    (err) => {},
+                    { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+                );
             }
-        });
-        const totalSA_Quarter = Object.values(statsTriwulan).reduce((a,b) => a+b, 0);
-        let bracket = totalSA_Quarter >= 75 ? "75" : totalSA_Quarter >= 60 ? "60" : totalSA_Quarter >= 45 ? "45" : "0";
-        let monthlyBonusHtml = "";
-        let totalDibayarDiBulan_1_2 = 0;
-        let totalFullBonusQuarter = 0;
-        months.forEach((m, index) => {
-            let saBulan = monthlyData[m].total;
-            let insentifBulan = monthlyData[m].insentif;
-            let estBonusFullBulan = 0;
-            if(bracket !== "0") { for(let cat in SKEMA_DEKADE) { estBonusFullBulan += (monthlyData[m][cat] || 0) * SKEMA_DEKADE[cat].prices[bracket]; } }
-            totalFullBonusQuarter += estBonusFullBulan;
-            let dibayar = (index < 2) ? estBonusFullBulan * 0.5 : 0;
-            totalDibayarDiBulan_1_2 += dibayar;
-            monthlyBonusHtml += `<tr class="border-b"><td class="p-2 border text-black font-black">${monthNames[m]}</td><td class="p-2 border">${saBulan}</td><td class="p-2 border text-green-700">Rp${insentifBulan.toLocaleString()}</td><td class="p-2 border text-slate-400">Rp${estBonusFullBulan.toLocaleString()}</td><td class="p-2 border text-indigo-600">Rp${dibayar.toLocaleString()}</td></tr>`;
-        });
-        document.getElementById('dk-monthly-bonus-body').innerHTML = monthlyBonusHtml;
-        let tableHtml = "";
-        for(const cat in statsTriwulan) {
-            const sa = statsTriwulan[cat];
-            let price = (bracket !== "0") ? SKEMA_DEKADE[cat].prices[bracket] : 0;
-            tableHtml += `<tr><td class="text-left font-bold border-r p-2">${cat}</td><td class="font-black p-2">${sa}</td><td class="text-green-600 font-black p-2">@Rp${price.toLocaleString()}</td></tr>`;
         }
-        let sisaSettlement = totalFullBonusQuarter - totalDibayarDiBulan_1_2;
-        document.getElementById('dk-total-sa').innerText = totalSA_Quarter;
-        document.getElementById('dk-total-rp').innerText = `Rp${(sisaSettlement < 0 ? 0 : sisaSettlement).toLocaleString()}`;
-        document.getElementById('dk-table-body').innerHTML = tableHtml;
-        document.getElementById('hasilBonusDekade').classList.remove('hidden');
-    }
 
-    function resetQuarterFilter() { document.querySelectorAll('input[name="quarter"]').forEach(r => r.checked = false); document.getElementById('hasilBonusDekade').classList.add('hidden'); }
-
-    function handleBillingClick(id) { 
-        const idTampil = cleanId(id);
-        openModal({ title: '⚠️ VERIFIKASI', headerClass: 'bg-red-600', body: `<p>ID: ${idTampil}</p>`, subtext: 'PELANGGAN SUDAH BAYAR?', buttons: [{ text: 'BATAL', class: 'bg-slate-100 py-3 rounded-xl font-black text-xs', action: () => {} }, { text: 'YA, SUDAH', class: 'bg-red-600 text-white py-3 rounded-xl font-black text-xs', action: () => executeBilling(id) }] }); 
-    }
-
-    function executeBilling(id) {
-        const el = document.getElementById(`card-${id}`); if(el) el.style.display = 'none';
-        lastDeletedId = id;
-        if(!hiddenBillingIds.includes(id)) { hiddenBillingIds.push(id); localStorage.setItem('hiddenBillingIds', JSON.stringify(hiddenBillingIds)); }
-        document.getElementById('undoToast').style.display = 'flex';
-        setTimeout(() => document.getElementById('undoToast').style.display = 'none', 5000);
-        updateStatsCounts();
-    }
-
-    function undoBilling() {
-        if(lastDeletedId) {
-            const el = document.getElementById(`card-${lastDeletedId}`); if(el) el.style.display = 'block';
-            hiddenBillingIds = hiddenBillingIds.filter(i => i !== lastDeletedId);
-            localStorage.setItem('hiddenBillingIds', JSON.stringify(hiddenBillingIds));
-            document.getElementById('undoToast').style.display = 'none';
-            updateStatsCounts();
+        async function getGuaranteedCoords() {
+            return new Promise((resolve) => {
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(
+                        (p) => {
+                            const lat = p.coords.latitude;
+                            const lng = p.coords.longitude;
+                            const link = `https://www.google.com/maps?q=${lat},${lng}`;
+                            localStorage.setItem(COORDS_CACHE_KEY, link);
+                            localStorage.setItem('raw_lat', lat);
+                            localStorage.setItem('raw_lng', lng);
+                            resolve({ lat, lng, link });
+                        },
+                        (error) => {
+                            const cachedLat = localStorage.getItem('raw_lat');
+                            const cachedLng = localStorage.getItem('raw_lng');
+                            if (cachedLat && cachedLng) {
+                                resolve({ 
+                                    lat: parseFloat(cachedLat), 
+                                    lng: parseFloat(cachedLng), 
+                                    link: localStorage.getItem(COORDS_CACHE_KEY) 
+                                });
+                            } else { resolve(null); }
+                        },
+                        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                    );
+                } else { resolve(null); }
+            });
         }
-    }
 
-    function switchTab(t) {
-        ['sectionInput', 'sectionCari', 'sectionTabel'].forEach(id => document.getElementById(id).classList.add('hidden'));
-        ['tabInput', 'tabCari', 'tabTabel'].forEach(id => document.getElementById(id).classList.remove('tab-active'));
-        document.getElementById('section' + t.charAt(0).toUpperCase() + t.slice(1)).classList.remove('hidden');
-        document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('tab-active');
-        document.querySelector('.scrollable-content').scrollTo(0,0);
-    }
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; 
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
 
-    function pressPin(n) { let p = document.getElementById('pinInput'); if(p.value.length < 4) p.value += n; }
-    function clearPin() { document.getElementById('pinInput').value = ""; }
-    async function checkPin() {
-        let pin = document.getElementById('pinInput').value; if(pin.length < 4) return;
-        const btn = document.getElementById('btnEnter'); btn.innerHTML = "⏳";
-        try {
-            const r = await fetch(`${scriptURL}?action=validatePin&pin=${pin}`);
-            const res = await r.json();
-            if(res.status === "authorized") { 
-                document.getElementById('lockScreen').classList.add('hidden'); 
-                sessionStorage.setItem('isLoggedIn', 'true'); 
-                muatDataTabel(); 
-            } 
-            else { alert("PIN SALAH"); clearPin(); }
-        } catch(e) { alert("Error"); } finally { btn.innerHTML = "OK"; }
-    }
+        async function getFullAddressOnline(lat, lng) {
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+                const data = await response.json();
+                if (data && data.address) {
+                    return {
+                        road: data.address.road || "",
+                        village: data.address.village || data.address.suburb || data.address.town || "",
+                        district: data.address.city_district || data.address.county || "",
+                        city: data.address.city || data.address.regency || "Sragen",
+                        postcode: data.address.postcode || "",
+                        state: data.address.state || "Jawa Tengah",
+                        full: data.display_name
+                    };
+                }
+                return null;
+            } catch (e) { return null; }
+        }
 
-    function handleCopyClick(id) {
-        const idTampil = cleanId(id);
-        navigator.clipboard.writeText(idTampil);
-        openModal({ title: '📋 SALIN ID', headerClass: 'bg-indigo-600', body: `<p class="text-2xl font-black">${idTampil || 'ID KOSONG'}</p>`, subtext: 'ID BERHASIL DISALIN', buttons: [{ text: 'OK', class: 'bg-indigo-600 text-white py-3 rounded-xl font-black text-xs w-full col-span-2', action: () => {} }] });
-    }
+        async function handleAutoGpsSearch() {
+            const resultBox = document.getElementById('search-result');
+            const btnMain = document.getElementById('btn-cek-lokasi');
+            const statusTextMain = document.getElementById('status-gps-text');
+            const btnMap = document.getElementById('btn-cek-lokasi-map');
+            const btnMapText = document.getElementById('btn-cek-lokasi-map-text');
 
-    async function downloadImage(nama, id, paket, alamat, tgl, japo, hp, email) {
-        let formattedHp = formatBeautifulNumber(hp);
-        let idTampil = cleanId(id);
-        document.getElementById('c-nama').innerText = nama; 
-        document.getElementById('c-id-bayar').innerText = idTampil;
-        document.getElementById('c-paket').innerText = paket; 
-        document.getElementById('c-hp').innerText = formattedHp;
-        document.getElementById('c-email').innerText = email; 
-        document.getElementById('c-alamat').innerText = alamat;
-        document.getElementById('c-tgl').innerText = tgl || '-'; 
-        document.getElementById('c-japo').innerText = japo || '-';
-        try {
-            const element = document.getElementById('canvasTemplate');
-            const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: "#ffffff", logging: false });
-            const image = canvas.toDataURL("image/png");
-            const fileName = `NOTIF_${nama.substring(0,10).replace(/\s+/g, '_')}_${idTampil}.png`;
-            const link = document.createElement('a');
-            link.download = fileName; link.href = image; document.body.appendChild(link);
-            link.click(); document.body.removeChild(link);
-            return true;
-        } catch (err) { alert("Gagal membuat gambar: " + err.message); return false; }
-    }
+            resultBox.style.display = 'none';
+            if(statusTextMain) statusTextMain.innerHTML = `<span class="gps-loading mr-2"></span> Sedang mengunci koordinat GPS...`;
+            if(btnMain) { btnMain.innerHTML = `<span class="spinner-border spinner-border-sm"></span>`; btnMain.disabled = true; }
+            if(btnMap) btnMap.disabled = true;
+            if(btnMapText) btnMapText.innerText = "Mengambil Alamat...";
 
-    async function prosesWa(hp, id, nama, japo, paket, source = 'general') {
-        const cardEl = document.getElementById(`card-${id}`);
-        const email = cardEl ? cardEl.getAttribute('data-email') || '-' : '-';
-        const harga = cardEl ? cardEl.getAttribute('data-harga') || 'Cek Billing' : 'Cek Billing';
-        const alamat = cardEl ? (cardEl.querySelector('p:nth-child(8) b') ? cardEl.querySelector('p:nth-child(8) b').innerText : '-') : '-';
-        const tgl = cardEl ? (cardEl.querySelector('p:nth-child(2) b') ? cardEl.querySelector('p:nth-child(2) b').innerText : '-') : '-';
-        const cmdAttr = cardEl ? cardEl.getAttribute('data-command').toLowerCase() : "";
-        const isPending = cmdAttr.includes('pending');
-        const idTampilModal = cleanId(id);
-        
-        openModal({
-            title: isPending ? '📲 FOLLOW UP PENDING' : '📲 OPSI PENGIRIMAN WA', 
-            headerClass: isPending ? 'bg-amber-500' : 'bg-green-600',
-            body: `<p class="text-xs">Pilih metode untuk:</p><p class="text-lg font-black">${nama}</p>`,
-            subtext: isPending ? 'Follow up pemasangan segera!' : 'ID: ' + idTampilModal,
-            buttons: [
-                { text: 'TANPA TEKS', class: 'bg-slate-600 text-white py-3 rounded-xl font-black text-[10px] uppercase shadow-md', action: () => executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, harga, false, source, isPending) },
-                { text: isPending ? 'KIRIM PENAWARAN' : 'TEKS OTOMATIS', class: isPending ? 'bg-amber-600 text-white py-3 rounded-xl font-black text-[10px] uppercase shadow-md' : 'bg-green-600 text-white py-3 rounded-xl font-black text-[10px] uppercase shadow-md', action: () => executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, harga, true, source, isPending) }
-            ]
-        });
-    }
+            try {
+                const locationData = await getGuaranteedCoords();
+                if (!locationData) throw new Error("Akses lokasi gagal. Pastikan GPS aktif dan izinkan browser mengakses lokasi.");
 
-    async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, harga, withText, source, isPending) {
-        let cleanHp = getPureWaNumber(hp); const now = new Date(); const hour = now.getHours();
-        let salam = (hour < 11) ? "Selamat Pagi" : (hour < 15) ? "Selamat Siang" : (hour < 18) ? "Selamat Sore" : "Selamat Malam";
-        const idTampilMsg = cleanId(id);
-        const cardEl = document.getElementById(`card-${id}`);
-        const currentCmd = cardEl ? cardEl.getAttribute('data-command').toLowerCase() : "";
-        const isActuallyProgress = currentCmd.includes('on progress');
-        
-        if (withText) {
-            let text = "";
-            if (isPending) { 
-                text = `${salam} Bapak/Ibu *${nama.trim()}*,%0AKami dari *MyRepublic Indonesia* menginfokan bahwa data pendaftaran internet Anda di alamat *${alamat}* sudah masuk ke sistem kami namun statusnya masih *Tertunda (Pending).*%0A%0AKami ingin mengonfirmasi, *PROMO masih berlaku di hari ini*, apakah sudah bersedia untuk dijadwalkan pemasangan segera?%0A%0A*Mengapa harus pasang sekarang?*%0A✅ *Prioritas Jalur:* Jalur tersedia (slot terbatas).%0A✅ *Teknisi Ready:* Kami amankan slot teknisi segera.%0A✅ *Koneksi Stabil:* Internet Full Fiber Unlimited.%0A%0AApakah ada kendala tertentu? Silakan balas pesan ini. Terima kasih!`; 
-            } else {
-                const footerAuto = "%0A%0A_Pesan otomatis MyRepublic._";
-                const todayDate = now.getDate(); let japoInt = parseInt(japo); let selisih = todayDate - japoInt;
-                if (selisih >= -5 && selisih <= 0) {
-                    let sisa = Math.abs(selisih); let ket = (sisa === 0) ? "HARI INI" : `${sisa} hari lagi`;
-                    text = `${salam} Yth. *${nama.trim()}*,%0AInformasi pembayaran MyRepublic:%0A• ID Bayar: *${idTampilMsg}*%0A• Alamat: ${alamat}%0A• Paket: ${paket}%0A• Tagihan: ${harga}%0AJatuh tempo *${ket}*.%0AMohon bayar tepat waktu ya.. Terima kasih.${footerAuto}`;
-                } else if (selisih > 0 && selisih <= 7) {
-                    text = `${salam} Yth. *${nama.trim()}*,%0AMengingatkan, tagihan MyRepublic sudah lewat jatuh tempo.%0A• ID Bayar: ${idTampilMsg}%0A• Tagihan: *${harga}*%0AMohon segera dibayar agar tidak terputus otomatis. Terima kasih.${footerAuto}`;
+                // Deteksi Luar Sragen (Radius ±35KM dari pusat Sragen)
+                const sragenCenter = [-7.4277, 111.0225];
+                const distFromSragenCenter = calculateDistance(locationData.lat, locationData.lng, sragenCenter[0], sragenCenter[1]);
+                const isOutsideSragen = distFromSragenCenter > 35; // Estimasi batas kabupaten
+
+                let closestFatDist = 9999;
+                let coverageData = JSON.parse(localStorage.getItem(COVERAGE_STORAGE_KEY) || '[]');
+
+                coverageData.forEach(coord => {
+                    const d = calculateDistance(locationData.lat, locationData.lng, coord[1], coord[0]);
+                    if (d < closestFatDist) closestFatDist = d;
+                });
+
+                const distInMeters = closestFatDist * 1000;
+                let formattedDist = distInMeters < 1000 ? `${distInMeters.toFixed(0)} meter` : `${closestFatDist.toFixed(2)} KM`;
+                const isCovered = distInMeters <= 250;
+                
+                const addr = await getFullAddressOnline(locationData.lat, locationData.lng);
+                resultBox.style.display = 'block';
+
+                if (isOutsideSragen) {
+                    resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-orange-100 text-orange-800 border border-orange-200";
+                    resultBox.innerHTML = `📍 Lokasi Anda saat ini di <b>${addr ? addr.village : 'Luar Wilayah'}</b> berada di luar jangkauan Cabang Sragen.<br>
+                    <p class="mt-2 text-xs">Silakan isi Nama & No WhatsApp Anda pada form pendaftaran di bawah untuk pengecekan manual oleh tim kami.</p>`;
+                    if(statusTextMain) statusTextMain.innerText = "Status: LUAR WILAYAH";
+                    setTimeout(() => { openRegistrationModal('Pengecekan Manual (Luar Sragen)'); }, 1500);
+                } else if (isCovered) {
+                    resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-green-100 text-green-700 border border-green-200";
+                    resultBox.innerHTML = `✅ Lokasi Anda saat ini di <b>${addr ? addr.village : 'Sragen'}</b> sudah tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist}.</small>`;
+                    if(statusTextMain) statusTextMain.innerText = "Status: TERCOVER";
                 } else {
-                    text = `${salam} Yth. *${nama.trim()}*,%0AMenanyakan pelayanan internet MyRepublic di *${alamat}* apakah ada kendala? Silakan kabari ya. Terima kasih.`;
+                    resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-red-100 text-red-700 border border-red-200";
+                    resultBox.innerHTML = `⚠️ Lokasi Anda saat ini di <b>${addr ? addr.village : 'Sragen'}</b> belum tercover.<br><small>Jarak ke FAT terdekat: ±${formattedDist}.</small>`;
+                    if(statusTextMain) statusTextMain.innerText = "Status: BELUM TERCOVER";
                 }
+
+                if(map) {
+                    map.setView([locationData.lat, locationData.lng], 16);
+                    L.marker([locationData.lat, locationData.lng], {
+                        icon: L.icon({
+                            iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+                            iconSize: [30, 30]
+                        })
+                    }).addTo(map).bindPopup("Posisi Anda").openPopup();
+                }
+
+                const msg = `🔍 *CEK COVERAGE AUTOMATIC*\n` +
+                            `━━━━━━━━━━━━━━━\n` +
+                            `📍 *Desa:* ${addr ? addr.village : 'Sragen'}\n` +
+                            `🎯 *Jarak ke FAT:* ${formattedDist}\n` +
+                            `✅ *Status:* ${isOutsideSragen ? 'LUAR SRAGEN' : (isCovered ? 'TERCOVER' : 'BELUM TERCOVER')}\n` +
+                            `🆔 *Session:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n` +
+                            `🗺️ [Buka Lokasi User](${locationData.link})`;
+                await telegramFetch(msg);
+            } catch (error) {
+                if(statusTextMain) statusTextMain.innerText = "GPS Error";
+                resultBox.style.display = 'block';
+                resultBox.innerHTML = `❌ Gagal: ${error.message}`;
             }
-            await downloadImage(nama, id, paket, alamat, tgl, japo, hp, email);
-            if (isActuallyProgress) { fetch(`${scriptURL}?action=hapusHanyaTextProgress&idCst=${id}`); }
-            setTimeout(() => { window.open(`https://api.whatsapp.com/send?phone=${cleanHp}&text=${text}`, '_blank'); }, 2000);
-        } else { 
-            if (isActuallyProgress) { fetch(`${scriptURL}?action=hapusHanyaTextProgress&idCst=${id}`); }
-            window.open(`https://api.whatsapp.com/send?phone=${cleanHp}`, '_blank');
-        }
-    }
-
-    async function updateStatsCounts() {
-        try { 
-            const progCount = fullRawData.filter(i => {
-                const c = String(i.command || "").toLowerCase();
-                return c.includes('on progress') && !isAuditOFF(i);
-            }).length;
-            document.getElementById('totalProgressCount').innerText = progCount; 
-        } catch(e){}
-        const pendingCount = fullRawData.filter(i => (i.command || "").toLowerCase().includes('pending') && !isAuditOFF(i)).length;
-        document.getElementById('totalPendingCount').innerText = pendingCount;
-        const fastItems = fullRawData.filter(i => {
-            const cmd = String(i.command || "").toLowerCase();
-            if (cmd.includes('pending') || cmd.includes('progress') || isAuditOFF(i)) return false;
-            const p = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
-            const d = (p[0].length === 4) ? new Date(p[0], p[1]-1, p[2]) : new Date(p[2], p[1]-1, p[0]);
-            return !isNaN(d) && Math.ceil(Math.abs(new Date() - d) / (1000 * 60 * 60 * 24)) <= 10;
-        });
-        document.getElementById('totalFastCount').innerText = fastItems.filter(i => !hiddenBillingIds.includes(i.idCst)).length;
-        document.getElementById('totalLeadsCount').innerText = leadsData.length;
-    }
-
-    function triggerAnimate(el) { el.classList.remove('animate-click'); void el.offsetWidth; el.classList.add('animate-click'); }
-
-    document.querySelectorAll('.force-caps').forEach(el => {
-        el.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
-    });
-
-    document.getElementById('rekapanForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        const btn = document.getElementById('btnKirim'); 
-        btn.disabled = true; 
-        btn.innerText = "🚀 MENYIMPAN...";
-
-        const rawFormData = new FormData(e.target);
-        rawFormData.set('hp', formatWaMeLink(rawFormData.get('hp'))); 
-
-        let manualText = document.getElementById('inputManual').value.trim().toUpperCase();
-        let statusCheckbox = "";
-        if (document.getElementById('onProgress').checked) {
-            statusCheckbox = "ON PROGRESS";
-        } else if (document.getElementById('pending').checked) {
-            statusCheckbox = "PENDING";
+            if(btnMain) { btnMain.innerHTML = "Cek Ulang"; btnMain.disabled = false; }
+            if(btnMap) btnMap.disabled = false;
+            if(btnMapText) btnMapText.innerText = "Cek Cover Area";
         }
 
-        rawFormData.set('command', manualText);          
-        rawFormData.set('command_billing', statusCheckbox); 
+        function isValidEmail(email) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email); }
+        function isValidWhatsApp(wa) { return /^(08|628)[0-9]{8,13}$/.test(wa); }
 
-        try {
-            const r = await fetch(scriptURL, { method: 'POST', body: rawFormData });
-            const resText = await r.text();
-            if(resText === "Success") { 
-                alert("Data Berhasil Disimpan!"); 
-                e.target.reset(); 
-                muatDataTabel(); 
-                switchTab('tabel');
-            } else { 
-                alert("Respon Server: " + resText); 
+        function updateChatLockUI() {
+            const count = parseInt(localStorage.getItem(UNREPLIED_COUNT_KEY)) || 0;
+            const overlay = document.getElementById('chat-blocked-overlay');
+            const inputArea = document.getElementById('input-container-chat');
+            if (count >= 5) {
+                if(overlay) overlay.style.display = 'flex';
+                if(inputArea) inputArea.classList.add('status-blocked');
+            } else {
+                if(overlay) overlay.style.display = 'none';
+                if(inputArea) inputArea.classList.remove('status-blocked');
             }
-        } catch(e) { 
-            alert("Error: " + e.message); 
-        } finally { 
-            btn.disabled = false; 
-            btn.innerText = "Simpan Data"; 
         }
-    });
 
-    window.addEventListener('DOMContentLoaded', () => { 
-        loadOfflineData(); 
-        if (sessionStorage.getItem('isLoggedIn') === 'true') { 
-            document.getElementById('lockScreen').classList.add('hidden'); 
-            muatDataTabel();
-        } 
-    });
-</script>
+        async function telegramFetch(text) {
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: 'Markdown' })
+                });
+                return await response.json();
+            } catch (e) { return { ok: false }; }
+        }
+
+        function toggleChat() {
+            const chat = document.getElementById('chat-widget');
+            const btn = document.getElementById('chat-toggle-btn');
+            if (chat.style.display === 'flex') {
+                chat.style.display = 'none'; btn.style.display = 'block';
+            } else {
+                chat.style.display = 'flex'; btn.style.display = 'none';
+                if(localStorage.getItem(USER_DATA_KEY)) document.getElementById('chat-form-overlay').style.display = 'none';
+                checkSessionStatus(); 
+                updateChatLockUI();
+                scrollBottom();
+            }
+        }
+
+        function createWaLink(phone, message) {
+            let cleanPhone = phone.replace(/\D/g, '');
+            if (cleanPhone.startsWith('0')) { cleanPhone = '62' + cleanPhone.slice(1); }
+            return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
+        }
+
+        async function submitChatForm() {
+            const nama = document.getElementById('chat-reg-nama').value.trim();
+            const email = document.getElementById('chat-reg-email').value.trim();
+            const waRaw = document.getElementById('chat-reg-wa').value.trim();
+            const btn = document.getElementById('btn-start-chat');
+
+            if(!nama || !isValidEmail(email) || !isValidWhatsApp(waRaw)) { alert("Data tidak valid!"); return; }
+            
+            btn.disabled = true;
+            btn.innerText = "Memproses...";
+
+            let isCovered = false;
+            let currentLat = localStorage.getItem('raw_lat');
+            let currentLng = localStorage.getItem('raw_lng');
+            
+            if(currentLat && currentLng) {
+                let closestDist = 9999;
+                let coverageData = JSON.parse(localStorage.getItem(COVERAGE_STORAGE_KEY) || '[]');
+                coverageData.forEach(coord => {
+                    const d = calculateDistance(parseFloat(currentLat), parseFloat(currentLng), coord[1], coord[0]);
+                    if (d < closestDist) closestDist = d;
+                });
+                if ((closestDist * 1000) <= 250) isCovered = true;
+            }
+
+            localStorage.setItem(USER_DATA_KEY, JSON.stringify({ nama, email, wa: waRaw }));
+            localStorage.setItem(SESSION_STATUS_KEY, 'active');
+            document.getElementById('chat-form-overlay').style.display = 'none';
+            
+            const loc = localStorage.getItem(COORDS_CACHE_KEY) || "Peta tidak tersedia";
+            const msg = `👤 *KONSULTASI BARU*\n` +
+                        `━━━━━━━━━━━━━━━\n` +
+                        `📛 *Nama:* ${nama}\n` +
+                        `📱 *WhatsApp:* [${waRaw}](https://wa.me/${waRaw.replace(/\D/g, '')})\n` +
+                        `📧 *Email:* ${email}\n` +
+                        `✅ *Status Coverage:* ${isCovered ? 'TERCOVER' : 'BELUM TERCOVER'}\n` +
+                        `🆔 *ID:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n` +
+                        `📍 *Live Map:* [Buka Peta](${loc})`;
+            
+            await telegramFetch(msg);
+            
+            addMessageToUI('admin', `Halo Pak/Bu ${nama}! 👋 Ada yang bisa Admin MyRepublic Sragen bantu?`, true);
+
+            if(isCovered) {
+                setTimeout(() => {
+                    addMessageToUI('admin', `Saat ini data anda sudah tersimpan di server dengan database terenkripsi aman. Admin akan segera menghubungi anda secepatnya lewat pesan WhatsApp.`, true);
+                }, 1000);
+                
+                setTimeout(() => {
+                    const daftarLink = `<a href="https://myrepublicsragen.my.id/indexpendaftaran.html" style="color:#6c2d91; font-weight:bold; text-decoration:underline;">DAFTAR</a>`;
+                    addMessageToUI('admin', `Apabila anda ingin melanjutkan pendaftaran Klik ${daftarLink}`, true);
+                }, 2000);
+            }
+            
+            btn.disabled = false;
+            btn.innerText = "Mulai Chat Sekarang";
+        }
+
+        function addMessageToUI(sender, text, shouldSave = false) {
+            const container = document.getElementById('chat-content');
+            if(!container) return;
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const div = document.createElement('div');
+            div.className = `bubble ${sender === 'user' ? 'bubble-user' : 'bubble-admin'}`;
+            div.innerHTML = `${text} <span class="chat-timestamp">${time}</span>`;
+            container.appendChild(div);
+            scrollBottom();
+            if(shouldSave) {
+                const history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+                history.push({ sender, text, time });
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+            }
+        }
+
+        function scrollBottom() {
+            const container = document.getElementById('chat-content');
+            if(container) container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            if (!text || localStorage.getItem(SESSION_STATUS_KEY) === 'ended') return;
+            
+            let count = parseInt(localStorage.getItem(UNREPLIED_COUNT_KEY)) || 0;
+            if (count >= 5) { updateChatLockUI(); return; }
+
+            const userData = JSON.parse(localStorage.getItem(USER_DATA_KEY) || '{"nama":"User"}');
+            addMessageToUI('user', text, true); 
+            input.value = '';
+            count++;
+            localStorage.setItem(UNREPLIED_COUNT_KEY, count.toString());
+            updateChatLockUI();
+            
+            const loc = localStorage.getItem(COORDS_CACHE_KEY) || "Lokasi mati";
+            const msg = `💬 *PESAN BARU*\n` +
+                        `━━━━━━━━━━━━━━━\n` +
+                        `👤 *User:* ${userData.nama}\n` +
+                        `🆔 *Session:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n\n` +
+                        `📝 *Pesan:*\n_${text}_`;
+            await telegramFetch(msg);
+        }
+
+        async function startPolling() {
+            setInterval(async () => {
+                if(isProcessingPolling) return;
+                isProcessingPolling = true;
+                try {
+                    const sid = localStorage.getItem(SESSION_ID_KEY);
+                    if (!sid) { isProcessingPolling = false; return; }
+                    const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=5`);
+                    const data = await res.json();
+                    if (data.ok && data.result.length > 0) {
+                        for (let update of data.result) {
+                            lastUpdateId = update.update_id;
+                            localStorage.setItem(LAST_UPDATE_KEY, lastUpdateId);
+                            if (update.message && update.message.reply_to_message && update.message.reply_to_message.text.includes(sid)) {
+                                addMessageToUI('admin', update.message.text, true);
+                                localStorage.setItem(UNREPLIED_COUNT_KEY, '0');
+                                updateChatLockUI();
+                            }
+                        }
+                    }
+                } catch (e) {}
+                isProcessingPolling = false;
+            }, 4000);
+        }
+
+        function checkSessionStatus() {
+            const isEnded = localStorage.getItem(SESSION_STATUS_KEY) === 'ended';
+            if(isEnded) {
+                document.getElementById('input-container-chat').classList.add('status-blocked');
+                document.getElementById('reset-session-area').classList.remove('hidden');
+            }
+        }
+
+        function clearChatSessionPrompt() { if(confirm("Hapus riwayat?")) { localStorage.clear(); location.reload(); } }
+        function clearChatSession() { localStorage.clear(); location.reload(); }
+
+        function togglePaket() { 
+            const container = document.getElementById('paket-container');
+            container.classList.toggle('show'); 
+            if (container.classList.contains('show')) document.getElementById('daftar-harga-section').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function openRegistrationModal(paket) { 
+            document.getElementById('reg-paket').value = paket; 
+            checkRegistrationStatus();
+            new bootstrap.Modal(document.getElementById('modalDaftar')).show(); 
+        }
+
+        async function submitRegistrationToBot() {
+            const btn = document.getElementById('btn-submit-reg');
+            const data = {
+                nama: document.getElementById('reg-nama').value.trim(),
+                wa: document.getElementById('reg-wa').value.trim(),
+                paket: document.getElementById('reg-paket').value,
+                alamatManual: document.getElementById('reg-alamat').value.trim()
+            };
+            if(!data.nama || !data.wa || !data.alamatManual) { alert("Lengkapi data!"); return; }
+            btn.disabled = true; btn.textContent = "Mengolah Data...";
+            const rawLat = localStorage.getItem('raw_lat');
+            const rawLng = localStorage.getItem('raw_lng');
+            const mapLink = localStorage.getItem(COORDS_CACHE_KEY) || "Peta tidak tersedia";
+            let alamatLengkapStr = data.alamatManual;
+            if(rawLat && rawLng) {
+                const detailAddr = await getFullAddressOnline(rawLat, rawLng);
+                if(detailAddr) alamatLengkapStr = `${data.alamatManual}, ${detailAddr.road}, ${detailAddr.village}, ${detailAddr.district}, ${detailAddr.city}, ${detailAddr.postcode}, ${detailAddr.state}`;
+            }
+            const confirmText = `DATA REGISTRASI MASUK\n━━━━━━━━━━━━━━━\n🆔 SID: ${localStorage.getItem(SESSION_ID_KEY)}\n👤 Nama: ${data.nama}\n📱 WhatsApp: ${data.wa}\n🚀 Paket: ${data.paket}\n🏠 Alamat: ${alamatLengkapStr}\n📍 Titik Maps: ${mapLink}\n━━━━━━━━━━━━━━━\napakah benar bpk/ibu ${data.nama} akan melakukan pemasangan MyRepublic dengan data di atas?`;
+            const waUrl = createWaLink(data.wa, confirmText);
+            const msg = `🚀 *DATA REGISTRASI MASUK*\n━━━━━━━━━━━━━━━\n🆔 *SID:* \`${localStorage.getItem(SESSION_ID_KEY)}\`\n👤 *Nama:* ${data.nama}\n📱 *WhatsApp:* [${data.wa}](${waUrl})\n🚀 *Paket:* ${data.paket}\n🏠 *Alamat:* ${alamatLengkapStr}\n📍 *Titik Maps:* [Lihat Lokasi](${mapLink})\n━━━━━━━━━━━━━━━\n\n\n👉 [HUBUNGI USER VIA WA](${waUrl})`;
+            const res = await telegramFetch(msg);
+            if(res.ok) {
+                localStorage.setItem(REG_SUCCESS_KEY, 'true');
+                checkRegistrationStatus();
+                alert("Terkirim! Admin akan segera menghubungi Anda.");
+            } else { alert("Gagal kirim ke server."); }
+            btn.disabled = false; btn.textContent = "Kirim Data Pendaftaran";
+        }
+
+        window.onload = () => {
+            initCoverageMap(); 
+            forcePrecisionLocation();
+            checkRegistrationStatus();
+            fetchPromoFromSheets(); 
+            fetchPricesFromSheets();
+            initReviewDatabase();
+            refreshReviews();
+            setInterval(refreshReviews, 5000); 
+            handleKeyboardShow(); 
+            const history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+            history.forEach(item => addMessageToUI(item.sender, item.text));
+            checkSessionStatus(); 
+            updateChatLockUI();
+            scrollBottom(); 
+            startPolling();
+        };
+    </script>
 </body>
 </html>
