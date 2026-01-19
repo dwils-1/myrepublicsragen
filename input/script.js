@@ -905,7 +905,12 @@ async function reverseGeocode(lat, lon) {
     try {
         const response = await fetch("https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + lon);
         const data = await response.json();
-        if (data && data.display_name) { alamatField.value = data.display_name.toUpperCase(); }
+        if (data && data.display_name) { 
+            let cleanAlamat = data.display_name.toUpperCase();
+            // Hapus kata ", JAWA," yang muncul sebelum kode pos
+            cleanAlamat = cleanAlamat.replace(", JAWA,", ","); 
+            alamatField.value = cleanAlamat;
+        }
     } catch (err) { console.error("Geocoding Error"); }
 }
 
@@ -962,10 +967,14 @@ function renderLeadsCards(data) {
         const namaPel = item.nama || 'Bapak/Ibu';
         
         // Pesan WA Lead Prospek yang disesuaikan
-        const pesanProspek = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,%0A%0ASaya dari *MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat Bapak/Ibu.%0A%0AKami sedang ada *Promo Spesial* khusus untuk area Anda berupa potongan biaya langganan dan gratis biaya instalasi jika registrasi dilanjutkan hari ini.%0A%0ASaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!`;
+        const pesanProspek = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,%0A%0ASaya dari *MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat ${item.alamat || '-'} (${item.koordinat || '-'}) %0A%0AKami sedang ada *Promo Spesial* khusus untuk area Anda berupa potongan biaya langganan dan gratis biaya instalasi jika registrasi dilanjutkan hari ini.%0A%0ASaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!`;
         
         const linkWA = "https://api.whatsapp.com/send?phone=" + item.hp + "&text=" + pesanProspek;
         const linkMaps = item.koordinat ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(item.koordinat) : "#";
+
+        // --- TAMBAHAN BARU: LINK & PESAN KHUSUS "SAYA DWI" ---
+        const pesanIntro = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nAlamat: ${item.alamat || '-'} (${item.koordinat || '-'}) \n\nPerkenalkan saya *DWI LS.* tim pemasangan *WiFi MyRepublic.*\n\nSimpan nomor saya, untuk kebutuhan kedepan apabila membutuhkan pemasangan WiFi. Terima kasih!`;
+        const linkWaIntro = "https://api.whatsapp.com/send?phone=" + item.hp + "&text=" + encodeURIComponent(pesanIntro);
 
         const card = document.createElement('div');
         card.className = 'lead-card mb-4';
@@ -982,6 +991,9 @@ function renderLeadsCards(data) {
             </div>
             <div class="flex gap-2">
                 <button onclick="window.open('${linkWA}')" class="flex-1 bg-green-500 hover:bg-green-600 text-white text-[9px] font-black py-2.5 rounded-lg uppercase flex items-center justify-center gap-1">💬 Follow Up</button>
+                
+                <button onclick="window.open('${linkWaIntro}')" class="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-[9px] font-black py-2.5 rounded-lg uppercase flex items-center justify-center gap-1 shadow-md transition-all">👋 SAYA DWI</button>
+                
                 <button onclick="window.open('${linkMaps}')" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white text-[9px] font-black py-2.5 rounded-lg uppercase">📍 Lokasi</button>
             </div>`;
         cardsContainer.appendChild(card);
