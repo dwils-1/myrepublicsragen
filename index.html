@@ -470,10 +470,17 @@
                 </div>
                 
                 <div class="modal-body p-0" style="background-color: #f0f2f5;">
-                    <div class="tab-container sticky-top bg-white shadow-sm d-flex justify-content-center">
-                        <button class="tab-btn active" onclick="openTabGuide(event, 'langkah')">PANDUAN GAMBAR</button>
-                        <button class="tab-btn" onclick="openTabGuide(event, 'video')">VIDEO TUTORIAL</button>
-                    </div>
+<div class="tab-container sticky-top bg-white shadow-sm d-flex justify-content-center py-2">
+    <div class="tab-wrapper p-1 bg-gray-100 rounded-pill d-flex">
+        <button class="tab-btn active rounded-pill px-4 py-2" onclick="openTabGuide(event, 'langkah')">
+            PANDUAN GAMBAR
+        </button>
+        <div class="mx-1"></div> <button class="tab-btn rounded-pill px-4 py-2" onclick="openTabGuide(event, 'video')">
+            VIDEO TUTORIAL
+        </button>
+    </div>
+</div>
+
 
                     <div id="langkah" class="tab-content-guide active p-3">
                         <div class="container-fluid" style="max-width: 800px;">
