@@ -1009,7 +1009,7 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
         let txt = "";
         if (withText) {
             if (isPending) {
-                txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\n\nSaya dari *Dwi LS. MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat Bapak/Ibu.\n\nKami sedang ada *Promo Spesial* khusus untuk area Anda dan gratis biaya instalasi jika registrasi dilanjutkan hari ini.\n\nSaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!`;
+                txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\n\nSaya dari *Dwi LS. MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat Bapak/Ibu.\n\nKami sedang ada *Promo Spesial* khusus untuk area Anda gratis biaya instalasi jika registrasi dilanjutkan hari ini.\n\nSaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!`;
             } else if (source === 'qc') {
                 txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\nSaya Dwi MyRepublic, menanyakan kualitas internet di *${alamat}* apakah lancar? Terima kasih!`;
             } else {
