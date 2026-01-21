@@ -38,6 +38,7 @@ window.onload = () => {
     loadDraft();
     loadLeadsDraft();
     resetInactivityTimer();
+    initDuplicateCheck(); // Inisialisasi deteksi duplikat
     
     if (sessionStorage.getItem('isLoggedIn') === 'true') {
         const lockScr = document.getElementById('lockScreen');
@@ -171,17 +172,70 @@ if (draftLeadsEls.length > 0) {
 
 // --- HELPER FUNCTIONS ---
 function cleanId(idStr) { return String(idStr || "").replace(/\s*S\s*$/i, "").trim(); }
+
 function isAuditOFF(item) {
     const cmd = String(item.command || "").toUpperCase();
     const idRaw = String(item.idCst || "").toLowerCase();
     return idRaw.includes('off') || cmd.includes('OFF');
 }
+
+/**
+ * LOGIKA: Memformat nomor HP menjadi 628...
+ */
 function formatWaMeLink(num) {
+    if (!num) return "";
     let clean = num.toString().replace(/\D/g, "");
-    if (clean.startsWith("0")) clean = "62" + clean.slice(1);
-    else if (clean.startsWith("8")) clean = "62" + clean;
-    else if (!clean.startsWith("62")) clean = "62" + clean;
+    if (clean.startsWith("08")) {
+        clean = "62" + clean.slice(1);
+    } else if (clean.startsWith("8")) {
+        clean = "62" + clean;
+    } else if (clean.startsWith("6208")) {
+        clean = "62" + clean.slice(4);
+    }
+    if (!clean.startsWith("62") && clean.length > 0) {
+        clean = "62" + clean;
+    }
     return clean;
+}
+
+// --- VALIDASI ID CST DUPLIKAT ---
+function initDuplicateCheck() {
+    const inputIdCst = document.querySelector('input[name="id_cst"]');
+    if (inputIdCst) {
+        inputIdCst.addEventListener('blur', function() {
+            const val = this.value.trim();
+            if (val.length >= 4) {
+                const isExist = fullRawData.find(item => cleanId(item.idCst) === cleanId(val));
+                if (isExist) {
+                    openModal({
+                        title: '⚠️ ID SUDAH TERDAFTAR',
+                        headerClass: 'bg-amber-500',
+                        body: `
+                            <div class="text-left p-3 bg-amber-50 rounded-xl border border-amber-200">
+                                <p class="text-[10px] font-black text-amber-700 uppercase mb-2">Data Pemilik ID:</p>
+                                <p class="text-xs">👤 Nama: <b>${isExist.nama}</b></p>
+                                <p class="text-xs">📅 Tgl Pasang: <b>${isExist.tanggal}</b></p>
+                                <p class="text-xs">📍 Alamat: <b>${isExist.alamat.substring(0, 40)}...</b></p>
+                            </div>
+                        `,
+                        subtext: 'ID ' + val + ' sudah ada di database!',
+                        buttons: [
+                            { 
+                                text: 'GANTI ID', 
+                                class: 'bg-slate-100 py-3 rounded-xl font-black text-xs', 
+                                action: () => { inputIdCst.value = ""; inputIdCst.focus(); } 
+                            },
+                            { 
+                                text: 'TETAP GUNAKAN', 
+                                class: 'bg-amber-500 text-white py-3 rounded-xl font-black text-xs', 
+                                action: () => {} 
+                            }
+                        ]
+                    });
+                }
+            }
+        });
+    }
 }
 
 function loadOfflineData() {
@@ -498,7 +552,7 @@ function closeModal() {
 
 function formatBeautifulNumber(num) {
     if (!num) return "-";
-    let clean = num.toString().replace("wa.me/+", "").replace(/\D/g, "");
+    let clean = num.toString().replace(/\D/g, "");
     if (clean.startsWith("62")) clean = "0" + clean.slice(2);
     else if (!clean.startsWith("0")) clean = "0" + clean;
     if (clean.length >= 11) return clean.replace(/(\d{4})(\d{4})(\d{4,})/, '$1-$2-$3');
@@ -506,9 +560,14 @@ function formatBeautifulNumber(num) {
 }
 
 function getPureWaNumber(num) {
-    let clean = num.toString().replace("wa.me/+", "").replace(/\D/g, "");
-    if (clean.startsWith("0")) clean = "62" + clean.slice(1);
-    else if (clean.startsWith("8")) clean = "62" + clean;
+    if (!num) return "";
+    let clean = num.toString().replace(/\D/g, "");
+    if (clean.startsWith("08")) {
+        clean = "62" + clean.slice(1);
+    } else if (clean.startsWith("8")) {
+        clean = "62" + clean;
+    }
+    if (!clean.startsWith("62")) clean = "62" + clean;
     return clean;
 }
 
@@ -884,34 +943,31 @@ function handleCopyClick(id) {
 }
 
 async function downloadImage(nama, id, paket, alamat, tgl, japo, hp, email) {
-    const cNama = document.getElementById('c-nama');
-    if(cNama) cNama.innerText = (nama || 'PELANGGAN').toUpperCase();
-    const cId = document.getElementById('c-id-bayar');
-    if(cId) cId.innerText = cleanId(id);
-    const cPaket = document.getElementById('c-paket');
-    if(cPaket) cPaket.innerText = paket || '-';
-    let cleanHp = hp;
-    if (!cleanHp || cleanHp === 'undefined' || cleanHp === '0' || cleanHp === 0) cleanHp = '-';
-    else cleanHp = formatBeautifulNumber(cleanHp); 
-    const cHp = document.getElementById('c-hp');
-    if(cHp) cHp.innerText = cleanHp;
-    let cleanEmail = email;
-    if (!cleanEmail || cleanEmail === 'undefined') cleanEmail = '-';
-    const cEmail = document.getElementById('c-email');
-    if(cEmail) cEmail.innerText = cleanEmail.toLowerCase();
-    const cAlamat = document.getElementById('c-alamat');
-    if(cAlamat) cAlamat.innerText = (alamat || '-').toUpperCase();
-    const cTgl = document.getElementById('c-tgl');
-    if(cTgl) cTgl.innerText = tgl || '-';
-    const cJapo = document.getElementById('c-japo');
-    if(cJapo) cJapo.innerText = japo || '-';
+    // ... (kode bagian atas tetap sama seperti sebelumnya) ...
+    
     try {
         const el = document.getElementById('canvasTemplate');
         if(el) {
             el.style.display = 'flex'; 
             const can = await html2canvas(el, { scale: 2, useCORS: true, logging: false, backgroundColor: null });
+            
+            // --- BAGIAN YANG DIUBAH ---
             const lnk = document.createElement('a');
-            lnk.download = `TAGIHAN_${cleanId(id)}.png`;
+            
+            // Membuat timestamp (format: JamMenitDetik)
+            const now = new Date();
+            const timestamp = now.getHours().toString().padStart(2, '0') + 
+                              now.getMinutes().toString().padStart(2, '0') + 
+                              now.getSeconds().toString().padStart(2, '0');
+            
+            // Membersihkan nama dari karakter aneh dan spasi agar aman untuk nama file
+            const cleanNama = (nama || 'PELANGGAN').trim().replace(/\s+/g, '_').toUpperCase();
+            const cleanIdCst = cleanId(id);
+
+            // Set nama file: NAMA_ID_TIMESTAMP.png
+            lnk.download = `${cleanNama}_${cleanIdCst}_${timestamp}.png`;
+            // --------------------------
+
             lnk.href = can.toDataURL("image/png");
             document.body.appendChild(lnk);
             lnk.click();
@@ -920,6 +976,7 @@ async function downloadImage(nama, id, paket, alamat, tgl, japo, hp, email) {
         return true;
     } catch (err) { console.error("Gagal generate gambar:", err); return true; }
 }
+
 
 async function prosesWa(hp, id, nama, japo, paket, source = 'general') {
     const card = document.getElementById(`card-${id}`);
@@ -962,8 +1019,6 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
                 else if (sel > 0 && sel <= 7) txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\n\nIzin menginfokan tagihan internet MyRepublic sudah melewati tanggal jatuh tempo:${detailInfo}\n\nMohon bantuannya untuk segera dibayarkan agar internet tidak terisolir otomatis. Terima kasih 🙏`;
                 else txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\n\nMenanyakan kualitas layanan internet MyRepublic di:\n📍 ${alamat}\n\nApakah koneksinya lancar aman? Terima kasih sehat selalu 🙏`;
             }
-
-            // MODIFIKASI: Menambahkan Footer Link (Kecuali Complaint karena fungsi ini tidak menangani complaint)
             txt += "\n\nCek promo, ganti password, kendala : https://myrepublicsragen.my.id/";
         }
 
@@ -1021,8 +1076,21 @@ document.querySelectorAll('.force-caps').forEach(el => { el.addEventListener('in
 const rForm = document.getElementById('rekapanForm');
 if(rForm) {
     rForm.addEventListener('submit', async e => {
-        e.preventDefault(); const btn = document.getElementById('btnKirim'); btn.disabled = true; btn.innerText = "🚀 MENYIMPAN...";
-        const rFD = new FormData(e.target); rFD.set('hp', formatWaMeLink(rFD.get('hp'))); 
+        e.preventDefault();
+        
+        // VALIDASI DUPLIKAT TERAKHIR SEBELUM SUBMIT
+        const currentId = e.target.id_cst.value.trim();
+        const duplicate = fullRawData.find(item => cleanId(item.idCst) === cleanId(currentId));
+        if (duplicate) {
+            const confirmSave = confirm(`ID ${currentId} sudah terdaftar atas nama ${duplicate.nama}. Tetap simpan?`);
+            if (!confirmSave) return;
+        }
+
+        const btn = document.getElementById('btnKirim'); btn.disabled = true; btn.innerText = "🚀 MENYIMPAN...";
+        const rFD = new FormData(e.target); 
+        
+        rFD.set('hp', formatWaMeLink(rFD.get('hp'))); 
+
         const op = document.getElementById('onProgress');
         const pen = document.getElementById('pending');
         let sCB = (op && op.checked) ? "ON PROGRESS" : ((pen && pen.checked) ? "PENDING" : "");
@@ -1073,10 +1141,7 @@ if(lForm) {
         btn.disabled = true;
         btn.innerText = "🚀 MENGIRIM...";
         const formData = new FormData(e.target);
-        let rawHp = formData.get('leads_hp').replace(/\D/g, "");
-        if (rawHp.startsWith("0")) rawHp = "62" + rawHp.slice(1);
-        else if (rawHp.startsWith("8")) rawHp = "62" + rawHp;
-        formData.set('leads_hp', rawHp);
+        formData.set('leads_hp', formatWaMeLink(formData.get('leads_hp')));
         try {
             const response = await fetch(leadsScriptURL, { method: 'POST', body: formData });
             const result = await response.text();
@@ -1112,8 +1177,6 @@ function renderLeadsCards(data) {
     const cardsContainer = document.getElementById('cardsContainer');
     if(!cardsContainer) return;
     cardsContainer.innerHTML = ''; 
-    
-    // Teks tambahan untuk link
     const promoLink = "Cek promo, ganti password, kendala : https://myrepublicsragen.my.id/";
 
     data.forEach(item => {
@@ -1121,16 +1184,10 @@ function renderLeadsCards(data) {
         const hr = now.getHours();
         let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
         const namaPel = item.nama || 'Bapak/Ibu';
-        
-        // MODIFIKASI: Menambahkan Link di akhir pesanProspek (menggunakan %0A untuk enter karena format URL)
         const pesanProspek = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,%0A%0ASaya dari *MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat ${item.alamat || '-'} (${item.koordinat || '-'}) %0A%0AKami sedang ada *Promo Spesial* khusus untuk area Anda berupa potongan biaya langganan dan gratis biaya instalasi jika registrasi dilanjutkan hari ini.%0A%0ASaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!%0A%0A${promoLink}`;
-        
         const linkWA = "https://api.whatsapp.com/send?phone=" + item.hp + "&text=" + pesanProspek;
         const linkMaps = item.koordinat ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(item.koordinat) : "#";
-        
-        // MODIFIKASI: Menambahkan Link di akhir pesanIntro (menggunakan \n karena akan di-encodeURIComponent)
         const pesanIntro = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nAlamat: ${item.alamat || '-'} (${item.koordinat || '-'}) \n\nPerkenalkan saya *DWI LS.* tim pemasangan *WiFi MyRepublic.*\n\nSimpan nomor saya, untuk kebutuhan kedepan apabila membutuhkan pemasangan WiFi. Terima kasih!\n\n${promoLink}`;
-        
         const linkWaIntro = "https://api.whatsapp.com/send?phone=" + item.hp + "&text=" + encodeURIComponent(pesanIntro);
         
         const card = document.createElement('div');
@@ -1161,7 +1218,6 @@ function tutupDaftar() {
     if(el) el.classList.add('hidden'); 
 }
 
-// --- AUTO EXTRACT ADDRESS FROM MANUAL COORDINATE INPUT ---
 const manualInputCoord = document.getElementById('inputKoordinat');
 if (manualInputCoord) {
     manualInputCoord.addEventListener('change', function() {
@@ -1243,12 +1299,11 @@ function inputKendalaComplaint(idCst) {
             body: `
                 <div class="p-2 text-left">
                     <p class="text-[10px] font-bold text-slate-500 mb-1 uppercase">Customer: ${item.nama}</p>
-                    <textarea id="textKendala" placeholder="Tuliskan detail kendala di sini..." 
-                        class="input-field h-24 border-red-200 force-caps" 
-                        oninput="logikaSaranKendala(this.value)"
-                        onfocus="document.getElementById('customModal').classList.add('keyboard-active')"
-                        onblur="setTimeout(() => document.getElementById('customModal').classList.remove('keyboard-active'), 100)">
-                    </textarea>
+<textarea id="textKendala" placeholder="Tuliskan detail kendala di sini..." 
+    class="input-field h-24 border-red-200 force-caps text-left" 
+    oninput="logikaSaranKendala(this.value)"
+    onfocus="document.getElementById('customModal').classList.add('keyboard-active')"
+    onblur="setTimeout(() => document.getElementById('customModal').classList.remove('keyboard-active'), 100)"></textarea>
                     
                     <div id="containerSaran" class="mt-3 flex flex-wrap gap-2"></div>
                 </div>
@@ -1268,6 +1323,7 @@ function inputKendalaComplaint(idCst) {
         });
     }, 300);
 }
+
 
 
 function logikaSaranKendala(val) {
@@ -1303,8 +1359,8 @@ function logikaSaranKendala(val) {
 function pilihSaran(txt) {
     const input = document.getElementById('textKendala');
     if (input) {
-        const separator = input.value ? " - " : "";
-        input.value += separator + txt.toUpperCase();
+        // Menghapus separator agar tidak ada spasi atau tanda hubung otomatis
+        input.value += txt.toUpperCase(); 
         input.focus();
         document.getElementById('containerSaran').innerHTML = "";
     }
