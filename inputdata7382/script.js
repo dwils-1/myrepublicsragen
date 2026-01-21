@@ -962,11 +962,16 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
                 else if (sel > 0 && sel <= 7) txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\n\nIzin menginfokan tagihan internet MyRepublic sudah melewati tanggal jatuh tempo:${detailInfo}\n\nMohon bantuannya untuk segera dibayarkan agar internet tidak terisolir otomatis. Terima kasih 🙏`;
                 else txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\n\nMenanyakan kualitas layanan internet MyRepublic di:\n📍 ${alamat}\n\nApakah koneksinya lancar aman? Terima kasih sehat selalu 🙏`;
             }
+
+            // MODIFIKASI: Menambahkan Footer Link (Kecuali Complaint karena fungsi ini tidak menangani complaint)
+            txt += "\n\nCek promo, ganti password, kendala : https://myrepublicsragen.my.id/";
         }
+
         const finalUrl = `https://api.whatsapp.com/send?phone=${cH}&text=${encodeURIComponent(txt)}`;
         const card = document.getElementById(`card-${id}`);
         const isProgress = card?.getAttribute('data-command').toLowerCase().includes('on progress');
         if (isProgress) fetch(`${scriptURL}?action=hapusHanyaTextProgress&idCst=${id}`).catch(err => console.log("Gagal update progress"));
+        
         if (withText && source !== 'qc') {
             try {
                 const imagePromise = downloadImage(nama, id, paket, alamat, tgl, japo, hp, email);
@@ -977,6 +982,7 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
         window.location.href = finalUrl;
     } catch (err) { alert("Terjadi kesalahan sistem: " + err.message); window.location.href = `https://api.whatsapp.com/send?phone=${cH}`; }
 }
+
 
 async function updateFastAndProgressCounts() {
     if(!fullRawData) return;
@@ -1106,16 +1112,27 @@ function renderLeadsCards(data) {
     const cardsContainer = document.getElementById('cardsContainer');
     if(!cardsContainer) return;
     cardsContainer.innerHTML = ''; 
+    
+    // Teks tambahan untuk link
+    const promoLink = "Cek promo, ganti password, kendala : https://myrepublicsragen.my.id/";
+
     data.forEach(item => {
         const now = new Date();
         const hr = now.getHours();
         let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
         const namaPel = item.nama || 'Bapak/Ibu';
-        const pesanProspek = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,%0A%0ASaya dari *MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat ${item.alamat || '-'} (${item.koordinat || '-'}) %0A%0AKami sedang ada *Promo Spesial* khusus untuk area Anda berupa potongan biaya langganan dan gratis biaya instalasi jika registrasi dilanjutkan hari ini.%0A%0ASaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!`;
+        
+        // MODIFIKASI: Menambahkan Link di akhir pesanProspek (menggunakan %0A untuk enter karena format URL)
+        const pesanProspek = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,%0A%0ASaya dari *MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat ${item.alamat || '-'} (${item.koordinat || '-'}) %0A%0AKami sedang ada *Promo Spesial* khusus untuk area Anda berupa potongan biaya langganan dan gratis biaya instalasi jika registrasi dilanjutkan hari ini.%0A%0ASaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!%0A%0A${promoLink}`;
+        
         const linkWA = "https://api.whatsapp.com/send?phone=" + item.hp + "&text=" + pesanProspek;
         const linkMaps = item.koordinat ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(item.koordinat) : "#";
-        const pesanIntro = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nAlamat: ${item.alamat || '-'} (${item.koordinat || '-'}) \n\nPerkenalkan saya *DWI LS.* tim pemasangan *WiFi MyRepublic.*\n\nSimpan nomor saya, untuk kebutuhan kedepan apabila membutuhkan pemasangan WiFi. Terima kasih!`;
+        
+        // MODIFIKASI: Menambahkan Link di akhir pesanIntro (menggunakan \n karena akan di-encodeURIComponent)
+        const pesanIntro = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nAlamat: ${item.alamat || '-'} (${item.koordinat || '-'}) \n\nPerkenalkan saya *DWI LS.* tim pemasangan *WiFi MyRepublic.*\n\nSimpan nomor saya, untuk kebutuhan kedepan apabila membutuhkan pemasangan WiFi. Terima kasih!\n\n${promoLink}`;
+        
         const linkWaIntro = "https://api.whatsapp.com/send?phone=" + item.hp + "&text=" + encodeURIComponent(pesanIntro);
+        
         const card = document.createElement('div');
         card.className = 'lead-card mb-4';
         card.innerHTML = `
@@ -1137,6 +1154,7 @@ function renderLeadsCards(data) {
         cardsContainer.appendChild(card);
     });
 }
+
 
 function tutupDaftar() { 
     const el = document.getElementById('leadsList');
