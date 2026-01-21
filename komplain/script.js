@@ -1,130 +1,140 @@
 const TELEGRAM_TOKEN = "8531770277:AAHKW3KhdwXop-hpu_sE21djyqdu2Wl8vmU";
-const TELEGRAM_CHAT_ID = "-1003594385102"; // ID Grup Supergroup Anda
-const TELEGRAM_THREAD_ID = "13"; // ID Topik Komplain terbaru (berdasarkan tautan https://t.me/c/3594385102/13/14)
+const TELEGRAM_CHAT_ID = "-1003594385102";
+const TELEGRAM_THREAD_ID = "13";
 
-function updateWaktuOtomatis() {
-    const sekarang = new Date();
-    const opsiHari = { weekday: 'long' };
-    const opsiTanggal = { day: '2-digit', month: 'long', year: 'numeric' };
-    
-    document.getElementById('auto-hari').innerText = sekarang.toLocaleDateString('id-ID', opsiHari);
-    document.getElementById('auto-tanggal').innerText = sekarang.toLocaleDateString('id-ID', opsiTanggal);
+function bukaSpeedtest() {
+    const frame = document.getElementById('speedtestFrame');
+    frame.src = "https://fast.com/";
+    document.getElementById('modalSpeedtest').style.display = 'block';
 }
 
-function hitungDeadline() {
-    const sekarang = new Date();
-    const deadline = new Date(sekarang.getTime() + (3 * 60 * 60 * 1000));
-    const formatJam = deadline.getHours().toString().padStart(2, '0');
-    const formatMenit = deadline.getMinutes().toString().padStart(2, '0');
-    document.getElementById('waktu-deadline').innerText = formatJam + ":" + formatMenit;
+function tutupSpeedtest() {
+    document.getElementById('modalSpeedtest').style.display = 'none';
+    document.getElementById('speedtestFrame').src = "";
+}
+
+function bukaModalSkt() {
+    document.getElementById('modalSkt').style.display = 'block';
+}
+
+function tutupModalSkt() {
+    document.getElementById('modalSkt').style.display = 'none';
 }
 
 function setPosisi(isAtLocation) {
     const tikorBox = document.getElementById('tikor-box');
-    const koordinatInput = document.getElementById('koordinat');
     if (isAtLocation) {
         tikorBox.style.display = 'block';
-        if (!koordinatInput.value) ambilLokasi(); 
+        ambilLokasi();
     } else {
         tikorBox.style.display = 'none';
-        koordinatInput.value = ""; 
-        document.getElementById('status-lokasi').innerHTML = "Koordinat dibatalkan.";
+        document.getElementById('koordinat').value = "";
     }
 }
 
 function ambilLokasi() {
     const status = document.getElementById('status-lokasi');
-    const koordinatInput = document.getElementById('koordinat');
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            koordinatInput.value = position.coords.latitude + "," + position.coords.longitude;
-            status.innerHTML = "BERHASIL: " + koordinatInput.value;
+        navigator.geolocation.getCurrentPosition(p => {
+            const val = p.coords.latitude + "," + p.coords.longitude;
+            document.getElementById('koordinat').value = val;
+            status.innerText = "LOKASI BERHASIL TERKUNCI";
             status.style.color = "green";
-        }, function(error) {
-            status.innerHTML = "GAGAL! Mohon aktifkan GPS.";
+        }, () => {
+            status.innerText = "Gagal Cek GPS Otomatis";
             status.style.color = "red";
-        }, { enableHighAccuracy: true, timeout: 10000 });
+        });
     }
 }
 
-function bukaModal() { 
-    hitungDeadline(); 
-    document.getElementById('modalSkt').style.display = 'block'; 
-}
-
-function tutupModal() { 
-    document.getElementById('modalSkt').style.display = 'none'; 
-}
-
-function unlockAgreement() {
-    const cb = document.getElementById('setuju');
-    const container = document.getElementById('agreement-container');
-    cb.disabled = false; 
-    cb.checked = true;
-    container.classList.remove('locked');
-    tutupModal();
+window.onclick = function(event) {
+    const modalSkt = document.getElementById('modalSkt');
+    if (event.target == modalSkt) {
+        tutupModalSkt();
+    }
 }
 
 document.getElementById('formWifi').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const btn = document.getElementById('btnSubmit');
-    const loader = document.getElementById('loading-video');
-    const videoFile = document.getElementById('video_alat').files[0];
+    
+    const lockScreen = document.getElementById('lock-screen');
+    lockScreen.style.display = 'flex';
 
+    const btn = document.getElementById('btnSubmit');
     btn.disabled = true;
-    btn.innerText = "MENGIRIM...";
-    loader.style.display = "block";
 
     const nama = document.getElementById('nama').value;
     const idPel = document.getElementById('id_pelanggan').value;
     const paket = document.getElementById('paket').value;
     const kendala = document.getElementById('kendala').value;
-    const alamat = document.getElementById('alamat').value;
     const nohp = document.getElementById('nohp').value;
+    const alamat = document.getElementById('alamat').value;
     const koordinatValue = document.getElementById('koordinat').value;
-    const hari = document.getElementById('auto-hari').innerText;
-    const tanggal = document.getElementById('auto-tanggal').innerText;
+    
+    const opsiHari = { weekday: 'long' };
+    const opsiTgl = { day: 'numeric', month: 'long', year: 'numeric' };
+    const sekarang = new Date();
+    const hari = sekarang.toLocaleDateString('id-ID', opsiHari);
+    const tanggal = sekarang.toLocaleDateString('id-ID', opsiTgl);
 
-    const barisKoordinat = koordinatValue ? `📌 Kordinator : ${koordinatValue}` : ``;
+    const isiPesan = `COMPLAINT CUSTOMER
+-----------------------------
+${hari}
+${tanggal}
 
-    const pesanWhatsApp = `COMPLAINT CUSTOMER%0A-----------------------------%0A${hari}%0A${tanggal}%0A%0A👤 Nama: ${nama}%0A🆔 ID Pelanggan: ${idPel}%0A🚀 Paket : ${paket}%0A🛠️ Kendala : ${kendala}%0A📱 No HP : ${nohp}%0A🏠 Alamat : ${alamat}%0A${barisKoordinat}%0A-----------------------------`;
-    const waLink = `https://wa.me/?text=${pesanWhatsApp}`;
+• Nama: ${nama}
+• ID Pelanggan: ${idPel}
+• Paket: ${paket}
+• Kendala: ${kendala}
+• No HP: ${nohp}
+• Alamat: ${alamat} ${koordinatValue ? '(📌 ' + koordinatValue + ')' : ''}
+-----------------------------`;
 
-    const pesanTelegram = `*COMPLAINT CUSTOMER*\n-----------------------------\n${hari}\n${tanggal}\n\n👤 Nama: ${nama}\n🆔 ID Pelanggan: ${idPel}\n🚀 Paket : ${paket}\n🛠️ Kendala : ${kendala}\n📱 No HP : ${nohp}\n🏠 Alamat : ${alamat}\n${barisKoordinat}\n-----------------------------\nKLIK: <a href="${waLink}">WhatsApp</a>`;
+    const waLink = `https://wa.me/?text=${encodeURIComponent(isiPesan)}`;
+
+    const captionTele = `<b>COMPLAINT CUSTOMER</b>
+-----------------------------
+${hari}
+${tanggal}
+
+• Nama: ${nama}
+• ID Pelanggan: ${idPel}
+• Paket: ${paket}
+• Kendala: ${kendala}
+• No HP: ${nohp}
+• Alamat: ${alamat} ${koordinatValue ? '(📌 ' + koordinatValue + ')' : ''}
+-----------------------------
+klik : <a href="${waLink}">Share WhatsApp</a>`;
 
     const formData = new FormData();
     formData.append('chat_id', TELEGRAM_CHAT_ID);
-    formData.append('message_thread_id', TELEGRAM_THREAD_ID); // Diarahkan ke Topik 13 (Komplain)
-    formData.append('video', videoFile); 
-    formData.append('caption', pesanTelegram); 
-    formData.append('parse_mode', 'HTML');
-
-    const urlTelegram = `https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendVideo`;
+    formData.append('message_thread_id', TELEGRAM_THREAD_ID);
     
+    const media = [
+        { type: 'video', media: 'attach://vid', caption: captionTele, parse_mode: 'HTML' },
+        { type: 'photo', media: 'attach://pic' }
+    ];
+    
+    formData.append('media', JSON.stringify(media));
+    formData.append('vid', document.getElementById('video_alat').files[0]);
+    formData.append('pic', document.getElementById('ss_speedtest').files[0]);
+
     try {
-        const response = await fetch(urlTelegram, {
+        const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMediaGroup`, {
             method: 'POST',
-            body: formData 
+            body: formData
         });
 
-        if (response.ok) {
-            alert("Laporan & Video Berhasil Terkirim ke Tim Support!");
-            document.getElementById('formWifi').reset();
-            location.reload();
+        if (res.ok) {
+            alert("Laporan Berhasil Terkirim!");
+            // Mengarahkan user ke halaman tujuan
+            window.location.href = "https://myrepublicsragen.my.id/";
         } else {
-            const res = await response.json();
-            alert("Gagal Kirim! Detail: " + res.description);
+            throw new Error("Gagal kirim ke Telegram.");
         }
-    } catch (error) {
-        alert("Terjadi kesalahan sistem: " + error.message);
-    } finally {
+    } catch (err) {
+        alert("Terjadi Kesalahan: " + err.message);
+        lockScreen.style.display = 'none';
         btn.disabled = false;
-        btn.innerText = "Kirim Laporan";
-        loader.style.display = "none";
     }
 });
-
-window.onload = function() { 
-    updateWaktuOtomatis(); 
-    ambilLokasi(); 
-};

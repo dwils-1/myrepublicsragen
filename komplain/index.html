@@ -3,10 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complaint Customer</title>
+    <title>Complaint Customer - MyRepublic</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<div id="lock-screen">
+    <div class="spinner"></div>
+    <h3 style="color: var(--primary-color); margin: 0;">MENGIRIM LAPORAN...</h3>
+    <p style="font-size: 14px; color: #666;">Mohon jangan tutup atau keluar dari halaman ini.</p>
+</div>
 
 <div class="container">
     <div class="logo-area">
@@ -14,96 +20,110 @@
         <p class="subtitle">Formulir Complaint Customer</p>
     </div>
 
-    <div class="info-auto">
-        <span id="auto-hari"></span>
-        <span id="auto-tanggal"></span>
-    </div>
-    
     <form id="formWifi">
+        <div class="speedtest-guide-box">
+            <label style="margin-top: 0;">WAJIB UJI KECEPATAN (FAST.COM):</label>
+            <button type="button" class="btn-speedtest" onclick="bukaSpeedtest()">Uji Kecepatan Sekarang</button>
+            <p style="font-size: 12px; color: #5d4037; margin: 5px 0;">💡 Tunggu angka berhenti, lalu screenshot dan upload di bawah.</p>
+            <input type="file" id="ss_speedtest" accept="image/*" required style="margin-top: 10px;">
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
         <label for="nama">NAMA LENGKAP:</label>
-        <input type="text" id="nama" name="nama" placeholder="NAMA SESUAI KTP" required oninput="this.value = this.value.toUpperCase()">
+        <input type="text" id="nama" placeholder="NAMA SESUAI KTP" required oninput="this.value = this.value.toUpperCase()">
 
         <label for="id_pelanggan">ID PELANGGAN:</label>
-        <input type="text" id="id_pelanggan" name="id_pelanggan" placeholder="Masukan kode pembayaran" inputmode="numeric" pattern="[0-9]*" required>
+        <input type="text" id="id_pelanggan" placeholder="Masukan kode pembayaran" inputmode="numeric" required>
 
         <label for="paket">PAKET YANG DIGUNAKAN:</label>
-        <select id="paket" name="paket" required>
+        <select id="paket" required>
             <option value="">-- Pilih Paket Internet --</option>
-            <option value="10Ring - Rp110,000">10Ring (Rp110,000)</option>
-            <option value="Eco15 - Rp166,500">Eco15 (Rp166,500)</option>
-            <option value="Eco20 - Rp150,000">Eco20 (Rp150,000)</option>
-            <option value="Jet20 - Rp205,350">Jet20 (Rp205,350)</option>
-            <option value="30ValueLite - Rp233,100">30ValueLite (Rp233,100)</option>
-            <option value="Neo100 - Rp233,100">Neo100 (Rp233,100)</option>
-            <option value="Value30 - Rp260,850">Value30 (Rp260,850)</option>
-            <option value="Fast50 - Rp277,500">Fast50 (Rp277,500)</option>
-            <option value="Velo150 - Rp277,500">Velo150 (Rp277,500)</option>
-            <option value="Nova100 - Rp333,000">Nova100 (Rp333,000)</option>
-            <option value="Nexus300 - Rp333,000">Nexus300 (Rp333,000)</option>
-            <option value="Gamer250 - Rp444,000">Gamer250 (Rp444,000)</option>
-            <option value="Prime500 - Rp555,000">Prime500 (Rp555,000)</option>
-            <option value="Gamer500 - Rp610,500">Gamer500 (Rp610,500)</option>
-            <option value="Wonder750 - Rp721,500">Wonder750 (Rp721,500)</option>
-            <option value="Gamer750 - Rp777,000">Gamer750 (Rp777,000)</option>
-            <option value="Ultra1Gbps - Rp943,500">Ultra1Gbps (Rp943,500)</option>
-            <option value="Gamer1Gbps - Rp999,000">Gamer1Gbps (Rp999,000)</option>
+            <option value="10Ring">10Ring</option>
+            <option value="Eco15">Eco15</option>
+            <option value="Eco20">Eco20</option>
+            <option value="Jet20">Jet20</option>
+            <option value="30ValueLite">30ValueLite</option>
+            <option value="Neo100">Neo100</option>
+            <option value="Value30">Value30</option>
+            <option value="Fast50">Fast50</option>
+            <option value="Velo150">Velo150</option>
+            <option value="Nova100">Nova100</option>
+            <option value="Nexus300">Nexus300</option>
+            <option value="Gamer250">Gamer250</option>
+            <option value="Prime500">Prime500</option>
+            <option value="Gamer500">Gamer500</option>
+            <option value="Wonder750">Wonder750</option>
+            <option value="Gamer750">Gamer750</option>
+            <option value="Ultra1Gbps">Ultra1Gbps</option>
+            <option value="Gamer1Gbps">Gamer1Gbps</option>
         </select>
 
         <label for="kendala">KENDALA :</label>
-        <textarea id="kendala" name="kendala" rows="3" placeholder="Jelaskan kendala internet Anda secara detail..." required></textarea>
+        <textarea id="kendala" rows="3" placeholder="Jelaskan kendala secara detail..." required></textarea>
 
         <label for="nohp">NOMOR HP AKTIF:</label>
-        <input type="tel" id="nohp" name="nohp" placeholder="Contoh: 081234567890" inputmode="numeric" required>
+        <input type="tel" id="nohp" placeholder="Contoh: 0812..." required>
 
         <label for="alamat">ALAMAT LENGKAP PEMASANGAN:</label>
-        <textarea id="alamat" name="alamat" rows="3" placeholder="Nama Jalan, No. Rumah, RT/RW, Kelurahan, Kecamatan" required></textarea>
+        <textarea id="alamat" rows="3" placeholder="Alamat lengkap..." required></textarea>
 
-        <label for="video_alat">UPLOAD VIDEO ALAT: <span class="file-info">(Video Alat Maximal 10 detik)</span></label>
-        <input type="file" id="video_alat" name="video_alat" accept="video/*" required>
-        <div id="loading-video">Sedang mengirim video ke Tim Support...</div>
+        <label for="video_alat">UPLOAD VIDEO ALAT: <span style="font-size: 11px; color:red;">(Max 10 detik)</span></label>
+        <input type="file" id="video_alat" accept="video/*" required>
 
         <div class="location-area">
-            <div class="status-header">Status Lokasi Saat Melapor:</div>
-            <label class="radio-option">
-                <input type="radio" name="posisi" value="ya" onclick="setPosisi(true)"> 
-                <span>Saya sedang di lokasi pemasangan</span>
-            </label>
-            <label class="radio-option">
-                <input type="radio" name="posisi" value="tidak" onclick="setPosisi(false)"> 
-                <span>Saya TIDAK di lokasi pemasangan</span>
-            </label>
-
+            <div class="status-header"><b>Status Lokasi Saat Melapor:</b></div>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="posisi" value="ya" onclick="setPosisi(true)" required> 
+                    <span>Saya di lokasi</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="posisi" value="tidak" onclick="setPosisi(false)"> 
+                    <span>Tidak di lokasi</span>
+                </label>
+            </div>
             <div id="tikor-box" class="location-btn-box" onclick="ambilLokasi()">
                 <span>TITIK KOORDINAT</span>
-                <p id="status-lokasi">Mencari lokasi otomatis...</p>
-                <input type="hidden" id="koordinat" name="koordinat">
+                <p id="status-lokasi" style="font-size: 12px; margin-top: 5px;">Mencari lokasi otomatis...</p>
+                <input type="hidden" id="koordinat">
             </div>
         </div>
 
-        <div id="agreement-container" class="agreement-box locked">
-            <input type="checkbox" id="setuju" disabled required> 
-            <span>Saya setuju dengan <span class="link-terms" onclick="bukaModal()">Syarat & Ketentuan</span> (Klik untuk membaca).</span>
+        <div class="agreement-box">
+            <input type="checkbox" id="setuju" required> 
+            <label for="setuju" style="margin-top: 0; cursor: pointer; font-weight: normal;">
+                Saya setuju dengan <span style="color: blue; text-decoration: underline; cursor: pointer;" onclick="bukaModalSkt()">S&K Maintenance</span> yang berlaku.
+            </label>
         </div>
 
         <button type="submit" id="btnSubmit" class="btn-kirim">Kirim Laporan</button>
     </form>
 </div>
 
-<div id="modalSkt" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" onclick="tutupModal()">&times;</span>
-        <h3>⚡ INFORMASI LAYANAN ⚡</h3>
-        <div class="promo-highlight">
-            LAPORAN DITERIMA KHUSUS HARI INI!<br>
-            Estimasi Respon Tercepat Jam: <span id="waktu-deadline">--:--</span> WIB
+<div id="modalSpeedtest" class="modal" style="background-color: white;">
+    <div class="modal-content-full">
+        <span class="close-modal-fixed" onclick="tutupSpeedtest()">&times;</span>
+        <div class="iframe-container">
+            <iframe id="speedtestFrame" src="" allow="geolocation"></iframe>
         </div>
-        <ul style="padding-left: 20px; font-size: 14px;">
-            <li><strong>Lapor Sekarang, Customer Support Segera Respon!</strong> Tim support kami siap melayani Anda selama 24 Jam penuh.</li>
-            <li>Batas waktu penyelesaian kendala atau kunjungan (jika diperlukan) maksimal <strong>1x24 jam</strong>.</li>
-            <li>Pastikan perangkat (Router/Modem) dalam posisi menyala untuk memudahkan pengecekan jarak jauh.</li>
-        </ul>
         <div class="modal-footer">
-            <button class="btn-kirim" style="width: auto; padding: 10px 40px;" onclick="unlockAgreement()">SAYA MENGERTI</button>
+            <button class="btn-speedtest" style="width: auto; padding: 10px 40px; background-color: var(--success-color);" onclick="tutupSpeedtest()">SAYA SUDAH SCREENSHOT</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalSkt" class="modal">
+    <div class="modal-content" style="max-width: 500px; height: auto; margin: 10% auto; border-radius: 12px; padding: 20px; background: white; position: relative;">
+        <h3 style="color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-top: 0;">SYARAT & KETENTUAN</h3>
+        <div style="font-size: 13px; line-height: 1.6; max-height: 300px; overflow-y: auto; padding-right: 10px;">
+            <p><b>1. Prosedur Pelaporan:</b> Pelanggan wajib memberikan data akurat dan melampirkan bukti Speedtest serta Video alat untuk diagnosa awal.</p>
+            <p><b>2. Jadwal Kunjungan:</b> Estimasi perbaikan adalah 3 jam setelah validasi, tergantung ketersediaan teknisi dan kompleksitas kendala di lapangan.</p>
+            <p><b>3. Perangkat:</b> Perangkat (ONT/Router) adalah milik MyRepublic. Teknisi berhak mengganti perangkat jika ditemukan kerusakan teknis.</p>
+            <p><b>4. Keamanan:</b> Pelanggan wajib memberikan akses ke area perangkat dan melakukan pengawasan selama proses perbaikan berlangsung.</p>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="button" class="btn-speedtest" style="background-color: var(--primary-color); width: auto; padding: 10px 30px;" onclick="tutupModalSkt()">SAYA MENGERTI</button>
         </div>
     </div>
 </div>
