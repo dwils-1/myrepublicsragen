@@ -677,3 +677,11 @@ footer h2 { color: white; font-weight: 700; margin-bottom: 20px; font-size: 1rem
     background-color: #e2e8f0;
     color: #6c2d91;
 }
+
+#global-loading-overlay {
+    transition: opacity 0.3s ease-in-out;
+}
+/* Mencegah scroll saat loading aktif */
+.no-scroll {
+    overflow: hidden !important;
+}

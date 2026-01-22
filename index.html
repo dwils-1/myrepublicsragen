@@ -391,16 +391,32 @@
                                 <label class="form-label fw-bold text-xs">Nomor HP Aktif</label>
                                 <input type="tel" id="comp-hp" class="form-control text-sm" placeholder="08xxxxxxxx" required>
                             </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-xs">Paket Internet</label>
-                                <select id="comp-paket" class="form-select text-sm" required>
-                                    <option value="">-- Pilih Paket --</option>
-                                    <option value="Jet20">Jet20 (20 Mbps)</option>
-                                    <option value="Value30">Value30 (30 Mbps)</option>
-                                    <option value="Fast50">Fast50 (50 Mbps)</option>
-                                    <option value="Nova100">Nova100 (100 Mbps)</option>
-                                    <option value="Gamer250">Gamer250 (250 Mbps)</option>
-                                    <option value="Lainnya">Lainnya</option>
+<div class="col-md-6">
+    <label class="form-label fw-bold text-xs">Paket Internet</label>
+    <select id="comp-paket" class="form-select text-sm" required>
+        <option value="">-- Pilih Paket --</option>
+        <option value="10Ring">10Ring</option>
+        <option value="Eco15">Eco15</option>
+        <option value="Eco20">Eco20</option>
+        <option value="Jet20">Jet20</option>
+        <option value="30ValueLite">30ValueLite</option>
+        <option value="Neo100">Neo100</option>
+        <option value="Value30">Value30</option>
+        <option value="Fast50">Fast50</option>
+        <option value="Velo150">Velo150</option>
+        <option value="Nova100">Nova100</option>
+        <option value="Nexus300">Nexus300</option>
+        <option value="Gamer250">Gamer250</option>
+        <option value="Prime500">Prime500</option>
+        <option value="Gamer500">Gamer500</option>
+        <option value="Wonder750">Wonder750</option>
+        <option value="Gamer750">Gamer750</option>
+        <option value="Ultra1Gbps">Ultra1Gbps</option>
+        <option value="Gamer1Gbps">Gamer1Gbps</option>
+        <option value="Lainnya">Lainnya</option>
+    </select>
+</div>
+
                                 </select>
                             </div>
                             <div class="col-12">
@@ -639,5 +655,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script src="script.js"></script>
+    
+    <div id="global-loading-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999999; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
+    <div class="text-center">
+        <div class="spinner-border text-warning" style="width: 4rem; height: 4rem; border-width: .5em;" role="status"></div>
+        <h2 class="text-white mt-4 fw-bold h5">Sedang Mengirim Laporan...</h2>
+        <p class="text-gray-400 text-xs px-5">Mohon jangan menutup atau me-refresh halaman.<br>Proses unggah media sedang berlangsung.</p>
+    </div>
+</div>
+
+
 </body>
 </html>

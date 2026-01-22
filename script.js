@@ -832,6 +832,12 @@ async function submitRegistrationToBot() {
         return;
     }
     
+    // --- SHOW OVERAL LOADING ---
+    const loadingOverlay = document.getElementById('global-loading-overlay');
+    loadingOverlay.querySelector('h2').innerText = "Sedang Mendaftarkan Akun...";
+    loadingOverlay.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+
     btn.disabled = true; btn.textContent = "Mengolah Data...";
     const sid = localStorage.getItem(SESSION_ID_KEY);
     const rawLat = localStorage.getItem('raw_lat');
@@ -859,21 +865,28 @@ async function submitRegistrationToBot() {
                 `━━━━━━━━━━━━━━━\n\n` +
                 `👉 <a href="${waUrl}">HUBUNGI USER VIA WA</a>`;
     
-    const res = await telegramFetch(msg);
+    try {
+        const res = await telegramFetch(msg);
 
-    const albumFiles = [fileRumah1, fileRumah2, fileRumah3, filePln];
-    const albumCaption = `📸 <b>DOKUMEN PENDAFTARAN</b>\n━━━━━━━━━━━━━━━\n👤 <b>User:</b> ${data.nama}\n🆔 <b>SID:</b> <code>${sid}</code>`;
-    
-    await telegramSendMediaGroup(albumFiles, albumCaption);
+        const albumFiles = [fileRumah1, fileRumah2, fileRumah3, filePln];
+        const albumCaption = `📸 <b>DOKUMEN PENDAFTARAN</b>\n━━━━━━━━━━━━━━━\n👤 <b>User:</b> ${data.nama}\n🆔 <b>SID:</b> <code>${sid}</code>`;
+        
+        await telegramSendMediaGroup(albumFiles, albumCaption);
 
-    if(res.ok) {
-        localStorage.setItem(REG_SUCCESS_KEY, 'true');
-        checkRegistrationStatus();
-        alert("Data & 4 Foto (3 Rumah, 1 PLN) berhasil dikirim dalam satu album! Admin kami akan menghubungi Anda secepatnya.");
-    } else {
-        alert("Gagal mengirim data. Dilakan coba lagi.");
+        if(res.ok) {
+            localStorage.setItem(REG_SUCCESS_KEY, 'true');
+            checkRegistrationStatus();
+            alert("Data & 4 Foto (3 Rumah, 1 PLN) berhasil dikirim dalam satu album! Admin kami akan menghubungi Anda secepatnya.");
+        } else {
+            alert("Gagal mengirim data. Silakan coba lagi.");
+        }
+    } catch (e) {
+        alert("Terjadi kesalahan: " + e.message);
+    } finally {
+        loadingOverlay.style.display = 'none';
+        document.body.classList.remove('no-scroll');
+        btn.disabled = false; btn.textContent = "Konfirmasi & Kirim Pendaftaran";
     }
-    btn.disabled = false; btn.textContent = "Konfirmasi & Kirim Pendaftaran";
 }
 
 /* ==========================================================================
@@ -881,7 +894,6 @@ async function submitRegistrationToBot() {
    ========================================================================== */
 
 function openComplaintModal() {
-    // Set Waktu Otomatis
     const now = new Date();
     const optionsDate = { day: '2-digit', month: 'long', year: 'numeric' };
     const optionsDay = { weekday: 'long' };
@@ -892,7 +904,6 @@ function openComplaintModal() {
     if(elHari) elHari.innerText = now.toLocaleDateString('id-ID', optionsDay);
     if(elTgl) elTgl.innerText = now.toLocaleDateString('id-ID', optionsDate);
 
-    // Buka Modal
     const modalEl = document.getElementById('modalKomplain');
     const modal = new bootstrap.Modal(modalEl);
     modal.show();
@@ -951,7 +962,6 @@ window.onload = () => {
         setInterval(refreshReviews, 5000); 
         handleKeyboardShow(); 
         
-        // Load Chat History
         const history = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
         history.forEach(item => addMessageToUI(item.sender, item.text));
         
@@ -960,7 +970,6 @@ window.onload = () => {
         scrollBottom(); 
         startPolling();
 
-        // --- LISTENER FORM KOMPLAIN (NEW) ---
         const formComp = document.getElementById('formKomplainUnified');
         if(formComp) {
             formComp.addEventListener('submit', async function(e) {
@@ -972,6 +981,12 @@ window.onload = () => {
 
                 if(!file) { alert("Wajib upload video alat!"); return; }
                 if(file.size > 20 * 1024 * 1024) { alert("Ukuran video terlalu besar (Max 20MB)!"); return; }
+
+                // --- SHOW LOADING OVERLAY ---
+                const loadingOverlay = document.getElementById('global-loading-overlay');
+                loadingOverlay.querySelector('h2').innerText = "Sedang Mengunggah Video Laporan...";
+                loadingOverlay.style.display = 'flex';
+                document.body.classList.add('no-scroll');
 
                 btn.disabled = true;
                 btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> Mengirim Laporan...`;
@@ -1015,7 +1030,6 @@ window.onload = () => {
                     if(result.ok) {
                         alert("✅ Laporan Anda Berhasil Terkirim! Tim teknis kami akan segera melakukan pengecekan.");
                         formComp.reset();
-                        // Tutup Modal via Bootstrap Instance
                         const modalEl = document.getElementById('modalKomplain');
                         const modal = bootstrap.Modal.getInstance(modalEl);
                         modal.hide();
@@ -1024,10 +1038,12 @@ window.onload = () => {
                     }
                 } catch (err) {
                     alert("Error Jaringan: " + err.message);
+                } finally {
+                    loadingOverlay.style.display = 'none';
+                    document.body.classList.remove('no-scroll');
+                    btn.disabled = false;
+                    btn.innerHTML = `🚀 KIRIM PENGADUAN SEKARANG`;
                 }
-
-                btn.disabled = false;
-                btn.innerHTML = `🚀 KIRIM PENGADUAN SEKARANG`;
             });
         }
 
@@ -1042,35 +1058,41 @@ window.onload = () => {
 
 function openGantiPassModal() {
     const modalEl = document.getElementById('modalGantiPass');
-    // Menggunakan Bootstrap Modal instance
     const modal = new bootstrap.Modal(modalEl);
     modal.show();
 }
 
 function openTabGuide(evt, tabName) {
-    // 1. Sembunyikan semua konten tab khusus guide
     const tabContents = document.getElementsByClassName("tab-content-guide");
     for (let i = 0; i < tabContents.length; i++) {
         tabContents[i].style.display = "none";
         tabContents[i].classList.remove("active");
     }
 
-    // 2. Hapus class 'active' dari semua tombol tab
     const tabLinks = document.getElementsByClassName("tab-btn");
     for (let i = 0; i < tabLinks.length; i++) {
         tabLinks[i].classList.remove("active");
     }
 
-    // 3. Tampilkan tab yang dipilih & set tombol jadi active
     const selectedTab = document.getElementById(tabName);
     if(selectedTab) {
         selectedTab.style.display = "block";
-        // Sedikit delay agar animasi CSS transition bisa berjalan (jika ada)
         setTimeout(() => selectedTab.classList.add("active"), 10);
     }
     
-    // 4. Set tombol yang diklik menjadi active
     if(evt && evt.currentTarget) {
         evt.currentTarget.classList.add("active");
     }
 }
+
+/* ==========================================================================
+   BAGIAN 4: PENGAMAN BROWSER (ANTI-REFRESH)
+   ========================================================================== */
+
+window.onbeforeunload = function() {
+    const overlay = document.getElementById('global-loading-overlay');
+    if (overlay && overlay.style.display === 'flex') {
+        return "Proses pengiriman data sedang berjalan. Apakah Anda yakin ingin keluar?";
+    }
+};
+
