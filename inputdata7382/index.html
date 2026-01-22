@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>MyRepublic System - Professional Unified</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <link rel="stylesheet" href="style.css">
 </head>
@@ -425,41 +425,63 @@
             </div>
         </div>
     </div>
+	
+	
+<div id="captureCard" style="position: absolute; left: -9999px; width: 380px; background: #ffffff; border-radius: 24px; overflow: hidden; font-family: 'Segoe UI', Roboto, sans-serif; border: 2px solid #7a3d6a;">
+    
+    <div style="background: #7a3d6a; padding: 25px 20px; text-align: center; border-bottom: 4px solid #5a2d4e;">
+        <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 900; letter-spacing: 2px;">MYREPUBLIC</h2>
+        <p style="font-size: 10px; color: #f3e8f0; margin: 5px 0 0 0; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Smart Digital Card</p>
+    </div>
 
-    <div class="mr-template-wrapper">
-        <div id="canvasTemplate" style="width: 600px; height: 500px; position: relative; font-family: 'Segoe UI', Arial, sans-serif; background: #fff; background-image: url('card.png'); background-size: cover; background-position: center; box-sizing: border-box; color: #000000; border-radius: 15px; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 40px 40px 20px 60px;">
-            <div style="margin-bottom: 15px; width: 100%;">
-                <p id="c-nama" style="font-size: 26px; font-weight: 900; margin: 0; text-transform: uppercase;">-</p>
-                <div style="height: 4px; width: 60px; background: linear-gradient(to right, #fa9949, #7332da); margin-top: 6px;"></div>
+    <div style="padding: 20px;">
+        <div style="margin-bottom: 15px; border-bottom: 2px solid #f3e8f0; padding-bottom: 10px;">
+            <p style="font-size: 9px; color: #7a3d6a; margin: 0; font-weight: 800; text-transform: uppercase;">Nama Pelanggan</p>
+            <p id="card-name" style="font-weight: 900; color: #1e1b4b; margin: 0; font-size: 16px;"></p>
+        </div>
+		
+        <div style="background: #fdfafc; border: 2px dashed #7a3d6a; padding: 12px; border-radius: 12px; margin-bottom: 15px; text-align: center;">
+            <p style="font-size: 9px; color: #7a3d6a; margin: 0; font-weight: 800; text-transform: uppercase;">Total Tagihan</p>
+            <p id="card-billing" style="font-weight: 900; color: #7a3d6a; margin: 0; font-size: 20px;"></p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+                <p style="font-size: 9px; color: #7a3d6a; margin: 0; font-weight: 800; text-transform: uppercase;">ID Pelanggan</p>
+                <p id="card-id" style="font-weight: 900; color: #7a3d6a; margin: 0; font-size: 14px;"></p>
             </div>
-            <div style="display: inline-flex; flex-direction: column; gap: 10px; width: 480px;">
-                <div style="background: rgba(248, 250, 252, 0.92); padding: 18px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.6);">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div>
-                            <p style="font-size: 9px; font-weight: 800; color: #116b1a; margin: 0;">ID PEMBAYARAN</p>
-                            <p id="c-id-bayar" style="font-size: 16px; font-weight: 900; margin: 2px 0 0 0;">-</p>
-                            <p style="font-size: 9px; font-weight: 800; color: #7332da; margin: 10px 0 0 0;">NOMOR HP</p>
-                            <p id="c-hp" style="font-size: 14px; font-700; margin: 2px 0 0 0;">-</p>
-                        </div>
-                        <div style="border-left: 1px solid rgba(0,0,0,0.08); padding-left: 20px;">
-                            <p style="font-size: 9px; font-weight: 800; color: #116b1a; margin: 0;">PAKET</p>
-                            <p id="c-paket" style="font-size: 14px; font-700; margin: 2px 0 0 0;">-</p>
-                            <p style="font-size: 9px; font-weight: 800; color: #7332da; margin: 10px 0 0 0;">EMAIL</p>
-                            <p id="c-email" style="font-size: 11px; font-weight: 700; margin: 2px 0 0 0; word-break: break-all;">-</p>
-                        </div>
-                    </div>
-                </div>
-                <div style="background: rgba(255, 241, 242, 0.94); padding: 12px 18px; border-radius: 12px;">
-                    <p style="font-size: 9px; font-weight: 800; color: #fa9949; margin: 0;">ALAMAT INSTALASI</p>
-                    <p id="c-alamat" style="font-size: 11px; font-weight: 700; margin: 4px 0 0 0;">-</p>
-                </div>
-            </div>
-            <div style="width: 480px; display: flex; justify-content: center; gap: 30px; margin-top: 18px;">
-                <p style="font-size: 10px; font-weight: 800;">AKTIVASI: <span id="c-tgl">-</span></p>
-                <p style="font-size: 10px; font-weight: 800;">JATUH TEMPO: TGL <span id="c-japo">-</span></p>
+            <div>
+                <p style="font-size: 9px; color: #7a3d6a; margin: 0; font-weight: 800; text-transform: uppercase;">Jatuh Tempo</p>
+                <p id="card-japo" style="font-weight: 900; color: #ef4444; margin: 0; font-size: 14px;"></p>
             </div>
         </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+                <p style="font-size: 9px; color: #7a3d6a; margin: 0; font-weight: 800; text-transform: uppercase;">Email</p>
+                <p id="card-email" style="font-weight: 700; color: #4a2540; margin: 0; font-size: 11px;"></p>
+            </div>
+            <div>
+                <p style="font-size: 9px; color: #7a3d6a; margin: 0; font-weight: 800; text-transform: uppercase;">WhatsApp</p>
+                <p id="card-hp" style="font-weight: 700; color: #4a2540; margin: 0; font-size: 11px;"></p>
+            </div>
+        </div>
+
+        <div style="background: #fdfafc; padding: 12px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid #7a3d6a;">
+            <p style="font-size: 9px; color: #7a3d6a; margin: 0; font-weight: 800; text-transform: uppercase;">Paket Layanan</p>
+            <p id="card-package" style="font-weight: 900; color: #1e1b4b; margin: 0; font-size: 13px;"></p>
+        </div>
+
+        <div style="padding-left: 10px;">
+            <p style="font-size: 9px; color: #7a3d6a; margin: 0; font-weight: 800; text-transform: uppercase;">Alamat Instalasi</p>
+            <p id="card-address" style="font-size: 10px; color: #334155; margin: 2px 0 0 0; font-weight: 600; line-height: 1.4;"></p>
+        </div>
     </div>
+
+    <div style="background: #7a3d6a; padding: 10px; text-align: center;">
+        <p style="font-size: 8px; color: #ffffff; margin: 0; font-weight: 700;">Informasi & Kendala: myrepublicsragen.my.id</p>
+    </div>
+</div>
 
     <script src="script.js"></script>
 </body>

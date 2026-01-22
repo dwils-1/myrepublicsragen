@@ -95,7 +95,6 @@ body {
 
 .portal-btn { background: #4338ca; color: white; padding: 6px 15px; border-radius: 12px; font-weight: 900; font-size: 11px; }
 
-.mr-template-wrapper { position: absolute; left: -9999px; top: 0; }
 
 table { width: 100%; border-collapse: collapse; }
 th { background: #f8fafc; color: #000000 !important; text-transform: uppercase; font-size: 10px; letter-spacing: 0.05em; padding: 12px; border: 1px solid #e2e8f0; }

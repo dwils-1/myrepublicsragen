@@ -942,40 +942,7 @@ function handleCopyClick(id) {
     openModal({ title: '📋 SALIN', headerClass: 'bg-indigo-600', body: `<p class="text-2xl font-black">${iT}</p>`, subtext: 'ID DISALIN', buttons: [{ text: 'OK', class: 'bg-indigo-600 text-white py-3 rounded-xl font-black text-xs w-full col-span-2', action: () => {} }] });
 }
 
-async function downloadImage(nama, id, paket, alamat, tgl, japo, hp, email) {
-    // ... (kode bagian atas tetap sama seperti sebelumnya) ...
-    
-    try {
-        const el = document.getElementById('canvasTemplate');
-        if(el) {
-            el.style.display = 'flex'; 
-            const can = await html2canvas(el, { scale: 2, useCORS: true, logging: false, backgroundColor: null });
-            
-            // --- BAGIAN YANG DIUBAH ---
-            const lnk = document.createElement('a');
-            
-            // Membuat timestamp (format: JamMenitDetik)
-            const now = new Date();
-            const timestamp = now.getHours().toString().padStart(2, '0') + 
-                              now.getMinutes().toString().padStart(2, '0') + 
-                              now.getSeconds().toString().padStart(2, '0');
-            
-            // Membersihkan nama dari karakter aneh dan spasi agar aman untuk nama file
-            const cleanNama = (nama || 'PELANGGAN').trim().replace(/\s+/g, '_').toUpperCase();
-            const cleanIdCst = cleanId(id);
 
-            // Set nama file: NAMA_ID_TIMESTAMP.png
-            lnk.download = `${cleanNama}_${cleanIdCst}_${timestamp}.png`;
-            // --------------------------
-
-            lnk.href = can.toDataURL("image/png");
-            document.body.appendChild(lnk);
-            lnk.click();
-            document.body.removeChild(lnk);
-        }
-        return true;
-    } catch (err) { console.error("Gagal generate gambar:", err); return true; }
-}
 
 
 async function prosesWa(hp, id, nama, japo, paket, source = 'general') {
@@ -998,44 +965,87 @@ async function prosesWa(hp, id, nama, japo, paket, source = 'general') {
     });
 }
 
+async function generateAndDownloadCard(data) {
+    // Injeksi Data ke DOM
+    document.getElementById('card-name').innerText = data.nama.toUpperCase();
+    document.getElementById('card-id').innerText = data.id;
+    document.getElementById('card-japo').innerText = "TGL " + data.japo;
+    document.getElementById('card-package').innerText = data.paket;
+    document.getElementById('card-address').innerText = data.alamat;
+    document.getElementById('card-email').innerText = sensorEmail(data.email);
+    document.getElementById('card-hp').innerText = sensorPhone(data.hp);
+    document.getElementById('card-billing').innerText = data.harga || "Cek Billing";
+
+    const element = document.getElementById('captureCard');
+    
+    // Render Kualitas Tinggi (Scale 5)
+    const canvas = await html2canvas(element, { backgroundColor: null, scale: 5, useCORS: true });
+    const image = canvas.toDataURL("image/png", 1.0);
+    
+    const ts = new Date().toISOString().replace(/[-:T.Z]/g, "").substring(0, 12);
+    const link = document.createElement('a');
+    link.download = `KARTU_HD_MYREP_${data.nama.replace(/\s+/g, '_')}_${ts}.png`;
+    link.href = image;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    return true; // Sinyal bahwa download selesai
+}
+/**
+ * Perbaikan Final: Download Kartu HD -> Redirect WhatsApp Otomatis
+ */
 async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, harga, withText, source, isPending) {
     let cH = getPureWaNumber(hp);
     const now = new Date();
     const hr = now.getHours();
     let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
-    const btn = document.activeElement;
-    if(btn && btn.tagName === 'BUTTON') btn.innerText = "⏳ MEMPROSES...";
-    try {
-        let txt = "";
-        if (withText) {
-            if (isPending) {
-                txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\n\nSaya dari *Dwi LS. MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat Bapak/Ibu.\n\nKami sedang ada *Promo Spesial* khusus untuk area Anda gratis biaya instalasi jika registrasi dilanjutkan hari ini.\n\nSaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!`;
-            } else if (source === 'qc') {
-                txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\nSaya Dwi MyRepublic, menanyakan kualitas internet di *${alamat}* apakah lancar? Terima kasih!`;
-            } else {
-                const day = now.getDate(); let sel = day - parseInt(japo); if (isNaN(sel)) sel = 0;
-                const detailInfo = `\n📍 Alamat: ${alamat}\n🚀 Paket: ${paket}\n💰 Tagihan: ${harga}\n📅 Jatuh Tempo: Tgl ${japo}`;
-                if (sel >= -5 && sel <= 0) txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\n\nIzin menginfokan tagihan internet MyRepublic:${detailInfo}\n\nMohon kesediaannya meluangkan waktu untuk pembayaran agar layanan tetap aktif dan lancar. Terima kasih 🙏`;
-                else if (sel > 0 && sel <= 7) txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\n\nIzin menginfokan tagihan internet MyRepublic sudah melewati tanggal jatuh tempo:${detailInfo}\n\nMohon bantuannya untuk segera dibayarkan agar internet tidak terisolir otomatis. Terima kasih 🙏`;
-                else txt = `Selamat ${slm} Yth. Bpk/Ibu *${nama.trim()}*,\n\nMenanyakan kualitas layanan internet MyRepublic di:\n📍 ${alamat}\n\nApakah koneksinya lancar aman? Terima kasih sehat selalu 🙏`;
-            }
-            txt += "\n\nCek promo, ganti password, kendala : https://myrepublicsragen.my.id/";
-        }
+    
+    // Template Pesan WhatsApp
+    let textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah menggunakan *MyRepublic*.\n\n🆔 ID: *${cleanId(id)}*\n🚀 Paket: *${paket}*\n💰 Tagihan: *${harga}*\n📅 JAPO: *Tgl ${japo}*\n\nInformasi & Kendala: https://myrepublicsragen.my.id/`;
+    
+    // Deteksi Device (PC vs Mobile)
+    const isMobile = /iPhone|Android/i.test(navigator.userAgent);
+    const waBase = isMobile ? "https://api.whatsapp.com/send" : "https://web.whatsapp.com/send";
+    const finalUrl = `${waBase}?phone=${cH}${withText ? '&text=' + encodeURIComponent(textMessage) : ''}`;
 
-        const finalUrl = `https://api.whatsapp.com/send?phone=${cH}&text=${encodeURIComponent(txt)}`;
-        const card = document.getElementById(`card-${id}`);
-        const isProgress = card?.getAttribute('data-command').toLowerCase().includes('on progress');
-        if (isProgress) fetch(`${scriptURL}?action=hapusHanyaTextProgress&idCst=${id}`).catch(err => console.log("Gagal update progress"));
-        
-        if (withText && source !== 'qc') {
-            try {
-                const imagePromise = downloadImage(nama, id, paket, alamat, tgl, japo, hp, email);
-                const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 2500));
-                await Promise.race([imagePromise, timeoutPromise]);
-            } catch (imgError) { console.error("Gagal generate gambar", imgError); }
+    if (withText && !isPending) {
+        // Tampilkan animasi loading pada tombol modal
+        const btn = event.target;
+        const originalText = btn.innerText;
+        btn.innerText = "⏳ GENERATING HD...";
+        btn.disabled = true;
+
+        try {
+            // Jalankan proses pembuatan kartu HD
+            await generateAndDownloadCard({
+                nama: nama,
+                id: cleanId(id),
+                japo: japo,
+                paket: paket,
+                alamat: alamat,
+                email: email,
+                hp: hp,
+                harga: harga
+            });
+            
+            // Berikan jeda sebentar agar download file selesai
+            btn.innerText = "🚀 OPENING WA...";
+            setTimeout(() => {
+                window.open(finalUrl, '_blank');
+                btn.innerText = originalText;
+                btn.disabled = false;
+                closeModal(); // Menutup modal otomatis
+            }, 1200);
+        } catch (err) {
+            console.error("Gagal membuat kartu:", err);
+            window.open(finalUrl, '_blank');
         }
-        window.location.href = finalUrl;
-    } catch (err) { alert("Terjadi kesalahan sistem: " + err.message); window.location.href = `https://api.whatsapp.com/send?phone=${cH}`; }
+    } else {
+        // Jika hanya kirim pesan tanpa kartu, langsung buka WA
+        window.open(finalUrl, '_blank');
+        closeModal();
+    }
 }
 
 
@@ -1412,3 +1422,30 @@ ${tanggal}
     const urlWa = `https://api.whatsapp.com/send?text=${encodeURIComponent(pesan)}`;
     window.open(urlWa, '_blank');
 }
+
+/**
+ * Sensor Email: dwi***g45@gmail.com
+ */
+function sensorEmail(email) {
+    if (!email || email === '-' || !email.includes("@")) return '-';
+    const parts = email.split("@");
+    const name = parts[0];
+    const domain = parts[1];
+    if (name.length <= 6) return name.substring(0, 1) + "***" + "@" + domain;
+    return `${name.substring(0, 3)}***${name.substring(name.length - 3)}@${domain}`;
+}
+
+/**
+ * Sensor HP: 0812-35***-***5
+ */
+function sensorPhone(phone) {
+    if (!phone || phone === '-') return '-';
+    let clean = phone.toString().replace(/\D/g, "");
+    if (clean.startsWith("62")) clean = "0" + clean.slice(2);
+    if (clean.length < 10) return clean;
+    return `${clean.substring(0, 4)}-${clean.substring(4, 6)}***-***${clean.substring(clean.length - 1)}`;
+}
+
+/**
+ * Perbaikan Fungsi Eksekusi untuk Menghindari Undefined Tagihan
+ */
