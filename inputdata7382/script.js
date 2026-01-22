@@ -995,54 +995,78 @@ async function generateAndDownloadCard(data) {
 /**
  * Perbaikan Final: Download Kartu HD -> Redirect WhatsApp Otomatis
  */
+/**
+ * Fungsi Eksekusi Pesan WA dengan Logika Status & Siklus Penagihan
+ * Link portal disisipkan di setiap akhir pesan.
+ */
 async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, harga, withText, source, isPending) {
     let cH = getPureWaNumber(hp);
     const now = new Date();
     const hr = now.getHours();
     let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
     
-    // Template Pesan WhatsApp
-    let textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah menggunakan *MyRepublic*.\n\n🆔 ID: *${cleanId(id)}*\n🚀 Paket: *${paket}*\n💰 Tagihan: *${harga}*\n📅 JAPO: *Tgl ${japo}*\n\nInformasi & Kendala: https://myrepublicsragen.my.id/`;
-    
-    // Deteksi Device (PC vs Mobile)
+    // Tautan portal wajib di akhir pesan
+    const portalLink = "\n\nCek promo, ganti password, kendala: https://myrepublicsragen.my.id/";
+    let textMessage = "";
+
+    if (isPending) {
+        textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nSaya *DWI* dari MyRepublic ingin menanyakan kembali terkait rencana pemasangan internetnya. Apakah ada kendala atau ada yang ingin ditanyakan? Saya bantu kawal prosesnya sampai aktif ya Pak/Bu. 😊`;
+    } 
+    else if (source === 'progress') {
+        textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nInformasi terbaru, saat ini pemasangan Anda sudah *Masuk Antrian Instalasi*. Mohon kesediaannya menunggu tim teknisi menghubungi untuk jadwal kunjungan ke lokasi. 🙏`;
+    }
+    else if (source === 'fast') {
+        textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah bergabung. Mengingat pemasangan baru saja aktif, kami informasikan tagihan pertama Anda sebesar *${harga}* sudah muncul. Mohon segera dilakukan pembayaran agar layanan tetap lancar. 🙏`;
+    }
+    else if (source === 'qc') {
+        textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nBagaimana kualitas jaringan MyRepublic di lokasi saat ini? Apakah ada kendala? Jika lancar, mohon rekomendasikan ke saudara/tetangga ya Pak/Bu, saya bantu kawal pemasangannya secara prioritas. 🤝`;
+    }
+    else {
+        // REVISI LOGIKA SIKLUS PENAGIHAN: 0 sampai 5
+        const tglHariIni = now.getDate();
+        const tglJapo = parseInt(japo);
+        
+        // Menghitung selisih hari menuju jatuh tempo
+        const selisih = tglJapo - tglHariIni;
+
+        if (selisih >= 0 && selisih <= 5) {
+            // Pengingat Tagihan H-0 sampai H-5
+            textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nMengingatkan tagihan MyRepublic bulan ini sebesar *${harga}* sudah muncul. Jatuh tempo dalam *${selisih} hari lagi* (Tgl ${japo}). Mohon melakukan pembayaran tepat waktu agar terhindar dari isolir. 💳`;
+        } else if (tglHariIni > tglJapo && tglHariIni <= tglJapo + 5) {
+            // Tagihan Lewat Jatuh Tempo (H+1 sampai H+5)
+            textMessage = `Halo Selamat ${slm} Yth. Bpk/Ibu *${nama.toUpperCase()}*,\n\nKami informasikan bahwa tagihan Anda sebesar *${harga}* saat ini sudah *Melewati Jatuh Tempo*. Mohon segera dilakukan pembayaran hari ini untuk menghindari pemutusan layanan otomatis. 🙏`;
+        } else {
+            textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah menjadi pelanggan setia MyRepublic. Berikut rincian kartu pelanggan Anda: *${cleanId(id)}*.`;
+        }
+    }
+
+    textMessage += portalLink; // Menyisipkan link portal di akhir
+
     const isMobile = /iPhone|Android/i.test(navigator.userAgent);
     const waBase = isMobile ? "https://api.whatsapp.com/send" : "https://web.whatsapp.com/send";
     const finalUrl = `${waBase}?phone=${cH}${withText ? '&text=' + encodeURIComponent(textMessage) : ''}`;
 
     if (withText && !isPending) {
-        // Tampilkan animasi loading pada tombol modal
         const btn = event.target;
-        const originalText = btn.innerText;
         btn.innerText = "⏳ GENERATING HD...";
         btn.disabled = true;
 
         try {
-            // Jalankan proses pembuatan kartu HD
             await generateAndDownloadCard({
-                nama: nama,
-                id: cleanId(id),
-                japo: japo,
-                paket: paket,
-                alamat: alamat,
-                email: email,
-                hp: hp,
-                harga: harga
+                nama, id: cleanId(id), japo, paket, alamat, email, hp, harga
             });
             
-            // Berikan jeda sebentar agar download file selesai
             btn.innerText = "🚀 OPENING WA...";
             setTimeout(() => {
                 window.open(finalUrl, '_blank');
-                btn.innerText = originalText;
+                btn.innerText = "TEKS OTOMATIS";
                 btn.disabled = false;
-                closeModal(); // Menutup modal otomatis
+                closeModal();
             }, 1200);
         } catch (err) {
-            console.error("Gagal membuat kartu:", err);
             window.open(finalUrl, '_blank');
         }
     } else {
-        // Jika hanya kirim pesan tanpa kartu, langsung buka WA
         window.open(finalUrl, '_blank');
         closeModal();
     }
@@ -1447,5 +1471,15 @@ function sensorPhone(phone) {
 }
 
 /**
- * Perbaikan Fungsi Eksekusi untuk Menghindari Undefined Tagihan
+ * Logika untuk membersihkan spasi tanpa merusak format WhatsApp (*)
  */
+function cleanMessageSpaces(text) {
+    if (!text) return "";
+    
+    return text
+        .trim() // Hapus spasi di awal & akhir pesan
+        .replace(/[ \t]+/g, ' ') // Ubah spasi ganda/tab menjadi satu spasi
+        .replace(/\s+\*/g, ' *') // Pastikan ada spasi sebelum tanda bintang pembuka
+        .replace(/\*\s+/g, '* ') // Pastikan ada spasi setelah tanda bintang penutup
+        .replace(/\*\s+([^\*]+)\s+\*/g, '*$1*'); // Hapus spasi DI DALAM tanda bintang (Contoh: * TEBAL * jadi *TEBAL*)
+}
