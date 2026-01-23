@@ -329,12 +329,13 @@ async function muatDataTabel(btnEl) {
     } catch (e) { loadOfflineData(); } finally { if(btn) btn.innerText = "🔄 Sinkronisasi Data Aktif"; }
 }
 
+// FUNGSI TANGGAL INDONESIA (DD/MM/YYYY)
 function getTodayString() {
     const d = new Date();
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return `${day}/${month}/${year}`; // Hasil: 23/01/2026
 }
 
 async function cekJanjiTemuLeads() {
@@ -345,19 +346,29 @@ async function cekJanjiTemuLeads() {
         const data = await response.json();
         const todayStr = getTodayString(); 
         let count = 0;
+
         data.forEach(item => {
             if (item.janji_temu) {
-                const tglJanji = item.janji_temu.split('T')[0].trim();
-                if (tglJanji === todayStr) count++;
+                // Pembersihan data dari jam atau karakter T
+                let tgl = String(item.janji_temu).split('T')[0].split(' ')[0].trim();
+                
+                // Konversi YYYY-MM-DD ke DD/MM/YYYY jika perlu
+                if (tgl.includes('-')) {
+                    const p = tgl.split('-');
+                    tgl = `${p[2]}/${p[1]}/${p[0]}`;
+                }
+                
+                if (tgl === todayStr) count++;
             }
         });
+
         if (count > 0) {
             banner.style.display = 'flex';
             document.getElementById('notifJanjiText').innerText = `Ada ${count} Pelanggan rencana janji temu hari ini!`;
         } else {
             banner.style.display = 'none';
         }
-    } catch (err) { console.warn("Koneksi ke Leads gagal (cekJanjiTemuLeads)"); }
+    } catch (err) { console.warn("Koneksi ke Leads gagal"); }
 }
 
 async function lihatDaftarJanjiTemuHariIni() {
@@ -370,7 +381,17 @@ async function lihatDaftarJanjiTemuHariIni() {
         const response = await fetch(`${leadsScriptURL}?action=getLeads`);
         const data = await response.json();
         const todayStr = getTodayString(); 
-        const filtered = data.filter(item => item.janji_temu && item.janji_temu.split('T')[0].trim() === todayStr);
+        
+        const filtered = data.filter(item => {
+            if (!item.janji_temu) return false;
+            let tgl = String(item.janji_temu).split('T')[0].split(' ')[0].trim();
+            if (tgl.includes('-')) {
+                const p = tgl.split('-');
+                tgl = `${p[2]}/${p[1]}/${p[0]}`;
+            }
+            return tgl === todayStr;
+        });
+
         if (filtered.length > 0) renderLeadsCards(filtered);
         else if(cardsContainer) cardsContainer.innerHTML = '<p class="text-center text-[10px] font-bold text-slate-300">TIDAK ADA JADWAL HARI INI.</p>';
     } catch (err) { if(cardsContainer) cardsContainer.innerHTML = '<p class="text-center text-[10px] font-bold text-red-400">ERROR MEMUAT LEADS.</p>'; }
@@ -533,7 +554,6 @@ function getPureWaNumber(num) {
     return clean;
 }
 
-// --- LOGIKA RENDER CARD & TOMBOL AKTIF ---
 function renderCard(item, mode) {
     if (mode === 'fast' && hiddenBillingIds.includes(item.idCst)) return "";
     const parts = item.tanggal.includes('/') ? item.tanggal.split('/') : item.tanggal.split('-');
@@ -603,7 +623,6 @@ function renderCard(item, mode) {
     </div>`;
 }
 
-// --- FITUR HAPUS ON PROGRESS (TOMBOL AKTIF) ---
 function konfirmasiAktifkan(id, nama) {
     openModal({
         title: '✅ SELESAIKAN PROGRESS',
@@ -944,7 +963,6 @@ async function prosesWa(hp, id, nama, japo, paket, source = 'general') {
     });
 }
 
-// --- OPTIMASI: GENERATE KARTU TANGGUH (SCALE 2) ---
 async function generateAndDownloadCard(data) {
     try {
         const nameEl = document.getElementById('card-name');
@@ -978,7 +996,6 @@ async function generateAndDownloadCard(data) {
     } catch (err) { alert("❌ GAGAL GENERATE GAMBAR: " + err.message); return false; }
 }
 
-// --- PERBAIKAN: EKSEKUSI WA DENGAN JEDA 5 DETIK ---
 async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, harga, withText, source, isPending, event) {
     let cH = getPureWaNumber(hp);
     const now = new Date();
@@ -1122,8 +1139,20 @@ if(lForm) {
         const btn = document.getElementById('btnKirimLeads');
         btn.disabled = true;
         btn.innerText = "🚀 MENGIRIM...";
+        
         const formData = new FormData(e.target);
+        
+        // --- PROSES KONVERSI TANGGAL DISINI ---
+        const rawDate = formData.get('leads_janji_temu'); // Mengambil YYYY-MM-DD
+        if (rawDate) {
+            const [y, m, d] = rawDate.split('-');
+            const formattedDate = `${d}/${m}/${y}`; // Mengubah ke DD/MM/YYYY
+            formData.set('leads_janji_temu', formattedDate);
+        }
+        // --------------------------------------
+
         formData.set('leads_hp', formatWaMeLink(formData.get('leads_hp')));
+        
         try {
             const response = await fetch(leadsScriptURL, { method: 'POST', body: formData });
             const result = await response.text();
@@ -1131,14 +1160,13 @@ if(lForm) {
                 alert("Berhasil! Data Prospek telah tersimpan.");
                 localStorage.removeItem('leadsDraft');
                 e.target.reset();
-                const d2d_hidden = document.getElementById('leads_tgl_d2d_hidden');
-                if(d2d_hidden) d2d_hidden.value = new Date().toISOString().split('T')[0];
                 cekJanjiTemuLeads();
             } else alert("Gagal menyimpan: " + result);
         } catch (err) { alert("Kesalahan koneksi."); }
         finally { btn.disabled = false; btn.innerText = "Simpan Prospek"; }
     });
 }
+
 
 async function lihatDaftarLeads() {
     const container = document.getElementById('leadsList');
