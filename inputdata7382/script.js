@@ -9,10 +9,10 @@ let currentTotalSA = 0;
 let fullRawData = JSON.parse(localStorage.getItem('fullRawData')) || []; 
 
 const SKEMA_DEKADE = {
-    'RingEco': { prices: { '45': 25000, '60': 30000, '75': 35000 } },
-    'Jet': { prices: { '45': 80000, '60': 95000, '75': 110000 } },
-    'ValueLite': { prices: { '45': 90000, '60': 105000, '75': 120000 } },
-    'ValueUp': { prices: { '45': 145000, '60': 165000, '75': 185000 } }
+    'RingEco': { prices: { '30': 20000, '45': 25000, '60': 30000, '75': 35000 } },
+    'Jet': { prices: { '30': 65000, '45': 80000, '60': 95000, '75': 110000 } },
+    'ValueLite': { prices: { '30': 75000, '45': 90000, '60': 105000, '75': 120000 } },
+    'ValueUp': { prices: { '30': 120000, '45': 145000, '60': 165000, '75': 185000 } }
 };
 
 // --- LOGIKA AUTO-LOCK ---
@@ -816,16 +816,49 @@ function hitungBonusDekade() {
         }
     });
     const tSQ = Object.values(statsT).reduce((a,b) => a+b, 0);
-    let br = tSQ >= 75 ? "75" : tSQ >= 60 ? "60" : tSQ >= 45 ? "45" : "0";
+    
     let mBH = ""; let tDB = 0; let tFBQ = 0;
+    const MAX_PAY_MAP = { "30": 700000, "45": 1400000, "60": 2100000, "75": 2800000 };
+
     months.forEach((m, i) => {
-        let eBFB = 0; if(br !== "0") for(let c in SKEMA_DEKADE) eBFB += (mD[m][c] || 0) * SKEMA_DEKADE[c].prices[br];
-        tFBQ += eBFB; let d = (i < 2) ? eBFB * 0.5 : 0; tDB += d;
+        // DETEKSI TIER PERBULAN (Untuk Bulan 1-2 sesuai Gambar 135967.jpg)
+        let monthlySA = mD[m].total;
+        let activeBr = "0";
+
+        if (i < 2) {
+            // Logika Tier Bulan 1 & 2
+            activeBr = monthlySA >= 25 ? "75" : monthlySA >= 20 ? "60" : monthlySA >= 15 ? "45" : monthlySA >= 10 ? "30" : "0";
+        } else {
+            // Logika Tier Final (Bulan 3 menggunakan total 3 bulan tSQ)
+            activeBr = tSQ >= 75 ? "75" : tSQ >= 60 ? "60" : tSQ >= 45 ? "45" : tSQ >= 30 ? "30" : "0";
+        }
+
+        let eBFB = 0; 
+        if(activeBr !== "0") {
+            for(let c in SKEMA_DEKADE) {
+                eBFB += (mD[m][c] || 0) * SKEMA_DEKADE[c].prices[activeBr];
+            }
+        }
+        
+        tFBQ += eBFB; 
+        
+        // Logika "Max Dibayar" Plafon (Advance 50%)
+        let d = (i < 2) ? eBFB * 0.5 : 0; 
+        if (i < 2 && activeBr !== "0") {
+            const cap = MAX_PAY_MAP[activeBr] || 0;
+            if (d > cap) d = cap; // Batas plafon sesuai tabel manual
+        }
+
+        tDB += d;
         mBH += `<tr class="border-b"><td class="p-2 border text-black font-black">${mN[m]}</td><td class="p-2 border">${mD[m].total}</td><td class="p-2 border text-green-700">Rp${mD[m].insentif.toLocaleString()}</td><td class="p-2 border text-slate-400">Rp${eBFB.toLocaleString()}</td><td class="p-2 border text-indigo-600">Rp${d.toLocaleString()}</td></tr>`;
     });
+
+    // Tier Final untuk Tampilan Ringkasan di bawah
+    let finalBr = tSQ >= 75 ? "75" : tSQ >= 60 ? "60" : tSQ >= 45 ? "45" : tSQ >= 30 ? "30" : "0";
+    
     const mbBody = document.getElementById('dk-monthly-bonus-body');
     if(mbBody) mbBody.innerHTML = mBH;
-    let tH = ""; for(const c in statsT) tH += `<tr><td class="text-left font-bold border-r p-2">${c}</td><td class="font-black p-2">${statsT[c]}</td><td class="text-green-600 font-black p-2">@Rp${(br !== "0" ? SKEMA_DEKADE[c].prices[br] : 0).toLocaleString()}</td></tr>`;
+    let tH = ""; for(const c in statsT) tH += `<tr><td class="text-left font-bold border-r p-2">${c}</td><td class="font-black p-2">${statsT[c]}</td><td class="text-green-600 font-black p-2">@Rp${(finalBr !== "0" ? SKEMA_DEKADE[c].prices[finalBr] : 0).toLocaleString()}</td></tr>`;
     const dkSa = document.getElementById('dk-total-sa');
     if(dkSa) dkSa.innerText = tSQ;
     const dkRp = document.getElementById('dk-total-rp');
