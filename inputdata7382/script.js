@@ -1,5 +1,5 @@
 // --- KONFIGURASI ---
-const scriptURL = 'https://script.google.com/macros/s/AKfycbxg4NOHEllwqSWXxVkY-0emJWaGt3AKtmlRUiDSfZU9iO7KuhoVjYOA5GhQDfpUooqN/exec'; 
+const scriptURL = 'https://script.google.com/macros/s/AKfycbztPKpwv1jYnakn5P7vn_uupsZt5D7HoejadY7re7JKAKKWD8X6zYA6uFRdz8FMdP46/exec'; 
 const leadsScriptURL = 'https://script.google.com/macros/s/AKfycbwLdNTyp7ezmoD24uezz6Jojoy4CyS5Igc0WmxhBghJVYKYFFu5ay_I4FUGXZUemVWbYA/exec';
 const TGL_JOIN = new Date('2025-07-25'); 
 
