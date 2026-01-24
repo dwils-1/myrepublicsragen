@@ -261,6 +261,7 @@ function loadOfflineData() {
         updateFastAndProgressCounts();
         generateHistoryFromData(fullRawData);
         triggerGradeCalc();
+        updateBeltWidget(fullRawData, currentTotalSA); // Aktifkan Belt Tracker
 
         const dBulan = document.getElementById('displayBulan');
         if(dBulan) dBulan.innerText = "BULAN " + bnFull[now.getMonth()];
@@ -324,9 +325,70 @@ async function muatDataTabel(btnEl) {
         }
 
         summary.pointKurang = cLM; summary.totalSA = tSAF; currentTotalSA = tSAF;
-        renderRekapUI(summary); updateFastAndProgressCounts(); generateHistoryFromData(fullRawData); triggerGradeCalc();
+        renderRekapUI(summary); 
+        updateFastAndProgressCounts(); 
+        generateHistoryFromData(fullRawData); 
+        triggerGradeCalc();
+        updateBeltWidget(fullRawData, currentTotalSA); // Update widget saat sinkronisasi selesai
         cekJanjiTemuLeads();
     } catch (e) { loadOfflineData(); } finally { if(btn) btn.innerText = "🔄 Sinkronisasi Data Aktif"; }
+}
+
+// LOGIKA BELT TRACKER INTEGRASI
+function updateBeltWidget(dataFull, saBulanIni) {
+    const now = new Date();
+    let countSubs3Bln = 0;
+
+    dataFull.forEach(item => {
+        if (!item.tanggal || isAuditOFF(item)) return;
+        
+        const sep = item.tanggal.includes('/') ? '/' : '-';
+        const p = item.tanggal.split(sep);
+        const tglPasang = (sep === '/' ? new Date(p[2], p[1]-1, p[0]) : new Date(p[0], p[1]-1, p[2]));
+        
+        // Hitung selisih bulan
+        const diffMonth = (now.getFullYear() - tglPasang.getFullYear()) * 12 + (now.getMonth() - tglPasang.getMonth());
+        
+        if (diffMonth >= 3) countSubs3Bln++; // Syarat pelanggan aktif 3 bulan
+    });
+
+    // Skema berdasarkan gambar Benefit AE 2026.xlsx
+    let tier = { nama: "PUTIH", bonus: 0, minSA: 0 };
+    if (countSubs3Bln > 400) tier = { nama: "HITAM", bonus: 2000000, minSA: 14 };
+    else if (countSubs3Bln >= 251) tier = { nama: "COKELAT", bonus: 1300000, minSA: 12 };
+    else if (countSubs3Bln >= 151) tier = { nama: "BIRU", bonus: 800000, minSA: 11 };
+    else if (countSubs3Bln >= 101) tier = { nama: "HIJAU", bonus: 0, minSA: 0 };
+    else if (countSubs3Bln >= 26) tier = { nama: "KUNING", bonus: 0, minSA: 0 };
+
+    // Update UI Elemen
+    const elSubs = document.getElementById('belt-total-subs');
+    if(elSubs) elSubs.innerText = countSubs3Bln;
+    
+    const tag = document.getElementById('belt-tag');
+    if(tag) {
+        tag.innerText = tier.nama;
+        tag.className = `bg-slate-200 px-3 py-1 rounded-full text-[9px] font-black uppercase belt-${tier.nama}`;
+    }
+
+    const saAlert = document.getElementById('belt-sa-alert');
+    const bonusVal = document.getElementById('belt-bonus-val');
+
+    // Cek Syarat Minimal SA sesuai Kebijakan
+    if (tier.minSA > 0 && saBulanIni < tier.minSA) {
+        if(saAlert) saAlert.classList.remove('hidden');
+        const alertText = document.getElementById('belt-sa-needed');
+        if(alertText) alertText.innerText = `Butuh minimal ${tier.minSA} SA agar bonus Rp${tier.bonus.toLocaleString()} cair.`;
+        if(bonusVal) {
+            bonusVal.innerText = "Rp0";
+            bonusVal.className = "text-lg font-black text-red-500 animate-pulse-slow";
+        }
+    } else {
+        if(saAlert) saAlert.classList.add('hidden');
+        if(bonusVal) {
+            bonusVal.innerText = `Rp${tier.bonus.toLocaleString()}`;
+            bonusVal.className = "text-lg font-black text-green-600";
+        }
+    }
 }
 
 // FUNGSI TANGGAL INDONESIA (DD/MM/YYYY)
@@ -335,7 +397,7 @@ function getTodayString() {
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
-    return `${day}/${month}/${year}`; // Hasil: 23/01/2026
+    return `${day}/${month}/${year}`; 
 }
 
 async function cekJanjiTemuLeads() {
@@ -349,15 +411,11 @@ async function cekJanjiTemuLeads() {
 
         data.forEach(item => {
             if (item.janji_temu) {
-                // Pembersihan data dari jam atau karakter T
                 let tgl = String(item.janji_temu).split('T')[0].split(' ')[0].trim();
-                
-                // Konversi YYYY-MM-DD ke DD/MM/YYYY jika perlu
                 if (tgl.includes('-')) {
                     const p = tgl.split('-');
                     tgl = `${p[2]}/${p[1]}/${p[0]}`;
                 }
-                
                 if (tgl === todayStr) count++;
             }
         });
@@ -821,15 +879,12 @@ function hitungBonusDekade() {
     const MAX_PAY_MAP = { "30": 700000, "45": 1400000, "60": 2100000, "75": 2800000 };
 
     months.forEach((m, i) => {
-        // DETEKSI TIER PERBULAN (Untuk Bulan 1-2 sesuai Gambar 135967.jpg)
         let monthlySA = mD[m].total;
         let activeBr = "0";
 
         if (i < 2) {
-            // Logika Tier Bulan 1 & 2
             activeBr = monthlySA >= 25 ? "75" : monthlySA >= 20 ? "60" : monthlySA >= 15 ? "45" : monthlySA >= 10 ? "30" : "0";
         } else {
-            // Logika Tier Final (Bulan 3 menggunakan total 3 bulan tSQ)
             activeBr = tSQ >= 75 ? "75" : tSQ >= 60 ? "60" : tSQ >= 45 ? "45" : tSQ >= 30 ? "30" : "0";
         }
 
@@ -842,18 +897,16 @@ function hitungBonusDekade() {
         
         tFBQ += eBFB; 
         
-        // Logika "Max Dibayar" Plafon (Advance 50%)
         let d = (i < 2) ? eBFB * 0.5 : 0; 
         if (i < 2 && activeBr !== "0") {
             const cap = MAX_PAY_MAP[activeBr] || 0;
-            if (d > cap) d = cap; // Batas plafon sesuai tabel manual
+            if (d > cap) d = cap; 
         }
 
         tDB += d;
         mBH += `<tr class="border-b"><td class="p-2 border text-black font-black">${mN[m]}</td><td class="p-2 border">${mD[m].total}</td><td class="p-2 border text-green-700">Rp${mD[m].insentif.toLocaleString()}</td><td class="p-2 border text-slate-400">Rp${eBFB.toLocaleString()}</td><td class="p-2 border text-indigo-600">Rp${d.toLocaleString()}</td></tr>`;
     });
 
-    // Tier Final untuk Tampilan Ringkasan di bawah
     let finalBr = tSQ >= 75 ? "75" : tSQ >= 60 ? "60" : tSQ >= 45 ? "45" : tSQ >= 30 ? "30" : "0";
     
     const mbBody = document.getElementById('dk-monthly-bonus-body');
@@ -1174,16 +1227,12 @@ if(lForm) {
         btn.innerText = "🚀 MENGIRIM...";
         
         const formData = new FormData(e.target);
-        
-        // --- PROSES KONVERSI TANGGAL DISINI ---
-        const rawDate = formData.get('leads_janji_temu'); // Mengambil YYYY-MM-DD
+        const rawDate = formData.get('leads_janji_temu');
         if (rawDate) {
             const [y, m, d] = rawDate.split('-');
-            const formattedDate = `${d}/${m}/${y}`; // Mengubah ke DD/MM/YYYY
+            const formattedDate = `${d}/${m}/${y}`;
             formData.set('leads_janji_temu', formattedDate);
         }
-        // --------------------------------------
-
         formData.set('leads_hp', formatWaMeLink(formData.get('leads_hp')));
         
         try {
@@ -1348,4 +1397,19 @@ function sensorPhone(phone) {
 function cleanMessageSpaces(text) {
     if (!text) return "";
     return text.trim().replace(/[ \t]+/g, ' ').replace(/\s+\*/g, ' *').replace(/\*\s+/g, '* ').replace(/\*\s+([^\*]+)\s+\*/g, '*$1*');
+}
+
+const SKEMA_BELT = [
+    { nama: "HITAM", minSubs: 401, maxSubs: Infinity, bonus: 2000000, minSA: 14 },
+    { nama: "COKELAT", minSubs: 251, maxSubs: 400, bonus: 1300000, minSA: 12 },
+    { nama: "BIRU", minSubs: 151, maxSubs: 250, bonus: 800000, minSA: 11 }
+];
+
+function hitungInsentifBelt(totalSubsAktif3Bln, currentMonthSA) {
+    const tier = SKEMA_BELT.find(b => totalSubsAktif3Bln >= b.minSubs);
+    if (tier) {
+        if (currentMonthSA >= tier.minSA) return { nama: tier.nama, bonus: tier.bonus, status: "CAIR" };
+        else return { nama: tier.nama, bonus: 0, status: "TIDAK CAIR (MIN SA KURANG)" };
+    }
+    return { nama: "DIBAWAH BIRU", bonus: 0, status: "BELUM MASUK TIER" };
 }
