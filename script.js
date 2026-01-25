@@ -3,7 +3,7 @@
    ========================================================================== */
 
 // --- KONFIGURASI BOT 1 (SALES & CHAT) ---
-const BOT_TOKEN = '8330506170:AAGzCVVdLryY-GGofwzvdKiWVu7z4GobgW8';
+const BOT_TOKEN = '8330506170:AAH8JHSDZ-r99YxkGu4Y-bwCea4Ap2TGhOc';
 const CHAT_ID = '-1003594385102'; // ID Grup Supergroup
 const TOPIC_ID = '2'; // Topik MyRepublic (Sales/Chat)
 
