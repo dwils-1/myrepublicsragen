@@ -646,7 +646,21 @@ function renderCard(item, mode) {
     let sPB = isP ? `<button onclick="handleSetProgress('${item.idCst}', '${item.nama}')" class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] shadow-sm flex-1">Set Progress</button>` : "";
     let btnAktif = isProg ? `<button onclick="konfirmasiAktifkan('${item.idCst}', '${item.nama}')" class="bg-emerald-600 text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] shadow-sm flex-1">AKTIF</button>` : "";
     
-    const cH = (item.billing && item.billing.trim() !== "") ? `<p class="col-span-2 border-t pt-1 mt-1 text-indigo-700 font-semibold">📝 Note: <i>${item.billing}</i></p>` : "";
+    // Ambil Note dari Command (Baris B) dan Billing (Baris L)
+    const noteInternal = (item.command && item.command.trim() !== "") ? item.command.toUpperCase() : "";
+    const noteBilling = (item.billing && item.billing.trim() !== "") ? item.billing : "";
+
+    // Gabungkan Note jika ada
+    let noteHTML = "";
+    if (noteInternal || noteBilling) {
+        noteHTML = `
+            <div class="col-span-2 mt-2 pt-2 border-t border-dashed border-slate-300">
+                ${noteInternal ? `<p class="text-indigo-600 font-bold">📝 INFO: <span class="text-slate-700 font-black">${noteInternal}</span></p>` : ''}
+                ${noteBilling ? `<p class="text-red-600 font-bold">memo: <span class="text-slate-700 italic font-medium">${noteBilling}</span></p>` : ''}
+            </div>
+        `;
+    }
+
     const waC = (mode === 'qc') ? 'bg-sky-500 hover:bg-sky-600' : 'bg-green-500 hover:bg-green-600';
     const waL = (mode === 'qc') ? 'KIRIM QUALITY CARE (WA)' : 'Kirim Notifikasi WA';
 
@@ -672,7 +686,7 @@ function renderCard(item, mode) {
             <p class="col-span-2">📧 Email: <b class="lowercase">${item.email || '-'}</b></p>
             <p class="col-span-2">📞 No. HP: <b class="text-indigo-800">${formatBeautifulNumber(item.hp)}</b></p>
             <p class="col-span-2">📍 Alamat: <b>${item.alamat}</b></p>
-            ${cH}
+            ${noteHTML}
         </div>
         <div class="flex gap-2">
             ${bB}${sPB}${btnAktif}
@@ -781,9 +795,17 @@ async function cariData(mode, btnEl) {
             return diff >= 20 && (tD === cD);
         });
     } else {
-        if (query) items = items.filter(i => i.nama.toLowerCase().includes(query) || i.idCst.toString().toLowerCase().includes(query) || (i.alamat && i.alamat.toLowerCase().includes(query)));
+        // FILTER SEARCH UMUM: Sembunyikan OFF dan cari data
+        if (query) {
+            items = items.filter(i => !isAuditOFF(i) && (
+                i.nama.toLowerCase().includes(query) || 
+                i.idCst.toString().toLowerCase().includes(query) || 
+                (i.alamat && i.alamat.toLowerCase().includes(query))
+            ));
+        }
         if (tF && !isNaN(tF)) { 
             items = items.filter(i => {
+                if (isAuditOFF(i)) return false; 
                 const p = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
                 const day = (p[0].length === 4) ? parseInt(p[2]) : parseInt(p[0]);
                 return day == parseInt(tF);
