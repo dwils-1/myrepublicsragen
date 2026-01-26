@@ -770,7 +770,12 @@ function checkSessionStatus() {
 function clearChatSessionPrompt() { if(confirm("Hapus riwayat?")) { localStorage.clear(); location.reload(); } }
 function clearChatSession() { localStorage.clear(); location.reload(); }
 
-async function openRegistrationModal(paket) { 
+async function openRegistrationModal(paket) {
+  if (typeof gtag === 'function') {
+    gtag('event', 'begin_registration', {
+      'paket_internet': paket
+    });
+  
     const rawLat = localStorage.getItem('raw_lat');
     const rawLng = localStorage.getItem('raw_lng');
     let coverageData = JSON.parse(localStorage.getItem(COVERAGE_STORAGE_KEY) || '[]');
@@ -799,6 +804,7 @@ async function openRegistrationModal(paket) {
     document.getElementById('reg-paket').value = paket; 
     checkRegistrationStatus();
     new bootstrap.Modal(document.getElementById('modalDaftar')).show(); 
+  }
 }
 
 async function submitRegistrationToBot() {
@@ -874,6 +880,12 @@ async function submitRegistrationToBot() {
         await telegramSendMediaGroup(albumFiles, albumCaption);
 
         if(res.ok) {
+               // --- TAMBAHKAN KODE INI ---
+    if (typeof gtag === 'function') {
+        gtag('event', 'conversion', {
+            'send_to': 'AW-17875032525/5hoRCPvRg-sbEM2zvctC'
+        });
+    }
             localStorage.setItem(REG_SUCCESS_KEY, 'true');
             checkRegistrationStatus();
             alert("Data & 4 Foto (3 Rumah, 1 PLN) berhasil dikirim dalam satu album! Admin kami akan menghubungi Anda secepatnya.");
@@ -1095,4 +1107,3 @@ window.onbeforeunload = function() {
         return "Proses pengiriman data sedang berjalan. Apakah Anda yakin ingin keluar?";
     }
 };
-
