@@ -8,7 +8,7 @@ const WEB_URL = process.env.WEB_URL;
 async function checkWebStatus() {
     try {
         const start = Date.now();
-        const res = await axios.get(WEB_URL);
+        const res = await axios.get(WEB_URL, { timeout: 10000 });
         const duration = Date.now() - start;
         return res.status === 200 
             ? `✅ Online (Speed: ${duration}ms)` 
@@ -28,12 +28,11 @@ async function checkBotStatus() {
 }
 
 async function sendReport() {
-    console.log("Memulai pengecekan sistem...");
+    console.log("Memulai pengecekan sistem harian...");
     
     const webStatus = await checkWebStatus();
     const botStatus = await checkBotStatus();
     
-    // Karena kita pakai GitHub Actions (tanpa database), kita hanya bisa ambil tanggal
     const today = new Date().toLocaleDateString('id-ID', { 
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'Asia/Jakarta'
     });
@@ -42,7 +41,7 @@ async function sendReport() {
 <b>🛡️ DAILY SYSTEM CHECK (GITHUB)</b>
 ━━━━━━━━━━━━━━━━━━
 📅 <b>Tanggal:</b> ${today}
-⏰ <b>Waktu Cek:</b> 07:00 WIB
+⏰ <b>Waktu Cek:</b> 07:05 WIB
 
 <b>🌐 STATUS WEBSITE:</b>
 ${WEB_URL}
@@ -52,8 +51,7 @@ Status: <b>${webStatus}</b>
 Token Sales: <b>${botStatus}</b>
 
 <b>📝 CATATAN:</b>
-Karena server berjalan via GitHub Actions, laporan jumlah pengunjung & pendaftaran 
-silakan cek langsung di <b>Google Analytics</b> & <b>Google Ads</b>.
+Laporan pengunjung silakan klik tombol di bawah untuk cek langsung di dashboard.
 
 <i>Laporan ini dikirim otomatis oleh GitHub Actions.</i>
 ━━━━━━━━━━━━━━━━━━
@@ -65,11 +63,19 @@ silakan cek langsung di <b>Google Analytics</b> & <b>Google Ads</b>.
             message_thread_id: TOPIC_ID,
             text: message,
             parse_mode: 'HTML',
-            disable_web_page_preview: true
+            disable_web_page_preview: true,
+            // MENAMBAHKAN TOMBOL KLIK KE GOOGLE ANALYTICS
+            reply_markup: {
+                inline_keyboard: [
+                    [
+                        { text: "📊 Buka Google Analytics", url: "https://analytics.google.com/" }
+                    ]
+                ]
+            }
         });
-        console.log("Laporan terkirim sukses!");
+        console.log("Laporan sukses terkirim ke Telegram!");
     } catch (e) {
-        console.error("Gagal kirim ke Telegram:", e.message);
+        console.error("Gagal mengirim ke Telegram:", e.response ? e.response.data : e.message);
         process.exit(1);
     }
 }
