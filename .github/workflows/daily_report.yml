@@ -1,34 +1,9 @@
-name: Daily Health Check & Report
-
-on:
-  schedule:
-    # Jalan setiap hari jam 00:00 UTC (07:00 WIB)
-    - cron: '0 0 * * *'
-  workflow_dispatch: # Supaya bisa di-klik manual untuk tes
-
-jobs:
-  daily-report:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install Dependencies
-        run: npm install axios
-
       - name: Run Report Script
         env:
-          # TOKEN BOT ANDA (Sales)
-          BOT_TOKEN: '8330506170:AAH8JHSDZ-r99YxkGu4Y-bwCea4Ap2TGhOc'
-          # ID GRUP TUJUAN LAPORAN
-          CHAT_ID: '-1003594385102'
-          # ID TOPIK (Thread)
+          # Memanggil data dari GitHub Secrets
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
+          # Tetap biarkan ini jika tidak bersifat rahasia
           TOPIC_ID: '2'
-          # URL WEBSITE ANDA (Ganti dengan link github pages anda)
           WEB_URL: 'https://myrepublicsragen.my.id/' 
         run: node .github/scripts/send_report.js
