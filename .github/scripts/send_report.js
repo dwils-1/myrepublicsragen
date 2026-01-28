@@ -68,7 +68,7 @@ Laporan pengunjung silakan klik tombol di bawah untuk cek langsung di dashboard.
             reply_markup: {
                 inline_keyboard: [
                     [
-                        { text: "📊 Buka Google Analytics", url: "https://analytics.google.com/" }
+                        { text: "📊 Buka Google Analytics", url: "https://analytics.google.com/analytics/web/?hl=id" }
                     ]
                 ]
             }
