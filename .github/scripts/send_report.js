@@ -41,7 +41,7 @@ async function sendReport() {
 <b>🛡️ DAILY SYSTEM CHECK (GITHUB)</b>
 ━━━━━━━━━━━━━━━━━━
 📅 <b>Tanggal:</b> ${today}
-⏰ <b>Waktu Cek:</b> 07:05 WIB
+⏰ <b>Waktu Cek:</b> 02.00 WIB (pagi)
 
 <b>🌐 STATUS WEBSITE:</b>
 ${WEB_URL}
