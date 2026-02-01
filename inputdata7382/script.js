@@ -1394,11 +1394,65 @@ function pilihSaran(txt) {
 }
 
 async function executeSendComplaint(item, kendala) {
-    const now = new Date(); const hari = now.toLocaleDateString('id-ID', { weekday: 'long' }); const tgl = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-    const pesan = `*COMPLAINT CUSTOMER*\n-----------------------------\n${hari}\n${tgl}\n\n• *Nama:* ${item.nama.toUpperCase()}\n• *ID Pelanggan:* ${item.idCst}\n• *Paket:* ${item.paket}\n• *Kendala:* ${kendala.toUpperCase()}\n• *No HP:* ${formatBeautifulNumber(item.hp)}\n• *Alamat:* ${item.alamat.toUpperCase()}\n-----------------------------`;
-    const telTok = '8531770277:AAHKW3KhdwXop-hpu_sE21djyqdu2Wl8vmU'; const chatId = '-1003594385102'; const threadId = '13'; 
-    try { fetch(`https://api.telegram.org/bot${telTok}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: chatId, message_thread_id: threadId, text: pesan, parse_mode: 'Markdown' }) }); } catch (err) {}
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(pesan)}`, '_blank');
+    const now = new Date(); 
+    // Format Waktu
+    const hari = now.toLocaleDateString('id-ID', { weekday: 'long' }); 
+    const tgl = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const jam = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':'); 
+    
+    // Logika Salam Waktu
+    const hr = now.getHours();
+    let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
+
+    // 1. Buat Isi Pesan Follow Up untuk WhatsApp
+    const textFollowUp = `Halo Selamat ${slm} Kak *${item.nama.toUpperCase()}*,\n\nMenindaklanjuti laporan kendala internet MyRepublic pada:\n📅 *${tgl}* pukul *${jam}*\n⚠️ *Kendala:* ${kendala.toUpperCase()}\n\nMohon informasinya, apakah saat ini koneksi internet di lokasi sudah kembali normal/lancar? Terima kasih. 🙏`;
+    
+    // 2. Buat Link WhatsApp
+    const linkFollowUp = `https://api.whatsapp.com/send?phone=${getPureWaNumber(item.hp)}&text=${encodeURIComponent(textFollowUp)}`;
+
+    // 3. Susun Pesan Telegram dengan Direct Link Follow-up
+    const pesan = `*COMPLAINT CUSTOMER*
+-----------------------------
+${hari}, ${tgl} | Pukul ${jam}
+
+• *Nama:* ${item.nama.toUpperCase()}
+• *ID Pelanggan:* ${item.idCst}
+• *Paket:* ${item.paket}
+• *No HP:* ${formatBeautifulNumber(item.hp)}
+• *Alamat:* ${item.alamat.toUpperCase()}
+
+*⚠️ KENDALA:*
+${kendala.toUpperCase()}
+
+-----------------------------
+👇 *TINDAK LANJUT CEPAT:*
+[📲 KLIK UNTUK FOLLOW UP WA](${linkFollowUp})`;
+
+    const telTok = '8531770277:AAHKW3KhdwXop-hpu_sE21djyqdu2Wl8vmU'; 
+    const chatId = '-1003594385102'; 
+    const threadId = '13'; 
+
+    try { 
+        // Kirim ke Telegram
+        await fetch(`https://api.telegram.org/bot${telTok}/sendMessage`, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ 
+                chat_id: chatId, 
+                message_thread_id: threadId, 
+                text: pesan, 
+                parse_mode: 'Markdown',
+                disable_web_page_preview: true 
+            }) 
+        }); 
+
+        alert("Laporan terkirim ke Telegram dengan Link Follow-up!");
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(pesan)}`, '_blank');
+        
+    } catch (err) {
+        console.error(err);
+        alert("Gagal mengirim laporan.");
+    }
 }
 
 function sensorEmail(email) {
