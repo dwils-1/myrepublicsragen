@@ -1,12 +1,12 @@
 // --- KONFIGURASI ---
 const scriptURL = 'https://script.google.com/macros/s/AKfycbztPKpwv1jYnakn5P7vn_uupsZt5D7HoejadY7re7JKAKKWD8X6zYA6uFRdz8FMdP46/exec'; 
 const leadsScriptURL = 'https://script.google.com/macros/s/AKfycbwLdNTyp7ezmoD24uezz6Jojoy4CyS5Igc0WmxhBghJVYKYFFu5ay_I4FUGXZUemVWbYA/exec';
-const TGL_JOIN = new Date('2025-07-25'); 
+const TGL_JOIN = new Date('2025-07-25');
 
 let lastDeletedId = null;
 let hiddenBillingIds = JSON.parse(localStorage.getItem('hiddenBillingIds')) || [];
 let currentTotalSA = 0; 
-let fullRawData = JSON.parse(localStorage.getItem('fullRawData')) || []; 
+let fullRawData = JSON.parse(localStorage.getItem('fullRawData')) || [];
 
 const SKEMA_DEKADE = {
     'RingEco': { prices: { '30': 20000, '45': 25000, '60': 30000, '75': 35000 } },
@@ -261,7 +261,7 @@ function loadOfflineData() {
         updateFastAndProgressCounts();
         generateHistoryFromData(fullRawData);
         triggerGradeCalc();
-        updateBeltWidget(fullRawData, currentTotalSA); // Aktifkan Belt Tracker
+        updateBeltWidget(fullRawData, currentTotalSA);
 
         const dBulan = document.getElementById('displayBulan');
         if(dBulan) dBulan.innerText = "BULAN " + bnFull[now.getMonth()];
@@ -329,12 +329,11 @@ async function muatDataTabel(btnEl) {
         updateFastAndProgressCounts(); 
         generateHistoryFromData(fullRawData); 
         triggerGradeCalc();
-        updateBeltWidget(fullRawData, currentTotalSA); // Update widget saat sinkronisasi selesai
+        updateBeltWidget(fullRawData, currentTotalSA);
         cekJanjiTemuLeads();
     } catch (e) { loadOfflineData(); } finally { if(btn) btn.innerText = "🔄 Sinkronisasi Data Aktif"; }
 }
 
-// LOGIKA BELT TRACKER INTEGRASI
 function updateBeltWidget(dataFull, saBulanIni) {
     const now = new Date();
     let countSubs3Bln = 0;
@@ -346,13 +345,11 @@ function updateBeltWidget(dataFull, saBulanIni) {
         const p = item.tanggal.split(sep);
         const tglPasang = (sep === '/' ? new Date(p[2], p[1]-1, p[0]) : new Date(p[0], p[1]-1, p[2]));
         
-        // Hitung selisih bulan
         const diffMonth = (now.getFullYear() - tglPasang.getFullYear()) * 12 + (now.getMonth() - tglPasang.getMonth());
         
-        if (diffMonth >= 3) countSubs3Bln++; // Syarat pelanggan aktif 3 bulan
+        if (diffMonth >= 3) countSubs3Bln++; 
     });
 
-    // Skema berdasarkan gambar Benefit AE 2026.xlsx
     let tier = { nama: "PUTIH", bonus: 0, minSA: 0 };
     if (countSubs3Bln > 400) tier = { nama: "HITAM", bonus: 2000000, minSA: 14 };
     else if (countSubs3Bln >= 251) tier = { nama: "COKELAT", bonus: 1300000, minSA: 12 };
@@ -360,7 +357,6 @@ function updateBeltWidget(dataFull, saBulanIni) {
     else if (countSubs3Bln >= 101) tier = { nama: "HIJAU", bonus: 0, minSA: 0 };
     else if (countSubs3Bln >= 26) tier = { nama: "KUNING", bonus: 0, minSA: 0 };
 
-    // Update UI Elemen
     const elSubs = document.getElementById('belt-total-subs');
     if(elSubs) elSubs.innerText = countSubs3Bln;
     
@@ -373,7 +369,6 @@ function updateBeltWidget(dataFull, saBulanIni) {
     const saAlert = document.getElementById('belt-sa-alert');
     const bonusVal = document.getElementById('belt-bonus-val');
 
-    // Cek Syarat Minimal SA sesuai Kebijakan
     if (tier.minSA > 0 && saBulanIni < tier.minSA) {
         if(saAlert) saAlert.classList.remove('hidden');
         const alertText = document.getElementById('belt-sa-needed');
@@ -391,7 +386,6 @@ function updateBeltWidget(dataFull, saBulanIni) {
     }
 }
 
-// FUNGSI TANGGAL INDONESIA (DD/MM/YYYY)
 function getTodayString() {
     const d = new Date();
     const year = d.getFullYear();
@@ -646,11 +640,9 @@ function renderCard(item, mode) {
     let sPB = isP ? `<button onclick="handleSetProgress('${item.idCst}', '${item.nama}')" class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] shadow-sm flex-1">Set Progress</button>` : "";
     let btnAktif = isProg ? `<button onclick="konfirmasiAktifkan('${item.idCst}', '${item.nama}')" class="bg-emerald-600 text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] shadow-sm flex-1">AKTIF</button>` : "";
     
-    // Ambil Note dari Command (Baris B) dan Billing (Baris L)
     const noteInternal = (item.command && item.command.trim() !== "") ? item.command.toUpperCase() : "";
     const noteBilling = (item.billing && item.billing.trim() !== "") ? item.billing : "";
 
-    // Gabungkan Note jika ada
     let noteHTML = "";
     if (noteInternal || noteBilling) {
         noteHTML = `
@@ -785,8 +777,7 @@ async function cariData(mode, btnEl) {
     } else if (mode === 'qc') {
         const now = new Date(); const tD = now.getDate();
         items = items.filter(i => {
-            const cmd = String(i.command || "").toLowerCase();
-            if (cmd.includes('pending') || cmd.includes('progress') || isAuditOFF(i)) return false;
+            const cmd = String(i.command || "").toLowerCase(); if (cmd.includes('pending') || cmd.includes('progress') || isAuditOFF(i)) return false;
             const p = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
             const d = (p[0].length === 4) ? new Date(p[0], p[1]-1, p[2]) : new Date(p[2], p[1]-1, p[0]);
             const diff = Math.ceil(Math.abs(now - d) / (1000 * 60 * 60 * 24));
@@ -795,7 +786,6 @@ async function cariData(mode, btnEl) {
             return diff >= 20 && (tD === cD);
         });
     } else {
-        // FILTER SEARCH UMUM: Sembunyikan OFF dan cari data
         if (query) {
             items = items.filter(i => !isAuditOFF(i) && (
                 i.nama.toLowerCase().includes(query) || 
@@ -1395,64 +1385,71 @@ function pilihSaran(txt) {
 
 async function executeSendComplaint(item, kendala) {
     const now = new Date(); 
-    // Format Waktu
     const hari = now.toLocaleDateString('id-ID', { weekday: 'long' }); 
     const tgl = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-    const jam = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':'); 
-    
-    // Logika Salam Waktu
     const hr = now.getHours();
-    let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
+    const salamWaktu = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
 
-    // 1. Buat Isi Pesan Follow Up untuk WhatsApp
-    const textFollowUp = `Halo Selamat ${slm} Kak *${item.nama.toUpperCase()}*,\n\nMenindaklanjuti laporan kendala internet MyRepublic pada:\n📅 *${tgl}* pukul *${jam}*\n⚠️ *Kendala:* ${kendala.toUpperCase()}\n\nMohon informasinya, apakah saat ini koneksi internet di lokasi sudah kembali normal/lancar? Terima kasih. 🙏`;
-    
-    // 2. Buat Link WhatsApp
-    const linkFollowUp = `https://api.whatsapp.com/send?phone=${getPureWaNumber(item.hp)}&text=${encodeURIComponent(textFollowUp)}`;
-
-    // 3. Susun Pesan Telegram dengan Direct Link Follow-up
-    const pesan = `*COMPLAINT CUSTOMER*
+    // Format Pesan Dasar (Admin CS & Telegram)
+    const basePesan = `*COMPLAINT CUSTOMER*
 -----------------------------
-${hari}, ${tgl} | Pukul ${jam}
+${hari}
+${tgl}
 
-• *Nama:* ${item.nama.toUpperCase()}
-• *ID Pelanggan:* ${item.idCst}
-• *Paket:* ${item.paket}
-• *No HP:* ${formatBeautifulNumber(item.hp)}
-• *Alamat:* ${item.alamat.toUpperCase()}
+• Nama: ${item.nama.toUpperCase()}
+• ID Pelanggan: ${item.idCst}
+• Paket: ${item.paket}
+• No HP: ${formatBeautifulNumber(item.hp)}
+• Alamat: ${item.alamat.toUpperCase()}
 
-*⚠️ KENDALA:*
+⚠️ KENDALA:
 ${kendala.toUpperCase()}
 
 -----------------------------
-👇 *TINDAK LANJUT CEPAT:*
-[📲 KLIK UNTUK FOLLOW UP WA](${linkFollowUp})`;
+Mohon bantuannya mas.`;
+
+    // Follow Up Pelanggan (Hanya Teks, tanpa Link)
+    const followUpCustomerMsg = `Halo Selamat ${salamWaktu} Bpk/Ibu *${item.nama.trim().toUpperCase()}*, mengonfirmasi laporan kendala pada hari ${hari}, tanggal ${tgl}. Apakah koneksi internetnya saat ini sudah kembali lancar?`;
+    const linkFollowUpCustomer = `https://api.whatsapp.com/send?phone=${getPureWaNumber(item.hp)}&text=${encodeURIComponent(followUpCustomerMsg)}`;
+
+    // Re-Follow Up ke CS
+    const followUpCSMsg = `Internet belum ada perubahan.
+
+• Nama: ${item.nama.toUpperCase()}
+• ID Pelanggan: ${item.idCst}
+• Alamat: ${item.alamat.toUpperCase()}
+• Kendala: ${kendala.toUpperCase()}
+• Tanggal Komplain: ${tgl}
+
+-----------------------------
+Mohon bantuannya mas.`;
+    const linkFollowUpCS = `https://wa.me/628888500818?text=${encodeURIComponent(followUpCSMsg)}`;
+
+    // Gabungkan Link ke Pesan Telegram
+    const pesanTelegram = `${basePesan}
+
+📲 [FOLLOW UP PELANGGAN](${linkFollowUpCustomer})
+🛠️ [RE-FOLLOW UP CS](${linkFollowUpCS})`;
 
     const telTok = '8531770277:AAHKW3KhdwXop-hpu_sE21djyqdu2Wl8vmU'; 
     const chatId = '-1003594385102'; 
     const threadId = '13'; 
 
     try { 
-        // Kirim ke Telegram
         await fetch(`https://api.telegram.org/bot${telTok}/sendMessage`, { 
             method: 'POST', 
             headers: { 'Content-Type': 'application/json' }, 
             body: JSON.stringify({ 
                 chat_id: chatId, 
                 message_thread_id: threadId, 
-                text: pesan, 
+                text: pesanTelegram, 
                 parse_mode: 'Markdown',
                 disable_web_page_preview: true 
             }) 
         }); 
+    } catch (err) { console.error("Telegram Error"); }
 
-        alert("Laporan terkirim ke Telegram dengan Link Follow-up!");
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(pesan)}`, '_blank');
-        
-    } catch (err) {
-        console.error(err);
-        alert("Gagal mengirim laporan.");
-    }
+    window.open(`https://api.whatsapp.com/send?phone=628888500818&text=${encodeURIComponent(basePesan)}`, '_blank');
 }
 
 function sensorEmail(email) {
