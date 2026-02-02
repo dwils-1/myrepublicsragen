@@ -1099,7 +1099,7 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
     const now = new Date();
     const hr = now.getHours();
     let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
-    const portalLink = "\n\nCek promo, ganti password, kendala: %0A👇 👇 👇%0A www.myrepublicsragen.my.id";
+    const portalLink = "\n\nCek promo, ganti password, kendala: \n👇 👇 👇\nwww.myrepublicsragen.my.id";
     let textMessage = "";
     if (isPending) textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nSaya *DWI* dari MyRepublic ingin menanyakan kembali terkait rencana pemasangan internetnya. Apakah ada kendala atau ada yang ingin ditanyakan? Saya bantu kawal prosesnya sampai aktif ya Pak/Bu. 😊`;
     else if (source === 'progress') textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nInformasi terbaru, saat ini pemasangan Anda sudah *Masuk Antrian Instalasi*. Mohon kesediaannya menunggu tim teknisi menghubungi untuk jadwal kunjungan ke lokasi. 🙏`;
@@ -1281,7 +1281,7 @@ function renderLeadsCards(data) {
     const cardsContainer = document.getElementById('cardsContainer');
     if(!cardsContainer) return;
     cardsContainer.innerHTML = ''; 
-    const promoLink = "Cek promo, ganti password, kendala :%0A👇 👇 👇%0A www.myrepublicsragen.my.id";
+   const promoLink = `Cek promo, ganti password, kendala :\n👇 👇 👇\nwww.myrepublicsragen.my.id`;
     data.forEach(item => {
         const now = new Date(); const hr = now.getHours();
         let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
