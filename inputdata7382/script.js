@@ -1,7 +1,24 @@
-// --- KONFIGURASI ---
+// --- KONFIGURASI UTAMA ---
 const scriptURL = 'https://script.google.com/macros/s/AKfycbztPKpwv1jYnakn5P7vn_uupsZt5D7HoejadY7re7JKAKKWD8X6zYA6uFRdz8FMdP46/exec'; 
 const leadsScriptURL = 'https://script.google.com/macros/s/AKfycbwLdNTyp7ezmoD24uezz6Jojoy4CyS5Igc0WmxhBghJVYKYFFu5ay_I4FUGXZUemVWbYA/exec';
 const TGL_JOIN = new Date('2025-07-25');
+
+// --- INTEGRASI EMAILJS AMAN ---
+(function() {
+    function initEmailJS() {
+        if (typeof emailjs !== 'undefined') {
+            // Public Key dari gambar 150042.jpg
+            emailjs.init("TnW-NUK2By5NxTGG5"); 
+            console.log("EmailJS Berhasil Dimuat");
+            return true;
+        }
+        return false;
+    }
+    const checkInterval = setInterval(() => {
+        if (initEmailJS()) clearInterval(checkInterval);
+    }, 1000);
+    setTimeout(() => clearInterval(checkInterval), 10000);
+})();
 
 let lastDeletedId = null;
 let hiddenBillingIds = JSON.parse(localStorage.getItem('hiddenBillingIds')) || [];
@@ -1103,7 +1120,7 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
     let textMessage = "";
     if (isPending) textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nSaya *DWI* dari MyRepublic ingin menanyakan kembali terkait rencana pemasangan internetnya. Apakah ada kendala atau ada yang ingin ditanyakan? Saya bantu kawal prosesnya sampai aktif ya Pak/Bu. 😊`;
     else if (source === 'progress') textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nInformasi terbaru, saat ini pemasangan Anda sudah *Masuk Antrian Instalasi*. Mohon kesediaannya menunggu tim teknisi menghubungi untuk jadwal kunjungan ke lokasi. 🙏`;
-    else if (source === 'fast') textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah bergabung. Mengingat pemasangan baru saja aktif, kami informasikan tagihan pertama Anda sebesar *${harga}* sudah muncul. Mohon segera dilakukan pembayaran agar layanan tetap lancar. 🙏`;
+    else if (source === 'fast') textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah bergabung. Mengingat pemasangan baru saja aktif, kami informasikan tagihan pertama Anda sebesar *${harga}* sudah muncul. Mohon segera dilakukan pembayaran hari ini agar layanan tetap lancar. 🙏`;
     else if (source === 'qc') textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nBagaimana kualitas jaringan MyRepublic di lokasi saat ini? Apakah ada kendala? Jika lancar, mohon rekomendasikan ke saudara/tetangga ya Pak/Bu, saya bantu kawal pemasangannya secara prioritas. 🤝`;
     else {
         const tglHariIni = now.getDate();
@@ -1362,7 +1379,7 @@ function inputKendalaComplaint(idCst) {
         openModal({
             title: '🛠️ DETAIL KENDALA', headerClass: 'bg-red-700',
             body: `<div class="p-2 text-left"><p class="text-[10px] font-bold text-slate-500 mb-1 uppercase">Customer: ${item.nama}</p><textarea id="textKendala" placeholder="Detail kendala..." class="input-field h-24 border-red-200 force-caps text-left" oninput="logikaSaranKendala(this.value)" onfocus="document.getElementById('customModal').classList.add('keyboard-active')" onblur="setTimeout(() => document.getElementById('customModal').classList.remove('keyboard-active'), 100)"></textarea><div id="containerSaran" class="mt-3 flex flex-wrap gap-2"></div></div>`,
-            subtext: 'Kirim via WhatsApp & Telegram',
+            subtext: 'Kirim via Email & Telegram',
             buttons: [{ text: 'BATAL', class: 'bg-slate-100 py-3 rounded-xl font-black text-xs', action: () => document.getElementById('customModal').classList.remove('keyboard-active') },
             { text: 'KIRIM LAPORAN', class: 'bg-red-700 text-white py-3 rounded-xl font-black text-xs', action: () => { const tK = document.getElementById('textKendala'); document.getElementById('customModal').classList.remove('keyboard-active'); if(tK) executeSendComplaint(item, tK.value); } }]
         });
@@ -1390,7 +1407,6 @@ async function executeSendComplaint(item, kendala) {
     const hr = now.getHours();
     const salamWaktu = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
 
-    // Format Pesan Dasar (Admin CS & Telegram)
     const basePesan = `*COMPLAINT CUSTOMER*
 -----------------------------
 ${hari}
@@ -1408,29 +1424,30 @@ ${kendala.toUpperCase()}
 -----------------------------
 Mohon bantuannya mas.`;
 
-    // Follow Up Pelanggan (Hanya Teks, tanpa Link)
-    const followUpCustomerMsg = `Halo Selamat ${salamWaktu} Bpk/Ibu *${item.nama.trim().toUpperCase()}*, mengonfirmasi laporan kendala pada hari ${hari}, tanggal ${tgl}. Apakah koneksi internetnya saat ini sudah kembali lancar?`;
-    const linkFollowUpCustomer = `https://api.whatsapp.com/send?phone=${getPureWaNumber(item.hp)}&text=${encodeURIComponent(followUpCustomerMsg)}`;
+    // 1. Logika Pengiriman via EmailJS (Template ID terbaru)
+    const templateParams = {
+        to_email: "cs@myrepublic.net.id",
+        subject: `COMPLAINT - ${item.idCst} - ${item.nama.toUpperCase()}`,
+        message: basePesan.replace(/\*/g, "") // Bersihkan bintang untuk email
+    };
 
-    // Re-Follow Up ke CS
-    const followUpCSMsg = `Internet belum ada perubahan.
+    if (typeof emailjs !== 'undefined') {
+        // Menggunakan ID Template terbaru dari hasil uji sukses dashboard Anda
+        emailjs.send("service_8xoyvtm", "template_wylm46r", templateParams)
+            .then(function(response) {
+               console.log('SUCCESS!', response.status, response.text);
+               alert("🚀 Laporan otomatis terkirim ke email CS MyRepublic!");
+            }, function(error) {
+               console.error('FAILED...', error);
+               alert("❌ Gagal kirim email otomatis. Membuka WhatsApp admin...");
+               window.open(`https://api.whatsapp.com/send?phone=628888500818&text=${encodeURIComponent(basePesan)}`, '_blank');
+            });
+    } else {
+        alert("⚠️ Library Email belum siap. Mohon tunggu 3 detik lalu coba lagi, atau buka WhatsApp admin...");
+        window.open(`https://api.whatsapp.com/send?phone=628888500818&text=${encodeURIComponent(basePesan)}`, '_blank');
+    }
 
-• Nama: ${item.nama.toUpperCase()}
-• ID Pelanggan: ${item.idCst}
-• Alamat: ${item.alamat.toUpperCase()}
-• Kendala: ${kendala.toUpperCase()}
-• Tanggal Komplain: ${tgl}
-
------------------------------
-Mohon bantuannya mas.`;
-    const linkFollowUpCS = `https://wa.me/628888500818?text=${encodeURIComponent(followUpCSMsg)}`;
-
-    // Gabungkan Link ke Pesan Telegram
-    const pesanTelegram = `${basePesan}
-
-📲 [FOLLOW UP PELANGGAN](${linkFollowUpCustomer})
-🛠️ [RE-FOLLOW UP CS](${linkFollowUpCS})`;
-
+    // 2. Logika Pengiriman via Telegram (Tetap Berjalan)
     const telTok = '8531770277:AAHKW3KhdwXop-hpu_sE21djyqdu2Wl8vmU'; 
     const chatId = '-1003594385102'; 
     const threadId = '13'; 
@@ -1442,14 +1459,11 @@ Mohon bantuannya mas.`;
             body: JSON.stringify({ 
                 chat_id: chatId, 
                 message_thread_id: threadId, 
-                text: pesanTelegram, 
-                parse_mode: 'Markdown',
-                disable_web_page_preview: true 
+                text: basePesan, 
+                parse_mode: 'Markdown'
             }) 
         }); 
     } catch (err) { console.error("Telegram Error"); }
-
-    window.open(`https://api.whatsapp.com/send?phone=628888500818&text=${encodeURIComponent(basePesan)}`, '_blank');
 }
 
 function sensorEmail(email) {
