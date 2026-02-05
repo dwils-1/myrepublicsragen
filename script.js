@@ -492,24 +492,51 @@ async function handleAutoGpsSearch() {
 
         const distInMeters = closestFatDist * 1000;
         let formattedDist = distInMeters < 1000 ? `${distInMeters.toFixed(0)} meter` : `${closestFatDist.toFixed(2)} KM`;
-        const isCovered = distInMeters <= 250;
         
         const addr = await getFullAddressOnline(locationData.lat, locationData.lng);
+        const desa = addr ? addr.village : 'Sragen';
         resultBox.style.display = 'block';
+
+        let statusText = "";
+        let statusTelegram = "";
+        let gpsStatusLabel = "";
 
         if (isOutsideSragen) {
             resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-orange-100 text-orange-800 border border-orange-200";
-            resultBox.innerHTML = `📍 Lokasi Anda saat ini di <b>${addr ? addr.village : 'Luar Wilayah'}</b> berada di luar jangkauan Cabang Sragen.`;
-            if(statusTextMain) statusTextMain.innerText = "Status: LUAR WILAYAH";
-        } else if (isCovered) {
+            resultBox.innerHTML = `📍 Lokasi Anda saat ini di <b>${desa}</b> berada di luar jangkauan Cabang Sragen.`;
+            statusText = "Status: LUAR WILAYAH";
+            statusTelegram = "LUAR SRAGEN";
+            gpsStatusLabel = "LUAR WILAYAH";
+        } else if (distInMeters <= 150) {
             resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-green-100 text-green-700 border border-green-200";
-            resultBox.innerHTML = `✅ Lokasi Anda saat ini di <b>${addr ? addr.village : 'Sragen'}</b> sudah tercover.<br><small>Jarak: ±${formattedDist}.</small>`;
-            if(statusTextMain) statusTextMain.innerText = "Status: TERCOVER";
+            resultBox.innerHTML = `✅ Lokasi Anda di <b>${desa}</b> TERCOVER! (Jarak: ±${formattedDist})<br><small>Membuka formulir pendaftaran...</small>`;
+            statusText = "Status: TERCOVER";
+            statusTelegram = "TERCOVER (HIJAU)";
+            gpsStatusLabel = `TERCOVER (Jarak: ${formattedDist})`;
+            
+            setTimeout(() => {
+                openRegistrationModal('Cek Lokasi Otomatis (Area Hijau)');
+            }, 1500);
+        } else if (distInMeters > 150 && distInMeters <= 200) {
+            resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-yellow-100 text-yellow-700 border border-yellow-300";
+            resultBox.innerHTML = `⚠️ Lokasi Anda di <b>${desa}</b> perlu survei tim lapangan (Jarak: ±${formattedDist})<br><small>Membuka formulir untuk pendataan survei...</small>`;
+            statusText = "Status: PERLU SURVEI";
+            statusTelegram = "PERLU SURVEI (KUNING)";
+            gpsStatusLabel = `BUTUH SURVEI (Jarak: ${formattedDist})`;
+
+            setTimeout(() => {
+                openRegistrationModal('Request Survei (Area Kuning)');
+            }, 1500);
         } else {
             resultBox.className = "search-result-box p-4 text-center text-sm font-semibold bg-red-100 text-red-700 border border-red-200";
-            resultBox.innerHTML = `⚠️ Lokasi Anda saat ini di <b>${addr ? addr.village : 'Sragen'}</b> belum tercover.<br><small>Jarak: ±${formattedDist}.</small>`;
-            if(statusTextMain) statusTextMain.innerText = "Status: BELUM TERCOVER";
+            resultBox.innerHTML = `❌ Mohon maaf, lokasi Anda di <b>${desa}</b> belum tercover (Jarak: ±${formattedDist}).`;
+            statusText = "Status: BELUM TERCOVER";
+            statusTelegram = "BELUM TERCOVER (MERAH)";
+            gpsStatusLabel = `TIDAK TERCOVER (Jarak: ${formattedDist})`;
         }
+
+        if(statusTextMain) statusTextMain.innerText = statusText;
+        localStorage.setItem('last_gps_status_label', gpsStatusLabel);
 
         if(map) {
             map.setView([locationData.lat, locationData.lng], 16);
@@ -518,9 +545,9 @@ async function handleAutoGpsSearch() {
 
         const msg = `🔍 <b>CEK COVERAGE AUTOMATIC</b>\n` +
                     `━━━━━━━━━━━━━━━\n` +
-                    `📍 <b>Desa:</b> ${addr ? addr.village : 'Sragen'}\n` +
+                    `📍 <b>Desa:</b> ${desa}\n` +
                     `🎯 <b>Jarak ke FAT:</b> ${formattedDist}\n` +
-                    `✅ <b>Status:</b> ${isOutsideSragen ? 'LUAR SRAGEN' : (isCovered ? 'TERCOVER' : 'BELUM TERCOVER')}\n` +
+                    `✅ <b>Status:</b> ${statusTelegram}\n` +
                     `🆔 <b>Session:</b> <code>${localStorage.getItem(SESSION_ID_KEY)}</code>\n` +
                     `🗺️ <a href="${locationData.link}">Buka Lokasi User</a>`;
         await telegramFetch(msg);
@@ -849,6 +876,7 @@ async function submitRegistrationToBot() {
     const rawLat = localStorage.getItem('raw_lat');
     const rawLng = localStorage.getItem('raw_lng');
     const mapLink = localStorage.getItem(COORDS_CACHE_KEY) || "Peta tidak tersedia";
+    const gpsStatusLabel = localStorage.getItem('last_gps_status_label') || "Tidak melakukan cek GPS";
     let alamatLengkapStr = data.alamatManual;
     
     if(rawLat && rawLng) {
@@ -867,6 +895,7 @@ async function submitRegistrationToBot() {
                 `📧 <b>Email:</b> ${data.email}\n` +
                 `🚀 <b>Paket:</b> ${data.paket}\n` +
                 `🏠 <b>Alamat:</b> ${alamatLengkapStr}\n` +
+                `🛰️ <b>Status Jarak GPS:</b> <code>${gpsStatusLabel}</code>\n` +
                 `📍 <b>Titik Maps:</b> <a href="${mapLink}">Lihat Lokasi</a>\n` +
                 `━━━━━━━━━━━━━━━\n\n` +
                 `👉 <a href="${waUrl}">HUBUNGI USER VIA WA</a>`;
