@@ -606,7 +606,44 @@ function getPureWaNumber(num) {
     return clean;
 }
 
+function salinDataLengkap(id) {
+    const item = fullRawData.find(i => String(i.idCst) === String(id));
+    if (!item) return alert("Data tidak ditemukan!");
+
+    let hT = item.harga || "0";
+    if (hT === "0" || hT === "" || hT === "Harga Tidak Ada") hT = "Cek Billing";
+    else if (!hT.toString().toLowerCase().includes('rp')) hT = 'Rp' + parseInt(hT).toLocaleString();
+
+    const formattedText = `*Berikut data pelanggan:*
+
+*Nama* : ${item.nama.toUpperCase()}
+*ID Pelanggan* : ${cleanId(item.idCst)}
+*Pasang* : ${item.tanggal}
+*Paket* : ${item.paket}
+*Tgl Pembayaran* : ${item.tanggal.split(/[/-]/)[0]}
+*Jatuh tempo* : ${item.japo}
+*Harga* : ${hT}
+*Alamat* : ${item.alamat}
+
+Cek promo, ganti password, kendala:
+👇 👇 👇
+www.myrepublicsragen.my.id`;
+
+
+
+    navigator.clipboard.writeText(formattedText).then(() => {
+        openModal({
+            title: '📋 DATA DISALIN',
+            headerClass: 'bg-indigo-600',
+            body: `<p class="text-xs text-left p-3 bg-slate-50 rounded-xl font-mono">${formattedText.replace(/\n/g, '<br>')}</p>`,
+            subtext: 'Data siap dibagikan',
+            buttons: [{ text: 'OK', class: 'bg-indigo-600 text-white py-3 rounded-xl font-black text-xs w-full', action: () => {} }]
+        });
+    }).catch(err => alert("Gagal menyalin data."));
+}
+
 function renderCard(item, mode) {
+    if (item.idCst === undefined) return "";
     if (mode === 'fast' && hiddenBillingIds.includes(item.idCst)) return "";
     const parts = item.tanggal.includes('/') ? item.tanggal.split('/') : item.tanggal.split('-');
     if(parts.length < 3) return ""; 
@@ -637,6 +674,8 @@ function renderCard(item, mode) {
     const bB = (mode === 'fast') ? `<button onclick="handleBillingClick('${item.idCst}')" class="bg-red-600 text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] shadow-sm flex-1">Bayar Billing</button>` : "";
     const cP = `<button onclick="handleCopyClick('${item.idCst}')" class="ml-2 bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-lg border border-indigo-200 text-[9px] font-black active:scale-90 transition-transform">SALIN ID</button>`;
     
+    const btnSalinData = `<button onclick="salinDataLengkap('${item.idCst}')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] shadow-sm flex-1">Salin Data</button>`;
+
     let sPB = isP ? `<button onclick="handleSetProgress('${item.idCst}', '${item.nama}')" class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] shadow-sm flex-1">Set Progress</button>` : "";
     let btnAktif = isProg ? `<button onclick="konfirmasiAktifkan('${item.idCst}', '${item.nama}')" class="bg-emerald-600 text-white px-4 py-2 rounded-xl font-black uppercase text-[10px] shadow-sm flex-1">AKTIF</button>` : "";
     
@@ -681,8 +720,8 @@ function renderCard(item, mode) {
             ${noteHTML}
         </div>
         <div class="flex gap-2">
-            ${bB}${sPB}${btnAktif}
-            <button onclick="prosesWa('${item.hp}', '${item.idCst}', '${item.nama}', '${item.japo}', '${item.paket}', '${mode}')" class="${(bB || sPB || btnAktif) ? 'flex-1' : 'w-full'} ${waC} text-white font-black py-3 rounded-xl text-[10px] shadow-lg transition-all active:scale-95 uppercase">${waL}</button>
+            ${btnSalinData}${bB}${sPB}${btnAktif}
+            <button onclick="prosesWa('${item.hp}', '${item.idCst}', '${item.nama}', '${item.japo}', '${item.paket}', '${mode}')" class="${(bB || sPB || btnAktif || btnSalinData) ? 'flex-1' : 'w-full'} ${waC} text-white font-black py-3 rounded-xl text-[10px] shadow-lg transition-all active:scale-95 uppercase">${waL}</button>
         </div>
     </div>`;
 }
@@ -1369,7 +1408,6 @@ function inputKendalaComplaint(idCst) {
     }, 300);
 }
 
-// --- LOGIKA SARAN REAL-TIME PINTAR (HAPUS HURUF MANUAL SAAT SARAN DI KLIK) ---
 function logikaSaranKendala(val) {
     const container = document.getElementById('containerSaran');
     if (!container) return;
@@ -1380,7 +1418,6 @@ function logikaSaranKendala(val) {
         return;
     }
 
-    // DATABASE KENDALA LENGKAP (Min. 1000 Karakter saran)
     const daftarSaran = [
         { text: 'KABEL PUTUS.' }, { text: 'KABEL LOS MERAH.' }, { text: 'KABEL BENDING.' }, { text: 'KABEL TERTIMPA POHON.' },
         { text: 'INTERNET LELET.' }, { text: 'SOSIAL MEDIA LELET.' }, { text: 'BROWSER LELET.' }, { text: 'SPEEDTEST TIDAK SESUAI PAKET.' },
@@ -1412,11 +1449,10 @@ function logikaSaranKendala(val) {
     }
 }
 
-// FUNGSI PILIHSARAN DI PERBARUI: Hapus huruf manual yang diketik tadi
 function pilihSaran(txt) {
     const input = document.getElementById('textKendala');
     if (input) { 
-        input.value = txt.toUpperCase(); // Otomatis mengganti seluruh isi kolom dengan saran terpilih
+        input.value = txt.toUpperCase(); 
         input.focus(); 
         document.getElementById('containerSaran').innerHTML = ""; 
     }
