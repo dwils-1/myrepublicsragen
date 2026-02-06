@@ -1370,12 +1370,62 @@ function inputKendalaComplaint(idCst) {
 }
 
 function logikaSaranKendala(val) {
+    const input = document.getElementById('textKendala');
+    if (!input) return;
+
+    // --- 1. LOGIKA AUTO-REPLACE (MENGHAPUS HURUF MANUAL & GANTI TEKS) ---
+    const shortcuts = {
+        'le ': 'LELET INTERNET TIDAK DAPAT DIGUNAKAN ',
+        'mt ': 'LAMPU LOS MERAH / KABEL PUTUS (RFO) ',
+        'dc ': 'INTERNET SERING TERPUTUS / DISCONNECT ',
+        'll ': 'LAMPU LOS MATI TAPI INTERNET TIDAK JALAN ',
+        'rt ': 'REQUEST ROUTER REBOOT / RESTART REMOTE ',
+        'mo ': 'MODEM OVERHEAT / SUHU PERANGKAT PANAS ',
+        'is ': 'CEK STATUS ISOLIR / BELUM BAYAR ',
+        'kb ': 'KABEL FO TERLALU TEKUK / BENDING '
+    };
+
+    let currentVal = input.value.toLowerCase();
+    for (const [key, replacement] of Object.entries(shortcuts)) {
+        if (currentVal.endsWith(key)) {
+            // Menghapus singkatan manual dan mengganti dengan kalimat lengkap
+            input.value = input.value.substring(0, input.value.length - key.length) + replacement;
+            input.value = input.value.toUpperCase(); // Standarisasi Caps
+        }
+    }
+
+    // --- 2. DATABASE SARAN TAMBAHAN (DINAMIS SAAT DIKETIK) ---
     const container = document.getElementById('containerSaran');
     if (!container) return;
+    
     const query = val.toLowerCase();
-    const daftarSaran = [{ key: ['mati', 'los', 'merah'], text: 'Lampu LOS Merah / Kabel Putus' }, { key: ['lambat', 'lemot', 'slow'], text: 'Koneksi Lambat / Lemot' }, { key: ['sosmed', 'ig', 'tiktok', 'fb'], text: 'Sosmed (IG/TikTok) Lemot' }, { key: ['wifi', 'tidak ada'], text: 'Sinyal WiFi Tidak Terdeteksi' }];
-    const displaySaran = daftarSaran.filter(s => s.key.some(k => query.includes(k))).length > 0 ? daftarSaran.filter(s => s.key.some(k => query.includes(k))) : daftarSaran.slice(0, 3);
-    container.innerHTML = displaySaran.map(s => `<button type="button" onclick="pilihSaran('${s.text}')" class="bg-red-50 text-red-700 border border-red-200 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-red-700 hover:text-white transition-all shadow-sm">+ ${s.text}</button>`).join('');
+    const daftarSaran = [
+        // Kendala Fisik
+        { key: ['mati', 'los', 'merah', 'putus'], text: 'Lampu LOS Merah / Kabel Putus' },
+        { key: ['kabel', 'tiang', 'turun'], text: 'Kabel Melandai / Tiang Roboh' },
+        // Kendala Kecepatan
+        { key: ['lambat', 'lemot', 'slow', 'lelet'], text: 'Koneksi Lambat / Lemot' },
+        { key: ['buffering', 'yt', 'youtube'], text: 'Buffering Saat Nonton Video' },
+        { key: ['game', 'ping', 'lag'], text: 'Ping Tinggi / Lag Saat Gaming' },
+        // Kendala WiFi
+        { key: ['wifi', 'sinyal', 'radius'], text: 'Sinyal WiFi Tidak Terdeteksi' },
+        { key: ['pass', 'sandi', 'ganti'], text: 'Request Ganti Password WiFi' },
+        { key: ['jangkauan', 'jauh'], text: 'Jangkauan WiFi Kurang Luas' },
+        // Kendala Perangkat
+        { key: ['panas', 'hang', 'modem'], text: 'Modem Hang / Sering Restart' },
+        { key: ['lan', 'port', 'pc'], text: 'Port LAN Tidak Terdeteksi' }
+    ];
+
+    // Filter saran berdasarkan apa yang sedang diketik user
+    const displaySaran = daftarSaran.filter(s => s.key.some(k => query.includes(k)));
+    
+    // Jika tidak ada keyword yang cocok, tampilkan 3 saran default tercepat
+    const finalDisplay = displaySaran.length > 0 ? displaySaran : daftarSaran.slice(0, 3);
+
+    container.innerHTML = finalDisplay.map(s => `
+        <button type="button" onclick="pilihSaran('${s.text}')" 
+        class="bg-red-50 text-red-700 border border-red-200 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-red-700 hover:text-white transition-all shadow-sm">
+        + ${s.text}</button>`).join('');
 }
 
 function pilihSaran(txt) {
@@ -1406,7 +1456,7 @@ ${tgl}
 ${kendala.toUpperCase()}
 
 -----------------------------
-Mohon bantuannya mas @admin.`;
+Mohon bantuannya mas @admin`;
 
     // Follow Up Pelanggan (Hanya Teks, tanpa Link)
     const followUpCustomerMsg = `Halo Selamat ${salamWaktu} Bpk/Ibu *${item.nama.trim().toUpperCase()}*, mengonfirmasi laporan kendala pada hari ${hari}, tanggal ${tgl}. Apakah koneksi internetnya saat ini sudah kembali lancar?`;
@@ -1422,7 +1472,7 @@ Mohon bantuannya mas @admin.`;
 • Tanggal Komplain: ${tgl}
 
 -----------------------------
-Mohon bantuannya mas @admin.`;
+Mohon bantuannya mas @admin`;
     
     // REVISI: Mengarahkan ke pencarian manual (Tanpa nomor tujuan spesifik)
     const linkFollowUpCS = `https://wa.me/?text=${encodeURIComponent(followUpCSMsg)}`;
