@@ -1369,68 +1369,57 @@ function inputKendalaComplaint(idCst) {
     }, 300);
 }
 
+// --- LOGIKA SARAN REAL-TIME PINTAR (HAPUS HURUF MANUAL SAAT SARAN DI KLIK) ---
 function logikaSaranKendala(val) {
-    const input = document.getElementById('textKendala');
-    if (!input) return;
-
-    // --- 1. LOGIKA AUTO-REPLACE (MENGHAPUS HURUF MANUAL & GANTI TEKS) ---
-    const shortcuts = {
-        'le ': 'LELET INTERNET TIDAK DAPAT DIGUNAKAN ',
-        'mt ': 'LAMPU LOS MERAH / KABEL PUTUS (RFO) ',
-        'dc ': 'INTERNET SERING TERPUTUS / DISCONNECT ',
-        'll ': 'LAMPU LOS MATI TAPI INTERNET TIDAK JALAN ',
-        'rt ': 'REQUEST ROUTER REBOOT / RESTART REMOTE ',
-        'mo ': 'MODEM OVERHEAT / SUHU PERANGKAT PANAS ',
-        'is ': 'CEK STATUS ISOLIR / BELUM BAYAR ',
-        'kb ': 'KABEL FO TERLALU TEKUK / BENDING '
-    };
-
-    let currentVal = input.value.toLowerCase();
-    for (const [key, replacement] of Object.entries(shortcuts)) {
-        if (currentVal.endsWith(key)) {
-            // Menghapus singkatan manual dan mengganti dengan kalimat lengkap
-            input.value = input.value.substring(0, input.value.length - key.length) + replacement;
-            input.value = input.value.toUpperCase(); // Standarisasi Caps
-        }
-    }
-
-    // --- 2. DATABASE SARAN TAMBAHAN (DINAMIS SAAT DIKETIK) ---
     const container = document.getElementById('containerSaran');
     if (!container) return;
-    
-    const query = val.toLowerCase();
+
+    const query = val.toLowerCase().trim();
+    if (query.length < 1) {
+        container.innerHTML = ""; 
+        return;
+    }
+
+    // DATABASE KENDALA LENGKAP (Min. 1000 Karakter saran)
     const daftarSaran = [
-        // Kendala Fisik
-        { key: ['mati', 'los', 'merah', 'putus'], text: 'Lampu LOS Merah / Kabel Putus' },
-        { key: ['kabel', 'tiang', 'turun'], text: 'Kabel Melandai / Tiang Roboh' },
-        // Kendala Kecepatan
-        { key: ['lambat', 'lemot', 'slow', 'lelet'], text: 'Koneksi Lambat / Lemot' },
-        { key: ['buffering', 'yt', 'youtube'], text: 'Buffering Saat Nonton Video' },
-        { key: ['game', 'ping', 'lag'], text: 'Ping Tinggi / Lag Saat Gaming' },
-        // Kendala WiFi
-        { key: ['wifi', 'sinyal', 'radius'], text: 'Sinyal WiFi Tidak Terdeteksi' },
-        { key: ['pass', 'sandi', 'ganti'], text: 'Request Ganti Password WiFi' },
-        { key: ['jangkauan', 'jauh'], text: 'Jangkauan WiFi Kurang Luas' },
-        // Kendala Perangkat
-        { key: ['panas', 'hang', 'modem'], text: 'Modem Hang / Sering Restart' },
-        { key: ['lan', 'port', 'pc'], text: 'Port LAN Tidak Terdeteksi' }
+        { text: 'KABEL PUTUS.' }, { text: 'KABEL LOS MERAH.' }, { text: 'KABEL BENDING.' }, { text: 'KABEL TERTIMPA POHON.' },
+        { text: 'INTERNET LELET.' }, { text: 'SOSIAL MEDIA LELET.' }, { text: 'BROWSER LELET.' }, { text: 'SPEEDTEST TIDAK SESUAI PAKET.' },
+        { text: 'POWER LOS MERAH.' }, { text: 'KABEL LOS / PUTUS.' },
+        { text: 'ADAPTOR MATI.' }, { text: 'POWER MATI.' }, { text: 'ROUTER MATI.' }, { text: 'ONT MATI.' },
+        { text: 'YOUTUBE BUFFERING.' }, { text: 'TIKTOK LEMOT.' }, { text: 'GAME ONLINE LAG.' }, { text: 'ZOOM TERPUTUS.' },
+        { text: 'INTERNET DISCONNECT.' }, { text: 'INTERNET TIDAK DAPAT TERHUBUNG.' }, { text: 'FACEBOOK BUFFERING.' },
+        { text: 'BUKA SUSPEND.' }, { text: 'HAPUS DENDA.' }, { text: 'KABEL MELANDAI.' }, { text: 'TIANG ROBOH.' },
+        { text: 'INTERNET TIDAK DAPAT DI GUNAKAN DI JAM TERTENTU.' }, { text: 'WIFI TIDAK TERDETEKSI.' },
+        { text: 'GANTI PASSWORD WIFI.' }, { text: 'MODEM OVERHEAT.' }, { text: 'RESET ROUTER REMOTE.' },
+        { text: 'CEK STATUS ISOLIR.' }, { text: 'BELUM BAYAR TAGIHAN.' }, { text: 'MASA AKTIF HABIS.' },
+        { text: 'PING TINGGI SAAT GAME.' }, { text: 'VIDEO FREEZE SAAT ZOOM.' }, { text: 'GAGAL DOWNLOAD DI PLAYSTORE.' },
+        { text: 'WHATSAPP PENDING.' }, { text: 'KIRIM GAMBAR GAGAL.' }, { text: 'VOICE CALL RECONNECTING.' },
+        { text: 'KUALITAS VIDEO RENDAH.' }, { text: 'STREAMING DISNEY+ TIMEOUT.' }, { text: 'NETFLIX ERROR CODE.' }
     ];
 
-    // Filter saran berdasarkan apa yang sedang diketik user
-    const displaySaran = daftarSaran.filter(s => s.key.some(k => query.includes(k)));
-    
-    // Jika tidak ada keyword yang cocok, tampilkan 3 saran default tercepat
-    const finalDisplay = displaySaran.length > 0 ? displaySaran : daftarSaran.slice(0, 3);
+    const displaySaran = daftarSaran.filter(saran => {
+        const words = saran.text.toLowerCase().split(/[\s,./()]+/); 
+        return words.some(word => word.startsWith(query)); 
+    });
 
-    container.innerHTML = finalDisplay.map(s => `
-        <button type="button" onclick="pilihSaran('${s.text}')" 
-        class="bg-red-50 text-red-700 border border-red-200 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-red-700 hover:text-white transition-all shadow-sm">
-        + ${s.text}</button>`).join('');
+    if (displaySaran.length > 0) {
+        container.innerHTML = displaySaran.map(s => `
+            <button type="button" onclick="pilihSaran('${s.text.replace(/'/g, "\\'")}')" 
+            class="bg-red-50 text-red-700 border border-red-200 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-red-700 hover:text-white transition-all shadow-sm mb-1 text-left w-full">
+            + ${s.text}</button>`).join('');
+    } else {
+        container.innerHTML = "";
+    }
 }
 
+// FUNGSI PILIHSARAN DI PERBARUI: Hapus huruf manual yang diketik tadi
 function pilihSaran(txt) {
     const input = document.getElementById('textKendala');
-    if (input) { input.value += txt.toUpperCase(); input.focus(); document.getElementById('containerSaran').innerHTML = ""; }
+    if (input) { 
+        input.value = txt.toUpperCase(); // Otomatis mengganti seluruh isi kolom dengan saran terpilih
+        input.focus(); 
+        document.getElementById('containerSaran').innerHTML = ""; 
+    }
 }
 
 async function executeSendComplaint(item, kendala) {
@@ -1440,7 +1429,6 @@ async function executeSendComplaint(item, kendala) {
     const hr = now.getHours();
     const salamWaktu = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
 
-    // Format Pesan Dasar (Admin CS & Telegram)
     const basePesan = `*COMPLAINT CUSTOMER*
 -----------------------------
 ${hari}
@@ -1458,11 +1446,9 @@ ${kendala.toUpperCase()}
 -----------------------------
 Mohon bantuannya mas @admin`;
 
-    // Follow Up Pelanggan (Hanya Teks, tanpa Link)
     const followUpCustomerMsg = `Halo Selamat ${salamWaktu} Bpk/Ibu *${item.nama.trim().toUpperCase()}*, mengonfirmasi laporan kendala pada hari ${hari}, tanggal ${tgl}. Apakah koneksi internetnya saat ini sudah kembali lancar?`;
     const linkFollowUpCustomer = `https://api.whatsapp.com/send?phone=${getPureWaNumber(item.hp)}&text=${encodeURIComponent(followUpCustomerMsg)}`;
 
-    // Re-Follow Up ke CS
     const followUpCSMsg = `Internet belum ada perubahan.
 
 • Nama: ${item.nama.toUpperCase()}
@@ -1474,10 +1460,8 @@ Mohon bantuannya mas @admin`;
 -----------------------------
 Mohon bantuannya mas @admin`;
     
-    // REVISI: Mengarahkan ke pencarian manual (Tanpa nomor tujuan spesifik)
     const linkFollowUpCS = `https://wa.me/?text=${encodeURIComponent(followUpCSMsg)}`;
 
-    // Gabungkan Link ke Pesan Telegram (Mempertahankan format grup)
     const pesanTelegram = `${basePesan}
 
 📲 [FOLLOW UP PELANGGAN](${linkFollowUpCustomer})
@@ -1501,7 +1485,6 @@ Mohon bantuannya mas @admin`;
         }); 
     } catch (err) { console.error("Telegram Error"); }
 
-    // REVISI: Membuka WhatsApp untuk memilih kontak secara manual
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(basePesan)}`, '_blank');
 }
 
