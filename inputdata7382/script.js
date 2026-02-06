@@ -1406,7 +1406,7 @@ ${tgl}
 ${kendala.toUpperCase()}
 
 -----------------------------
-Mohon bantuannya mas.`;
+Mohon bantuannya mas @admin.`;
 
     // Follow Up Pelanggan (Hanya Teks, tanpa Link)
     const followUpCustomerMsg = `Halo Selamat ${salamWaktu} Bpk/Ibu *${item.nama.trim().toUpperCase()}*, mengonfirmasi laporan kendala pada hari ${hari}, tanggal ${tgl}. Apakah koneksi internetnya saat ini sudah kembali lancar?`;
@@ -1422,7 +1422,7 @@ Mohon bantuannya mas.`;
 • Tanggal Komplain: ${tgl}
 
 -----------------------------
-Mohon bantuannya mas.`;
+Mohon bantuannya mas @admin.`;
     
     // REVISI: Mengarahkan ke pencarian manual (Tanpa nomor tujuan spesifik)
     const linkFollowUpCS = `https://wa.me/?text=${encodeURIComponent(followUpCSMsg)}`;
