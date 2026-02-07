@@ -21,14 +21,6 @@
     </div>
 
     <form id="formWifi">
-        <div class="speedtest-guide-box">
-            <label style="margin-top: 0;">WAJIB UJI KECEPATAN (FAST.COM):</label>
-            <button type="button" class="btn-speedtest" onclick="bukaSpeedtest()">Uji Kecepatan Sekarang</button>
-            <p style="font-size: 12px; color: #5d4037; margin: 5px 0;">💡 Tunggu angka berhenti, lalu screenshot dan upload di bawah.</p>
-            <input type="file" id="ss_speedtest" accept="image/*" required style="margin-top: 10px;">
-        </div>
-
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
 
         <label for="nama">NAMA LENGKAP:</label>
         <input type="text" id="nama" placeholder="NAMA SESUAI KTP" required oninput="this.value = this.value.toUpperCase()">
@@ -70,6 +62,13 @@
 
         <label for="video_alat">UPLOAD VIDEO ALAT: <span style="font-size: 11px; color:red;">(Max 10 detik)</span></label>
         <input type="file" id="video_alat" accept="video/*" required>
+
+
+<label for="foto_kendala">UPLOAD GAMBAR:</label>
+<p style="font-size: 11px; color: #d32f2f; margin-top: 0;"><b>WAJIB:</b> Melampirkan bukti gambar kerusakan atau screenshot kendala agar tim mempermudah perbaikan.</p>
+<input type="file" id="foto_kendala" accept="image/*" required>
+
+
 
         <div class="location-area">
             <div class="status-header"><b>Status Lokasi Saat Melapor:</b></div>

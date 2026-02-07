@@ -1,9 +1,10 @@
 :root {
-    --primary-color: #d32f2f;
+    --primary-color: #6a1b9a; /* Ungu MyRepublic */
     --secondary-color: #f4f4f4;
     --success-color: #2e7d32;
     --error-color: #ff0000;
     --disabled-color: #cccccc;
+    --accent-purple: #4a148c;
 }
 
 body { 
@@ -58,9 +59,9 @@ h2 { color: var(--primary-color); text-transform: uppercase; margin-bottom: 5px;
 p.subtitle { text-align: center; font-size: 14px; color: #666; margin-top: 0; }
 
 .speedtest-guide-box {
-    background: #fff3e0;
+    background: #f3e5f5;
     padding: 15px;
-    border: 2px solid #ffb74d;
+    border: 2px solid var(--primary-color);
     border-radius: 10px;
     text-align: center;
     margin-bottom: 20px;
@@ -91,12 +92,18 @@ input, select, textarea {
     font-size: 15px; 
 }
 
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(106, 27, 154, 0.2);
+}
+
 .location-area { 
     margin-top: 20px; 
-    background: #f9f9f9; 
+    background: #fdfaff; 
     padding: 15px; 
     border-radius: 8px; 
-    border: 1px solid #ddd; 
+    border: 1px solid #ede7f6; 
 }
 
 .status-header { margin-bottom: 10px; font-size: 14px; }
@@ -109,7 +116,7 @@ input, select, textarea {
     padding: 12px;
     border: 2px dashed var(--primary-color);
     border-radius: 8px;
-    background-color: #fff5f5;
+    background-color: #f3e5f5;
     text-align: center;
     cursor: pointer;
     margin-top: 15px;
@@ -121,7 +128,7 @@ input, select, textarea {
     align-items: center; 
     gap: 12px; 
     font-size: 14px;
-    background: #f0f7ff;
+    background: #f3e5f5;
     padding: 12px;
     border-radius: 8px;
 }
@@ -139,6 +146,11 @@ button.btn-kirim {
     cursor: pointer; 
     margin-top: 20px; 
     text-transform: uppercase; 
+    transition: background 0.3s;
+}
+
+button.btn-kirim:hover {
+    background-color: var(--accent-purple);
 }
 
 .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
@@ -148,3 +160,13 @@ button.btn-kirim {
 .iframe-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
 .modal-footer { padding: 15px; text-align: center; background: #f4f4f4; border-top: 1px solid #ccc; }
 .close-modal-fixed { position: absolute; right: 20px; top: 15px; font-size: 35px; cursor: pointer; color: black; z-index: 1001; font-weight: bold; }
+
+.modal-content { 
+    max-width: 500px; 
+    height: auto; 
+    margin: 10% auto; 
+    border-radius: 12px; 
+    padding: 20px; 
+    background: white; 
+    position: relative; 
+}
