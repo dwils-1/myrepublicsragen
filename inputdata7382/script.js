@@ -174,13 +174,15 @@ function isAuditOFF(item) {
     return idRaw.includes('off') || cmd.includes('OFF');
 }
 
+/**
+ * REVISI: Sistem tidak merubah angka yang ada.
+ * Hanya menghapus karakter non-digit agar real direct.
+ */
 function formatWaMeLink(num) {
     if (!num) return "";
+    // Hanya menghapus karakter non-digit (spasi, tanda hubung, plus)
+    // Tanpa menambah 62 atau menghapus angka 0 di depan secara paksa
     let clean = num.toString().replace(/\D/g, "");
-    if (clean.startsWith("08")) clean = "62" + clean.slice(1);
-    else if (clean.startsWith("8")) clean = "62" + clean;
-    else if (clean.startsWith("6208")) clean = "62" + clean.slice(4);
-    if (!clean.startsWith("62") && clean.length > 0) clean = "62" + clean;
     return clean;
 }
 
@@ -597,12 +599,14 @@ function formatBeautifulNumber(num) {
     return clean;
 }
 
+/**
+ * REVISI: Sistem tidak merubah angka yang ada.
+ * Hanya membersihkan non-digit agar tidak error direct.
+ */
 function getPureWaNumber(num) {
     if (!num) return "";
     let clean = num.toString().replace(/\D/g, "");
-    if (clean.startsWith("08")) clean = "62" + clean.slice(1);
-    else if (clean.startsWith("8")) clean = "62" + clean;
-    if (!clean.startsWith("62")) clean = "62" + clean;
+    // Tidak lagi mengganti 08 ke 62 agar input manual user di database utuh
     return clean;
 }
 
@@ -628,8 +632,6 @@ function salinDataLengkap(id) {
 Cek promo, ganti password, kendala:
 👇 👇 👇
 www.myrepublicsragen.my.id`;
-
-
 
     navigator.clipboard.writeText(formattedText).then(() => {
         openModal({
@@ -962,13 +964,13 @@ function hitungBonusDekade() {
     
     const mbBody = document.getElementById('dk-monthly-bonus-body');
     if(mbBody) mbBody.innerHTML = mBH;
-    let tH = ""; for(const c in statsT) tH += `<tr><td class="text-left font-bold border-r p-2">${c}</td><td class="font-black p-2">${statsT[c]}</td><td class="text-green-600 font-black p-2">@Rp${(finalBr !== "0" ? SKEMA_DEKADE[c].prices[finalBr] : 0).toLocaleString()}</td></tr>`;
+    let dkTBodyHTML = ""; for(const c in statsT) dkTBodyHTML += `<tr><td class="text-left font-bold border-r p-2">${c}</td><td class="font-black p-2">${statsT[c]}</td><td class="text-green-600 font-black p-2">@Rp${(finalBr !== "0" ? SKEMA_DEKADE[c].prices[finalBr] : 0).toLocaleString()}</td></tr>`;
     const dkSa = document.getElementById('dk-total-sa');
     if(dkSa) dkSa.innerText = tSQ;
     const dkRp = document.getElementById('dk-total-rp');
     if(dkRp) dkRp.innerText = `Rp${Math.max(0, tFBQ - tDB).toLocaleString()}`;
     const dkTBody = document.getElementById('dk-table-body');
-    if(dkTBody) dkTBody.innerHTML = tH;
+    if(dkTBody) dkTBody.innerHTML = dkTBodyHTML;
     const hBonus = document.getElementById('hasilBonusDekade');
     if(hBonus) hBonus.classList.remove('hidden');
 }
@@ -1133,8 +1135,13 @@ async function generateAndDownloadCard(data) {
     } catch (err) { alert("❌ GAGAL GENERATE GAMBAR: " + err.message); return false; }
 }
 
+/**
+ * REVISI UTAMA: Menggunakan nomor telepon murni tanpa modifikasi
+ */
 async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, harga, withText, source, isPending, event) {
+    // REVISI: Menggunakan fungsi yang tidak merubah angka
     let cH = getPureWaNumber(hp);
+    
     const now = new Date();
     const hr = now.getHours();
     let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
@@ -1153,9 +1160,13 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
         else textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah menjadi pelanggan setia MyRepublic. Berikut rincian kartu pelanggan Anda: *${cleanId(id)}*.`;
     }
     textMessage += portalLink;
+    
     const isMobile = /iPhone|Android/i.test(navigator.userAgent);
     const waBase = isMobile ? "https://api.whatsapp.com/send" : "https://web.whatsapp.com/send";
+    
+    // Hasil akhirnya akan menggunakan cH murni (sesuai input di database)
     const finalUrl = `${waBase}?phone=${cH}${withText ? '&text=' + encodeURIComponent(textMessage) : ''}`;
+    
     if (withText && !isPending) {
         const btn = event ? event.target : null;
         if(btn) { btn.innerText = "⏳ GENERATING HD..."; btn.disabled = true; }
@@ -1226,7 +1237,10 @@ if(rForm) {
         }
         const btn = document.getElementById('btnKirim'); btn.disabled = true; btn.innerText = "🚀 MENYIMPAN...";
         const rFD = new FormData(e.target); 
+        
+        // REVISI: formatWaMeLink hanya membuang spasi/strip tanpa rubah angka
         rFD.set('hp', formatWaMeLink(rFD.get('hp'))); 
+        
         const op = document.getElementById('onProgress');
         const pen = document.getElementById('pending');
         let sCB = (op && op.checked) ? "ON PROGRESS" : ((pen && pen.checked) ? "PENDING" : "");
@@ -1284,6 +1298,8 @@ if(lForm) {
             const formattedDate = `${d}/${m}/${y}`;
             formData.set('leads_janji_temu', formattedDate);
         }
+        
+        // REVISI: Clean only
         formData.set('leads_hp', formatWaMeLink(formData.get('leads_hp')));
         
         try {
@@ -1326,10 +1342,15 @@ function renderLeadsCards(data) {
         let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
         const namaPel = item.nama || 'Bapak/Ibu';
         const pesanProspek = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,%0A%0ASaya dari *MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat ${item.alamat || '-'} (${item.koordinat || '-'}) %0A%0AKami sedang ada *Promo Spesial* khusus untuk area Anda berupa potongan biaya langganan dan gratis biaya instalasi jika registrasi dilanjutkan hari ini.%0A%0ASaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!%0A%0A${promoLink}`;
-        const linkWA = "https://api.whatsapp.com/send?phone=" + item.hp + "&text=" + pesanProspek;
+        
+        // REVISI: Menggunakan nomor hp murni tanpa rubah angka di awal
+        const hpMurni = formatWaMeLink(item.hp);
+        const linkWA = "https://api.whatsapp.com/send?phone=" + hpMurni + "&text=" + pesanProspek;
+        
         const linkMaps = item.koordinat ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(item.koordinat) : "#";
         const pesanIntro = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nAlamat: ${item.alamat || '-'} (${item.koordinat || '-'}) \n\nPerkenalkan saya *DWI LS.* tim pemasangan *WiFi MyRepublic.*\n\nSimpan nomor saya, untuk kebutuhan kedepan apabila membutuhkan pemasangan WiFi. Terima kasih!\n\n${promoLink}`;
-        const linkWaIntro = "https://api.whatsapp.com/send?phone=" + item.hp + "&text=" + encodeURIComponent(pesanIntro);
+        const linkWaIntro = "https://api.whatsapp.com/send?phone=" + hpMurni + "&text=" + encodeURIComponent(pesanIntro);
+        
         const card = document.createElement('div');
         card.className = 'lead-card mb-4';
         card.innerHTML = `
