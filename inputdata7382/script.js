@@ -910,24 +910,47 @@ function hitungBonusDekade() {
     const mN = ["", "JAN", "FEB", "MAR", "APR", "MEI", "JUN", "JUL", "AGU", "SEP", "OKT", "NOV", "DES"];
     let months = (q.value === 'q1') ? [1,2,3] : (q.value === 'q2') ? [4,5,6] : (q.value === 'q3') ? [7,8,9] : [10,11,12];
     let statsT = { 'RingEco': 0, 'Jet': 0, 'ValueLite': 0, 'ValueUp': 0 };
-    let mD = {}; months.forEach(m => { mD[m] = { 'RingEco': 0, 'Jet': 0, 'ValueLite': 0, 'ValueUp': 0, total: 0, insentif: 0 }; });
+    
+    let mD = {}; 
+    months.forEach(m => { 
+        mD[m] = { 'RingEco': 0, 'Jet': 0, 'ValueLite': 0, 'ValueUp': 0, total: 0, insentif: 0, modal: 0 }; 
+    });
+
     fullRawData.forEach(item => {
         if(!item.tanggal) return;
         const cmd = String(item.command || "").toLowerCase();
+        
+        // Mengambil data dari properti yang mungkin berisi catatan modal (Kolom B)
+        const note = String(item.note || item.billing || "").toLowerCase(); 
+        
+        // Filter agar status pending/progress tidak masuk hitungan
         if(cmd.includes("pending") || cmd.includes("progress")) return; 
         const m = parseInt(item.tanggal.split(item.tanggal.includes('/') ? '/' : '-')[1]);
+        
         if(months.includes(m)) {
             const pkt = (item.paket || "").toLowerCase();
             let cat = 'ValueUp';
             if(pkt === '10ring' || pkt === 'eco15' || pkt === 'eco20') cat = 'RingEco';
             else if(pkt === 'jet20') cat = 'Jet';
             else if(pkt === '30valuelite') cat = 'ValueLite';
-            statsT[cat]++; mD[m][cat]++; mD[m].total++;
-            mD[m].insentif += parseInt(String(item.bonus || "0").replace(/\D/g, "")) || 0;
+            
+            statsT[cat]++; 
+            mD[m][cat]++; 
+            mD[m].total++;
+
+            let valInsentif = parseInt(String(item.bonus || "0").replace(/\D/g, "")) || 0;
+            mD[m].insentif += valInsentif;
+
+            // AMBIL ANGKA SAJA DARI TEKS NOTE (Koreksi teksNote -> note)
+            const angkaNote = note.replace(/[^\d]/g, ""); 
+            if (angkaNote) {
+                let valModal = parseInt(angkaNote) || 0;
+                mD[m].modal += valModal;
+            }
         }
     });
+
     const tSQ = Object.values(statsT).reduce((a,b) => a+b, 0);
-    
     let mBH = ""; let tDB = 0; let tFBQ = 0;
     const MAX_PAY_MAP = { "30": 700000, "45": 1400000, "60": 2100000, "75": 2800000 };
 
@@ -949,7 +972,6 @@ function hitungBonusDekade() {
         }
         
         tFBQ += eBFB; 
-        
         let d = (i < 2) ? eBFB * 0.5 : 0; 
         if (i < 2 && activeBr !== "0") {
             const cap = MAX_PAY_MAP[activeBr] || 0;
@@ -957,14 +979,27 @@ function hitungBonusDekade() {
         }
 
         tDB += d;
-        mBH += `<tr class="border-b"><td class="p-2 border text-black font-black">${mN[m]}</td><td class="p-2 border">${mD[m].total}</td><td class="p-2 border text-green-700">Rp${mD[m].insentif.toLocaleString()}</td><td class="p-2 border text-slate-400">Rp${eBFB.toLocaleString()}</td><td class="p-2 border text-indigo-600">Rp${d.toLocaleString()}</td></tr>`;
+        let thp = mD[m].insentif * 0.8;
+
+        mBH += `
+    <tr class="border-b">
+        <td class="p-2 border text-black font-black">${mN[m]}</td>
+        <td class="p-2 border">${mD[m].total}</td>
+        <td class="p-2 border text-green-700">Rp${mD[m].insentif.toLocaleString()}</td>
+        <td class="p-2 border text-slate-400" style="display: none;">Rp${eBFB.toLocaleString()}</td>
+        <td class="p-2 border text-indigo-600">Rp${d.toLocaleString()}</td>
+        <td class="p-2 border text-red-600">Rp${(mD[m].modal || 0).toLocaleString()}</td>
+        <td class="p-2 border text-emerald-700 font-black">Rp${thp.toLocaleString()}</td>
+    </tr>`;
     });
 
     let finalBr = tSQ >= 75 ? "75" : tSQ >= 60 ? "60" : tSQ >= 45 ? "45" : tSQ >= 30 ? "30" : "0";
-    
     const mbBody = document.getElementById('dk-monthly-bonus-body');
     if(mbBody) mbBody.innerHTML = mBH;
-    let dkTBodyHTML = ""; for(const c in statsT) dkTBodyHTML += `<tr><td class="text-left font-bold border-r p-2">${c}</td><td class="font-black p-2">${statsT[c]}</td><td class="text-green-600 font-black p-2">@Rp${(finalBr !== "0" ? SKEMA_DEKADE[c].prices[finalBr] : 0).toLocaleString()}</td></tr>`;
+    
+    let dkTBodyHTML = ""; 
+    for(const c in statsT) dkTBodyHTML += `<tr><td class="text-left font-bold border-r p-2">${c}</td><td class="font-black p-2">${statsT[c]}</td><td class="text-green-600 font-black p-2">@Rp${(finalBr !== "0" ? SKEMA_DEKADE[c].prices[finalBr] : 0).toLocaleString()}</td></tr>`;
+    
     const dkSa = document.getElementById('dk-total-sa');
     if(dkSa) dkSa.innerText = tSQ;
     const dkRp = document.getElementById('dk-total-rp');
@@ -973,12 +1008,6 @@ function hitungBonusDekade() {
     if(dkTBody) dkTBody.innerHTML = dkTBodyHTML;
     const hBonus = document.getElementById('hasilBonusDekade');
     if(hBonus) hBonus.classList.remove('hidden');
-}
-
-function resetQuarterFilter() { 
-    document.querySelectorAll('input[name="quarter"]').forEach(r => r.checked = false); 
-    const hBonus = document.getElementById('hasilBonusDekade');
-    if(hBonus) hBonus.classList.add('hidden'); 
 }
 
 function handleBillingClick(id) { 
@@ -1336,20 +1365,25 @@ function renderLeadsCards(data) {
     const cardsContainer = document.getElementById('cardsContainer');
     if(!cardsContainer) return;
     cardsContainer.innerHTML = ''; 
-   const promoLink = `Cek promo, ganti password, kendala :\n👇 👇 👇\nwww.myrepublicsragen.my.id`;
+    const promoLink = `Cek promo, ganti password, kendala :\n👇 👇 👇\nwww.myrepublicsragen.my.id`;
+
     data.forEach(item => {
-        const now = new Date(); const hr = now.getHours();
+        const now = new Date(); 
+        const hr = now.getHours();
         let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
         const namaPel = item.nama || 'Bapak/Ibu';
-        const pesanProspek = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,%0A%0ASaya dari *MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat ${item.alamat || '-'} (${item.koordinat || '-'}) %0A%0AKami sedang ada *Promo Spesial* khusus untuk area Anda berupa potongan biaya langganan dan gratis biaya instalasi jika registrasi dilanjutkan hari ini.%0A%0ASaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!%0A%0A${promoLink}`;
         
-        // REVISI: Menggunakan nomor hp murni tanpa rubah angka di awal
+        // 1. Definisikan teks mentah terlebih dahulu
+        const rawPesanProspek = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nSaya dari *MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat ${item.alamat || '-'} (${item.koordinat || '-'}).\n\nKami sedang ada *Promo Spesial* khusus untuk area Anda berupa potongan biaya langganan dan gratis biaya instalasi jika registrasi dilanjutkan hari ini.\n\nSaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!\n\n${promoLink}`;
+        
+        // 2. Bersihkan nomor HP dan buat URL yang valid
         const hpMurni = formatWaMeLink(item.hp);
-        const linkWA = "https://api.whatsapp.com/send?phone=" + hpMurni + "&text=" + pesanProspek;
+        const linkWA = "https://api.whatsapp.com/send?phone=" + hpMurni + "&text=" + encodeURIComponent(rawPesanProspek);
         
-        const linkMaps = item.koordinat ? "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(item.koordinat) : "#";
-        const pesanIntro = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nAlamat: ${item.alamat || '-'} (${item.koordinat || '-'}) \n\nPerkenalkan saya *DWI LS.* tim pemasangan *WiFi MyRepublic.*\n\nSimpan nomor saya, untuk kebutuhan kedepan apabila membutuhkan pemasangan WiFi. Terima kasih!\n\n${promoLink}`;
-        const linkWaIntro = "https://api.whatsapp.com/send?phone=" + hpMurni + "&text=" + encodeURIComponent(pesanIntro);
+        const linkMaps = item.koordinat ? "https://www.google.com/maps?q=" + encodeURIComponent(item.koordinat) : "#";
+        
+        const rawPesanIntro = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nAlamat: ${item.alamat || '-'} (${item.koordinat || '-'}) \n\nPerkenalkan saya *DWI LS.* tim pemasangan *WiFi MyRepublic.*\n\nSimpan nomor saya, untuk kebutuhan kedepan apabila membutuhkan pemasangan WiFi. Terima kasih!\n\n${promoLink}`;
+        const linkWaIntro = "https://api.whatsapp.com/send?phone=" + hpMurni + "&text=" + encodeURIComponent(rawPesanIntro);
         
         const card = document.createElement('div');
         card.className = 'lead-card mb-4';
@@ -1365,9 +1399,9 @@ function renderLeadsCards(data) {
                 ${item.janji_temu ? `<p class="text-[10px] text-indigo-600 font-black uppercase">🤝 JANJI: ${item.janji_temu.split('T')[0]}</p>` : ''}
             </div>
             <div class="flex gap-2">
-                <button onclick="window.open('${linkWA}')" class="flex-1 bg-green-500 hover:bg-green-600 text-white text-[9px] font-black py-2.5 rounded-lg uppercase flex items-center justify-center gap-1">💬 Follow Up</button>
-                <button onclick="window.open('${linkWaIntro}')" class="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-[9px] font-black py-2.5 rounded-lg uppercase flex items-center justify-center gap-1 shadow-md transition-all">👋 SAYA DWI</button>
-                <button onclick="window.open('${linkMaps}')" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white text-[9px] font-black py-2.5 rounded-lg uppercase">📍 Lokasi</button>
+                <button onclick="window.open('${linkWA}', '_blank')" class="flex-1 bg-green-500 hover:bg-green-600 text-white text-[9px] font-black py-2.5 rounded-lg uppercase flex items-center justify-center gap-1">💬 Follow Up</button>
+                <button onclick="window.open('${linkWaIntro}', '_blank')" class="flex-1 bg-sky-500 hover:bg-sky-600 text-white text-[9px] font-black py-2.5 rounded-lg uppercase flex items-center justify-center gap-1 shadow-md transition-all">👋 SAYA DWI</button>
+                <button onclick="window.open('${linkMaps}', '_blank')" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white text-[9px] font-black py-2.5 rounded-lg uppercase">📍 Lokasi</button>
             </div>`;
         cardsContainer.appendChild(card);
     });
