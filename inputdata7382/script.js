@@ -178,11 +178,25 @@ function isAuditOFF(item) {
  * REVISI: Sistem tidak merubah angka yang ada.
  * Hanya menghapus karakter non-digit agar real direct.
  */
+/**
+ * REVISI: Sistem otomatis menambahkan 62 dan menghapus karakter non-digit.
+ * Mengubah 0812... menjadi 62812...
+ */
 function formatWaMeLink(num) {
     if (!num) return "";
-    // Hanya menghapus karakter non-digit (spasi, tanda hubung, plus)
-    // Tanpa menambah 62 atau menghapus angka 0 di depan secara paksa
+    
+    // Hapus semua karakter yang bukan angka (spasi, tanda hubung, dll)
     let clean = num.toString().replace(/\D/g, "");
+    
+    // Logika penambahan 62
+    if (clean.startsWith("0")) {
+        // Jika dimulai dengan 0, ganti 0 tersebut dengan 62
+        clean = "62" + clean.slice(1);
+    } else if (clean.startsWith("8")) {
+        // Jika langsung angka 8, tambahkan 62 di depan
+        clean = "62" + clean;
+    }
+    
     return clean;
 }
 
