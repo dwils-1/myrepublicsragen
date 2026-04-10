@@ -1205,7 +1205,7 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
     textMessage += portalLink;
     
     const isMobile = /iPhone|Android/i.test(navigator.userAgent);
-    const waBase = isMobile ? "https://web.whatsapp.com/send" : "https://web.whatsapp.com/send";
+    const waBase = isMobile ? "https://api.whatsapp.com/send" : "https://web.whatsapp.com/send";
     
     // Hasil akhirnya akan menggunakan cH murni (sesuai input di database)
     const finalUrl = `${waBase}?phone=${cH}${withText ? '&text=' + encodeURIComponent(textMessage) : ''}`;
@@ -1392,12 +1392,12 @@ function renderLeadsCards(data) {
         
         // 2. Bersihkan nomor HP dan buat URL yang valid
         const hpMurni = formatWaMeLink(item.hp);
-        const linkWA = "https://web.whatsapp.com/send?phone=" + hpMurni + "&text=" + encodeURIComponent(rawPesanProspek);
+        const linkWA = "https://api.whatsapp.com/send?phone=" + hpMurni + "&text=" + encodeURIComponent(rawPesanProspek);
         
         const linkMaps = item.koordinat ? "https://www.google.com/maps?q=" + encodeURIComponent(item.koordinat) : "#";
         
         const rawPesanIntro = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nAlamat: ${item.alamat || '-'} (${item.koordinat || '-'}) \n\nPerkenalkan saya *DWI LS.* tim pemasangan *WiFi MyRepublic.*\n\nSimpan nomor saya, untuk kebutuhan kedepan apabila membutuhkan pemasangan WiFi. Terima kasih!\n\n${promoLink}`;
-        const linkWaIntro = "https://web.whatsapp.com/send?phone=" + hpMurni + "&text=" + encodeURIComponent(rawPesanIntro);
+        const linkWaIntro = "https://api.whatsapp.com/send?phone=" + hpMurni + "&text=" + encodeURIComponent(rawPesanIntro);
         
         const card = document.createElement('div');
         card.className = 'lead-card mb-4';
@@ -1552,7 +1552,7 @@ ${kendala.toUpperCase()}
 Mohon bantuannya mas @admin`;
 
     const followUpCustomerMsg = `Halo Selamat ${salamWaktu} Bpk/Ibu *${item.nama.trim().toUpperCase()}*, mengonfirmasi laporan kendala pada hari ${hari}, tanggal ${tgl}. Apakah koneksi internetnya saat ini sudah kembali lancar?`;
-    const linkFollowUpCustomer = `https://web.whatsapp.com/send?phone=${getPureWaNumber(item.hp)}&text=${encodeURIComponent(followUpCustomerMsg)}`;
+    const linkFollowUpCustomer = `https://api.whatsapp.com/send?phone=${getPureWaNumber(item.hp)}&text=${encodeURIComponent(followUpCustomerMsg)}`;
 
     const followUpCSMsg = `Internet belum ada perubahan.
 
@@ -1565,7 +1565,7 @@ Mohon bantuannya mas @admin`;
 -----------------------------
 Mohon bantuannya mas @admin`;
     
-    const linkFollowUpCS = `https://web.whatsapp.com/?text=${encodeURIComponent(followUpCSMsg)}`;
+    const linkFollowUpCS = `https://wa.me/?text=${encodeURIComponent(followUpCSMsg)}`;
 
     const pesanTelegram = `${basePesan}
 
@@ -1590,7 +1590,7 @@ Mohon bantuannya mas @admin`;
         }); 
     } catch (err) { console.error("Telegram Error"); }
 
-    window.open(`https://web.whatsapp.com/send?text=${encodeURIComponent(basePesan)}`, '_blank');
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(basePesan)}`, '_blank');
 }
 
 function sensorEmail(email) {
