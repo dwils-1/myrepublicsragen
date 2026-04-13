@@ -1354,7 +1354,7 @@ function renderLeadsCards(data) {
     const cardsContainer = document.getElementById('cardsContainer');
     if(!cardsContainer) return;
     cardsContainer.innerHTML = ''; 
-    const promoLink = `Cek promo, ganti password, kendala :\n👇 👇 👇\nwww.myrepublicsragen.my.id`;
+    const promoLink = `Cek promo, ganti password, kendala :\n\nwww.myrepublicsragen.my.id`;
 
     data.forEach(item => {
         const now = new Date(); 
