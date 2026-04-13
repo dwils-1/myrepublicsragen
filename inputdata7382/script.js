@@ -29,7 +29,10 @@ function resetInactivityTimer() {
 function lockAppAutomatically() {
     sessionStorage.removeItem('isLoggedIn');
     const ls = document.getElementById('lockScreen');
-    if (ls) ls.style.display = 'flex';
+    if (ls) {
+        ls.style.setProperty('display', 'flex', 'important');
+        ls.style.pointerEvents = 'auto'; // Pastikan bisa di klik saat terkunci
+    }
     clearPin();
 }
 
@@ -40,13 +43,18 @@ window.onload = () => {
     resetInactivityTimer();
     initDuplicateCheck();
     
+    const lockScr = document.getElementById('lockScreen');
     if (sessionStorage.getItem('isLoggedIn') === 'true') {
-        const lockScr = document.getElementById('lockScreen');
-        if (lockScr) lockScr.style.display = 'none';
+        if (lockScr) {
+            lockScr.style.display = 'none';
+            lockScr.style.pointerEvents = 'none'; // Menghilangkan penghalang klik
+        }
         muatDataTabel();
     } else {
-        const lockScr = document.getElementById('lockScreen');
-        if (lockScr) lockScr.style.display = 'flex';
+        if (lockScr) {
+            lockScr.style.display = 'flex';
+            lockScr.style.pointerEvents = 'auto';
+        }
     }
 
     const today = new Date().toISOString().split('T')[0];
@@ -174,29 +182,14 @@ function isAuditOFF(item) {
     return idRaw.includes('off') || cmd.includes('OFF');
 }
 
-/**
- * REVISI: Sistem tidak merubah angka yang ada.
- * Hanya menghapus karakter non-digit agar real direct.
- */
-/**
- * REVISI: Sistem otomatis menambahkan 62 dan menghapus karakter non-digit.
- * Mengubah 0812... menjadi 62812...
- */
 function formatWaMeLink(num) {
     if (!num) return "";
-    
-    // Hapus semua karakter yang bukan angka (spasi, tanda hubung, dll)
     let clean = num.toString().replace(/\D/g, "");
-    
-    // Logika penambahan 62
     if (clean.startsWith("0")) {
-        // Jika dimulai dengan 0, ganti 0 tersebut dengan 62
         clean = "62" + clean.slice(1);
     } else if (clean.startsWith("8")) {
-        // Jika langsung angka 8, tambahkan 62 di depan
         clean = "62" + clean;
     }
-    
     return clean;
 }
 
@@ -613,14 +606,9 @@ function formatBeautifulNumber(num) {
     return clean;
 }
 
-/**
- * REVISI: Sistem tidak merubah angka yang ada.
- * Hanya membersihkan non-digit agar tidak error direct.
- */
 function getPureWaNumber(num) {
     if (!num) return "";
     let clean = num.toString().replace(/\D/g, "");
-    // Tidak lagi mengganti 08 ke 62 agar input manual user di database utuh
     return clean;
 }
 
@@ -933,11 +921,7 @@ function hitungBonusDekade() {
     fullRawData.forEach(item => {
         if(!item.tanggal) return;
         const cmd = String(item.command || "").toLowerCase();
-        
-        // Mengambil data dari properti yang mungkin berisi catatan modal (Kolom B)
         const note = String(item.note || item.billing || "").toLowerCase(); 
-        
-        // Filter agar status pending/progress tidak masuk hitungan
         if(cmd.includes("pending") || cmd.includes("progress")) return; 
         const m = parseInt(item.tanggal.split(item.tanggal.includes('/') ? '/' : '-')[1]);
         
@@ -954,8 +938,6 @@ function hitungBonusDekade() {
 
             let valInsentif = parseInt(String(item.bonus || "0").replace(/\D/g, "")) || 0;
             mD[m].insentif += valInsentif;
-
-            // AMBIL ANGKA SAJA DARI TEKS NOTE (Koreksi teksNote -> note)
             const angkaNote = note.replace(/[^\d]/g, ""); 
             if (angkaNote) {
                 let valModal = parseInt(angkaNote) || 0;
@@ -1113,7 +1095,10 @@ async function checkPin() {
         const res = await r.json();
         if(res.status === "authorized") { 
             const lockScr = document.getElementById('lockScreen');
-            if(lockScr) lockScr.style.display = 'none'; 
+            if(lockScr) {
+                lockScr.style.display = 'none'; 
+                lockScr.style.pointerEvents = 'none';
+            }
             sessionStorage.setItem('isLoggedIn', 'true'); 
             resetInactivityTimer(); loadDraft(); loadLeadsDraft(); muatDataTabel(); 
         } else { alert("PIN SALAH"); clearPin(); }
@@ -1178,21 +1163,23 @@ async function generateAndDownloadCard(data) {
     } catch (err) { alert("❌ GAGAL GENERATE GAMBAR: " + err.message); return false; }
 }
 
-/**
- * REVISI UTAMA: Menggunakan nomor telepon murni tanpa modifikasi
- */
 async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, harga, withText, source, isPending, event) {
-    // REVISI: Menggunakan fungsi yang tidak merubah angka
     let cH = getPureWaNumber(hp);
-    
     const now = new Date();
     const hr = now.getHours();
     let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
     const portalLink = "\n\nCek promo, ganti password, kendala: \n👇 👇 👇\nwww.myrepublicsragen.my.id";
     let textMessage = "";
+    
+    // LOGIKA PENYUSUNAN PESAN
     if (isPending) textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nSaya *DWI* dari MyRepublic ingin menanyakan kembali terkait rencana pemasangan internetnya. Apakah ada kendala atau ada yang ingin ditanyakan? Saya bantu kawal prosesnya sampai aktif ya Pak/Bu. 😊`;
     else if (source === 'progress') textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nInformasi terbaru, saat ini pemasangan Anda sudah *Masuk Antrian Instalasi*. Mohon kesediaannya menunggu tim teknisi menghubungi untuk jadwal kunjungan ke lokasi. 🙏`;
-    else if (source === 'fast') textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah bergabung. Mengingat pemasangan baru saja aktif, kami informasikan tagihan pertama Anda sebesar *${harga}* sudah muncul. Mohon segera dilakukan pembayaran agar layanan tetap lancar. 🙏`;
+    else if (source === 'fast') {
+        const tglP = tgl.split(/[/-]/)[0];
+        const tglJ = parseInt(tglP) + 5;
+        const japoRange = `${tglP} - ${tglJ.toString().padStart(2, '0')}`;
+        textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah bergabung. Mengingat pemasangan baru saja aktif, kami informasikan tagihan pertama Anda sebesar *${harga}* berikut Kode pembayaran \n\nID PEMBAYARAN: *${cleanId(id)}*\nAlamat Pemasangan: ${alamat}\nJatuh tempo: *${japoRange}* Setiap bulan. \n\n> Silahkan di bayarkan tepat waktu untuk menghindari denda 🙏`;
+    }
     else if (source === 'qc') textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nBagaimana kualitas jaringan MyRepublic di lokasi saat ini? Apakah ada kendala? Jika lancar, mohon rekomendasikan ke saudara/tetangga ya Pak/Bu, saya bantu kawal pemasangannya secara prioritas. 🤝`;
     else {
         const tglHariIni = now.getDate();
@@ -1206,8 +1193,6 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
     
     const isMobile = /iPhone|Android/i.test(navigator.userAgent);
     const waBase = isMobile ? "https://api.whatsapp.com/send" : "https://web.whatsapp.com/send";
-    
-    // Hasil akhirnya akan menggunakan cH murni (sesuai input di database)
     const finalUrl = `${waBase}?phone=${cH}${withText ? '&text=' + encodeURIComponent(textMessage) : ''}`;
     
     if (withText && !isPending) {
@@ -1222,14 +1207,12 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
             if(countdown < 0) clearInterval(timer);
         }, 1000);
         setTimeout(() => {
-            const win = window.open(finalUrl, '_blank');
-            if(!win) alert("⚠️ Pop-up diblokir. Harap izinkan pop-up di browser.");
+            window.open(finalUrl, '_blank');
             if(btn) { btn.innerText = "TEKS OTOMATIS"; btn.disabled = false; }
             closeModal();
         }, 5500);
     } else {
-        const win = window.open(finalUrl, '_blank');
-        if(!win) alert("⚠️ Pop-up diblokir browser.");
+        window.open(finalUrl, '_blank');
         closeModal();
     }
 }
@@ -1280,10 +1263,7 @@ if(rForm) {
         }
         const btn = document.getElementById('btnKirim'); btn.disabled = true; btn.innerText = "🚀 MENYIMPAN...";
         const rFD = new FormData(e.target); 
-        
-        // REVISI: formatWaMeLink hanya membuang spasi/strip tanpa rubah angka
         rFD.set('hp', formatWaMeLink(rFD.get('hp'))); 
-        
         const op = document.getElementById('onProgress');
         const pen = document.getElementById('pending');
         let sCB = (op && op.checked) ? "ON PROGRESS" : ((pen && pen.checked) ? "PENDING" : "");
@@ -1333,7 +1313,6 @@ if(lForm) {
         const btn = document.getElementById('btnKirimLeads');
         btn.disabled = true;
         btn.innerText = "🚀 MENGIRIM...";
-        
         const formData = new FormData(e.target);
         const rawDate = formData.get('leads_janji_temu');
         if (rawDate) {
@@ -1341,10 +1320,7 @@ if(lForm) {
             const formattedDate = `${d}/${m}/${y}`;
             formData.set('leads_janji_temu', formattedDate);
         }
-        
-        // REVISI: Clean only
         formData.set('leads_hp', formatWaMeLink(formData.get('leads_hp')));
-        
         try {
             const response = await fetch(leadsScriptURL, { method: 'POST', body: formData });
             const result = await response.text();
@@ -1358,7 +1334,6 @@ if(lForm) {
         finally { btn.disabled = false; btn.innerText = "Simpan Prospek"; }
     });
 }
-
 
 async function lihatDaftarLeads() {
     const container = document.getElementById('leadsList');
@@ -1386,16 +1361,10 @@ function renderLeadsCards(data) {
         const hr = now.getHours();
         let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
         const namaPel = item.nama || 'Bapak/Ibu';
-        
-        // 1. Definisikan teks mentah terlebih dahulu
         const rawPesanProspek = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nSaya dari *MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat ${item.alamat || '-'} (${item.koordinat || '-'}).\n\nKami sedang ada *Promo Spesial* khusus untuk area Anda berupa potongan biaya langganan dan gratis biaya instalasi jika registrasi dilanjutkan hari ini.\n\nSaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!\n\n${promoLink}`;
-        
-        // 2. Bersihkan nomor HP dan buat URL yang valid
         const hpMurni = formatWaMeLink(item.hp);
         const linkWA = "https://api.whatsapp.com/send?phone=" + hpMurni + "&text=" + encodeURIComponent(rawPesanProspek);
-        
         const linkMaps = item.koordinat ? "https://www.google.com/maps?q=" + encodeURIComponent(item.koordinat) : "#";
-        
         const rawPesanIntro = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nAlamat: ${item.alamat || '-'} (${item.koordinat || '-'}) \n\nPerkenalkan saya *DWI LS.* tim pemasangan *WiFi MyRepublic.*\n\nSimpan nomor saya, untuk kebutuhan kedepan apabila membutuhkan pemasangan WiFi. Terima kasih!\n\n${promoLink}`;
         const linkWaIntro = "https://api.whatsapp.com/send?phone=" + hpMurni + "&text=" + encodeURIComponent(rawPesanIntro);
         
@@ -1469,10 +1438,10 @@ function inputKendalaComplaint(idCst) {
     setTimeout(() => {
         openModal({
             title: '🛠️ DETAIL KENDALA', headerClass: 'bg-red-700',
-            body: `<div class="p-2 text-left"><p class="text-[10px] font-bold text-slate-500 mb-1 uppercase">Customer: ${item.nama}</p><textarea id="textKendala" placeholder="Detail kendala..." class="input-field h-24 border-red-200 force-caps text-left" oninput="logikaSaranKendala(this.value)" onfocus="document.getElementById('customModal').classList.add('keyboard-active')" onblur="setTimeout(() => document.getElementById('customModal').classList.remove('keyboard-active'), 100)"></textarea><div id="containerSaran" class="mt-3 flex flex-wrap gap-2"></div></div>`,
+            body: `<div class="p-2 text-left"><p class="text-[10px] font-bold text-slate-500 mb-1 uppercase">Customer: ${item.nama}</p><textarea id="textKendala" placeholder="Detail kendala..." class="input-field h-24 border-red-200 force-caps text-left" oninput="logikaSaranKendala(this.value)"></textarea><div id="containerSaran" class="mt-3 flex flex-wrap gap-2"></div></div>`,
             subtext: 'Kirim via WhatsApp & Telegram',
-            buttons: [{ text: 'BATAL', class: 'bg-slate-100 py-3 rounded-xl font-black text-xs', action: () => document.getElementById('customModal').classList.remove('keyboard-active') },
-            { text: 'KIRIM LAPORAN', class: 'bg-red-700 text-white py-3 rounded-xl font-black text-xs', action: () => { const tK = document.getElementById('textKendala'); document.getElementById('customModal').classList.remove('keyboard-active'); if(tK) executeSendComplaint(item, tK.value); } }]
+            buttons: [{ text: 'BATAL', class: 'bg-slate-100 py-3 rounded-xl font-black text-xs', action: () => {} },
+            { text: 'KIRIM LAPORAN', class: 'bg-red-700 text-white py-3 rounded-xl font-black text-xs', action: () => { const tK = document.getElementById('textKendala'); if(tK) executeSendComplaint(item, tK.value); } }]
         });
     }, 300);
 }
@@ -1480,51 +1449,24 @@ function inputKendalaComplaint(idCst) {
 function logikaSaranKendala(val) {
     const container = document.getElementById('containerSaran');
     if (!container) return;
-
     const query = val.toLowerCase().trim();
-    if (query.length < 1) {
-        container.innerHTML = ""; 
-        return;
-    }
-
+    if (query.length < 1) { container.innerHTML = ""; return; }
     const daftarSaran = [
         { text: 'KABEL PUTUS.' }, { text: 'KABEL LOS MERAH.' }, { text: 'KABEL BENDING.' }, { text: 'KABEL TERTIMPA POHON.' },
-        { text: 'INTERNET LELET.' }, { text: 'SOSIAL MEDIA LELET.' }, { text: 'BROWSER LELET.' }, { text: 'SPEEDTEST TIDAK SESUAI PAKET.' },
-        { text: 'POWER LOS MERAH.' }, { text: 'KABEL LOS / PUTUS.' },
-        { text: 'ADAPTOR MATI.' }, { text: 'POWER MATI.' }, { text: 'ROUTER MATI.' }, { text: 'ONT MATI.' },
-        { text: 'YOUTUBE BUFFERING.' }, { text: 'TIKTOK LEMOT.' }, { text: 'GAME ONLINE LAG.' }, { text: 'ZOOM TERPUTUS.' },
-        { text: 'INTERNET DISCONNECT.' }, { text: 'INTERNET TIDAK DAPAT TERHUBUNG.' }, { text: 'FACEBOOK BUFFERING.' },
-        { text: 'BUKA SUSPEND.' }, { text: 'HAPUS DENDA.' }, { text: 'KABEL MELANDAI.' }, { text: 'TIANG ROBOH.' },
-        { text: 'INTERNET TIDAK DAPAT DI GUNAKAN DI JAM TERTENTU.' }, { text: 'WIFI TIDAK TERDETEKSI.' },
-        { text: 'GANTI PASSWORD WIFI.' }, { text: 'MODEM OVERHEAT.' }, { text: 'RESET ROUTER REMOTE.' },
-        { text: 'CEK STATUS ISOLIR.' }, { text: 'BELUM BAYAR TAGIHAN.' }, { text: 'MASA AKTIF HABIS.' },
-        { text: 'PING TINGGI SAAT GAME.' }, { text: 'VIDEO FREEZE SAAT ZOOM.' }, { text: 'GAGAL DOWNLOAD DI PLAYSTORE.' },
-        { text: 'WHATSAPP PENDING.' }, { text: 'KIRIM GAMBAR GAGAL.' }, { text: 'VOICE CALL RECONNECTING.' },
-        { text: 'KUALITAS VIDEO RENDAH.' }, { text: 'STREAMING DISNEY+ TIMEOUT.' }, { text: 'NETFLIX ERROR CODE.' }
+        { text: 'INTERNET LELET.' }, { text: 'POWER LOS MERAH.' }, { text: 'ROUTER MATI.' }, { text: 'YOUTUBE BUFFERING.' }
     ];
-
-    const displaySaran = daftarSaran.filter(saran => {
-        const words = saran.text.toLowerCase().split(/[\s,./()]+/); 
-        return words.some(word => word.startsWith(query)); 
-    });
-
+    const displaySaran = daftarSaran.filter(saran => saran.text.toLowerCase().includes(query));
     if (displaySaran.length > 0) {
         container.innerHTML = displaySaran.map(s => `
             <button type="button" onclick="pilihSaran('${s.text.replace(/'/g, "\\'")}')" 
             class="bg-red-50 text-red-700 border border-red-200 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-red-700 hover:text-white transition-all shadow-sm mb-1 text-left w-full">
             + ${s.text}</button>`).join('');
-    } else {
-        container.innerHTML = "";
-    }
+    } else { container.innerHTML = ""; }
 }
 
 function pilihSaran(txt) {
     const input = document.getElementById('textKendala');
-    if (input) { 
-        input.value = txt.toUpperCase(); 
-        input.focus(); 
-        document.getElementById('containerSaran').innerHTML = ""; 
-    }
+    if (input) { input.value = txt.toUpperCase(); input.focus(); document.getElementById('containerSaran').innerHTML = ""; }
 }
 
 async function executeSendComplaint(item, kendala) {
@@ -1534,43 +1476,12 @@ async function executeSendComplaint(item, kendala) {
     const hr = now.getHours();
     const salamWaktu = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
 
-    const basePesan = `*COMPLAINT CUSTOMER*
------------------------------
-${hari}
-${tgl}
-
-• Nama: ${item.nama.toUpperCase()}
-• ID Pelanggan: ${item.idCst}
-• Paket: ${item.paket}
-• No HP: ${formatBeautifulNumber(item.hp)}
-• Alamat: ${item.alamat.toUpperCase()}
-
-⚠️ KENDALA:
-${kendala.toUpperCase()}
-
------------------------------
-Mohon bantuannya mas @admin`;
-
+    const basePesan = `*COMPLAINT CUSTOMER*\n-----------------------------\n${hari}\n${tgl}\n\n• Nama: ${item.nama.toUpperCase()}\n• ID Pelanggan: ${item.idCst}\n• Paket: ${item.paket}\n• No HP: ${formatBeautifulNumber(item.hp)}\n• Alamat: ${item.alamat.toUpperCase()}\n\n⚠️ KENDALA:\n${kendala.toUpperCase()}\n\n-----------------------------\nMohon bantuannya mas @admin`;
     const followUpCustomerMsg = `Halo Selamat ${salamWaktu} Bpk/Ibu *${item.nama.trim().toUpperCase()}*, mengonfirmasi laporan kendala pada hari ${hari}, tanggal ${tgl}. Apakah koneksi internetnya saat ini sudah kembali lancar?`;
     const linkFollowUpCustomer = `https://api.whatsapp.com/send?phone=${getPureWaNumber(item.hp)}&text=${encodeURIComponent(followUpCustomerMsg)}`;
-
-    const followUpCSMsg = `Internet belum ada perubahan.
-
-• Nama: ${item.nama.toUpperCase()}
-• ID Pelanggan: ${item.idCst}
-• Alamat: ${item.alamat.toUpperCase()}
-• Kendala: ${kendala.toUpperCase()}
-• Tanggal Komplain: ${tgl}
-
------------------------------
-Mohon bantuannya mas @admin`;
-    
+    const followUpCSMsg = `Internet belum ada perubahan.\n\n• Nama: ${item.nama.toUpperCase()}\n• ID Pelanggan: ${item.idCst}\n• Alamat: ${item.alamat.toUpperCase()}\n• Kendala: ${kendala.toUpperCase()}\n• Tanggal Komplain: ${tgl}\n\n-----------------------------\nMohon bantuannya mas @admin`;
     const linkFollowUpCS = `https://wa.me/?text=${encodeURIComponent(followUpCSMsg)}`;
-
-    const pesanTelegram = `${basePesan}
-
-📲 [FOLLOW UP PELANGGAN](${linkFollowUpCustomer})
-🛠️ [RE-FOLLOW UP CS](${linkFollowUpCS})`;
+    const pesanTelegram = `${basePesan}\n\n📲 [FOLLOW UP PELANGGAN](${linkFollowUpCustomer})\n🛠️ [RE-FOLLOW UP CS](${linkFollowUpCS})`;
 
     const telTok = '8531770277:AAHKW3KhdwXop-hpu_sE21djyqdu2Wl8vmU'; 
     const chatId = '-1003594385102'; 
@@ -1580,13 +1491,7 @@ Mohon bantuannya mas @admin`;
         await fetch(`https://api.telegram.org/bot${telTok}/sendMessage`, { 
             method: 'POST', 
             headers: { 'Content-Type': 'application/json' }, 
-            body: JSON.stringify({ 
-                chat_id: chatId, 
-                message_thread_id: threadId, 
-                text: pesanTelegram, 
-                parse_mode: 'Markdown',
-                disable_web_page_preview: true 
-            }) 
+            body: JSON.stringify({ chat_id: chatId, message_thread_id: threadId, text: pesanTelegram, parse_mode: 'Markdown', disable_web_page_preview: true }) 
         }); 
     } catch (err) { console.error("Telegram Error"); }
 
@@ -1606,11 +1511,6 @@ function sensorPhone(phone) {
     if (clean.startsWith("62")) clean = "0" + clean.slice(2);
     if (clean.length < 10) return clean;
     return `${clean.substring(0, 4)}-${clean.substring(4, 6)}***-***${clean.substring(clean.length - 1)}`;
-}
-
-function cleanMessageSpaces(text) {
-    if (!text) return "";
-    return text.trim().replace(/[ \t]+/g, ' ').replace(/\s+\*/g, ' *').replace(/\*\s+/g, '* ').replace(/\*\s+([^\*]+)\s+\*/g, '*$1*');
 }
 
 const SKEMA_BELT = [
