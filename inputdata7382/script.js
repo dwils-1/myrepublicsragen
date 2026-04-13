@@ -632,7 +632,6 @@ function salinDataLengkap(id) {
 *Alamat* : ${item.alamat}
 
 Cek promo, ganti password, kendala:
-👇 👇 👇
 www.myrepublicsragen.my.id`;
 
     navigator.clipboard.writeText(formattedText).then(() => {
@@ -1168,7 +1167,7 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
     const now = new Date();
     const hr = now.getHours();
     let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
-    const portalLink = "\n\nCek promo, ganti password, kendala: \n👇 👇 👇\nwww.myrepublicsragen.my.id";
+    const portalLink = "\n\nCek promo, ganti password, kendala: \n\nwww.myrepublicsragen.my.id";
     let textMessage = "";
     
     // LOGIKA PENYUSUNAN PESAN
