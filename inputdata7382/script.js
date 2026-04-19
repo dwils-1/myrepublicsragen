@@ -1177,7 +1177,7 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
         const tglP = tgl.split(/[/-]/)[0];
         const tglJ = parseInt(tglP) + 5;
         const japoRange = `${tglP} - ${tglJ.toString().padStart(2, '0')}`;
-        textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah bergabung. Mengingat pemasangan baru saja aktif, kami informasikan tagihan pertama Anda sebesar *${harga}* berikut Kode pembayaran \n\nID *PEMBAYARAN: ${cleanId(id)}*\n*Alamat: ${alamat}\nJatuh tempo: ${japoRange}* Setiap bulan. \n\n> Silahkan di bayarkan tepat waktu untuk menghindari denda 🙏`;
+        textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah bergabung. Mengingat pemasangan baru saja aktif, kami informasikan tagihan pertama Anda sebesar *${harga}* berikut Kode pembayaran \n\n*ID PEMBAYARAN: ${cleanId(id)}*\n*Alamat: ${alamat}*\n*Jatuh tempo: ${japoRange}* Setiap bulan. \n\n> Silahkan di bayarkan tepat waktu untuk menghindari denda 🙏`;
     }
     else if (source === 'qc') textMessage = `Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nBagaimana kualitas jaringan MyRepublic di lokasi saat ini? Apakah ada kendala? Jika lancar, mohon rekomendasikan ke saudara/tetangga ya Pak/Bu. 🤝`;
     else {
@@ -1360,7 +1360,7 @@ function renderLeadsCards(data) {
         const hr = now.getHours();
         let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
         const namaPel = item.nama || 'Bapak/Ibu';
-        const rawPesanProspek = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nSaya dari *MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat ${item.alamat || '-'} (${item.koordinat || '-'}).\n\nKami sedang ada *Promo Spesial* khusus untuk area Anda berupa potongan biaya langganan dan gratis biaya instalasi jika registrasi dilanjutkan hari ini.\n\nSaya akan melakukan kunjungan ke lokasi hari ini, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!\n\n${promoLink}`;
+        const rawPesanProspek = `Halo Selamat ${slm} Yth. Bpk/Ibu *${namaPel.trim()}*,\n\nSaya dari *MyRepublic Indonesia* ingin menindaklanjuti rencana pemasangan internet di alamat ${item.alamat || '-'} (${item.koordinat || '-'}).\n\nKami sedang ada *Promo Spesial* khusus untuk area Anda berupa gratis biaya instalasi jika registrasi dilanjutkan hari ini.\n\nSaya akan melakukan kunjungan ke lokasi, apabila Bapak/Ibu berkenan untuk dipasang atau ingin konsultasi paket lebih lanjut bisa kabari saya ya. Terima kasih!\n\n${promoLink}`;
         const hpMurni = formatWaMeLink(item.hp);
         const linkWA = "https://api.whatsapp.com/send?phone=" + hpMurni + "&text=" + encodeURIComponent(rawPesanProspek);
         const linkMaps = item.koordinat ? "https://www.google.com/maps?q=" + encodeURIComponent(item.koordinat) : "#";
