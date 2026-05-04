@@ -15,6 +15,17 @@ const SKEMA_DEKADE = {
     'ValueUp': { prices: { '30': 120000, '45': 145000, '60': 165000, '75': 185000 } }
 };
 
+// --- HELPER TAHUN ---
+function isThisYear(dateString) {
+    if (!dateString) return false;
+    const currentYear = new Date().getFullYear();
+    const sep = dateString.includes('/') ? '/' : '-';
+    const parts = dateString.split(sep);
+    if (parts.length < 3) return false;
+    const y = (sep === '/') ? parseInt(parts[2]) : parseInt(parts[0]);
+    return y === currentYear;
+}
+
 // --- LOGIKA AUTO-LOCK ---
 let inactivityTimer;
 const INACTIVITY_LIMIT = 10 * 60 * 1000; 
@@ -31,7 +42,7 @@ function lockAppAutomatically() {
     const ls = document.getElementById('lockScreen');
     if (ls) {
         ls.style.setProperty('display', 'flex', 'important');
-        ls.style.pointerEvents = 'auto'; // Pastikan bisa di klik saat terkunci
+        ls.style.pointerEvents = 'auto'; 
     }
     clearPin();
 }
@@ -47,7 +58,7 @@ window.onload = () => {
     if (sessionStorage.getItem('isLoggedIn') === 'true') {
         if (lockScr) {
             lockScr.style.display = 'none';
-            lockScr.style.pointerEvents = 'none'; // Menghilangkan penghalang klik
+            lockScr.style.pointerEvents = 'none'; 
         }
         muatDataTabel();
     } else {
@@ -918,7 +929,9 @@ function hitungBonusDekade() {
     });
 
     fullRawData.forEach(item => {
-        if(!item.tanggal) return;
+        // Filter: Hanya hitung data tahun berjalan
+        if(!item.tanggal || !isThisYear(item.tanggal)) return; 
+        
         const cmd = String(item.command || "").toLowerCase();
         const note = String(item.note || item.billing || "").toLowerCase(); 
         if(cmd.includes("pending") || cmd.includes("progress")) return; 
