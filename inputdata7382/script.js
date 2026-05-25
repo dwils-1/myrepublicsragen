@@ -940,8 +940,8 @@ function hitungBonusDekade() {
         if(months.includes(m)) {
             const pkt = (item.paket || "").toLowerCase();
             let cat = 'ValueUp';
-            if(pkt === '10ring' || pkt === 'eco15' || pkt === 'eco20') cat = 'RingEco';
-            else if(pkt === 'jet20') cat = 'Jet';
+            if(pkt === '50ring' || pkt === 'Pass75' || pkt === 'Eco100') cat = 'RingEco';
+            else if(pkt === 'Sahabat100') cat = 'Jet';
             else if(pkt === '30valuelite') cat = 'ValueLite';
             
             statsT[cat]++; 
