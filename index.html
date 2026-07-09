@@ -2,725 +2,822 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyRepublic Sragen | Internet Premium & Kuota Tanpa Batas</title>
     
-    <title>MyRepublic Cabang Sragen | Internet Fiber Cepat & Stabil</title>
-    <meta name="description" content="Layanan resmi MyRepublic Sragen. Nikmati internet fiber optic 100% tanpa batas kuota (FUP). Daftar sekarang untuk koneksi cepat dan stabil di Sragen.">
-    
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <meta name="theme-color" content="#6c2d91">
-    <link rel="icon" type="image/png" href="images/favicon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon.png">
-    <link rel="manifest" href="site.webmanifest">
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary: #6c2d91;
+            --primary-light: #8e44ad;
+            --primary-dark: #4a1e63;
+            --secondary: #ffcc00;
+            --bg-main: #f4f6fa;
+            --text-main: #1e1b24;
+            --text-muted: #64748b;
+            
+            --card-shadow: 0 12px 30px rgba(108, 45, 145, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
+            --card-shadow-hover: 0 20px 40px rgba(108, 45, 145, 0.14), 0 8px 24px rgba(108, 45, 145, 0.06);
+            --font-base: 'Plus Jakarta Sans', sans-serif;
+        }
 
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-base);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(108, 45, 145, 0.06);
+            padding: 16px 24px;
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand h1 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        .brand span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hero {
+            max-width: 1100px;
+            margin: 40px auto 20px;
+            padding: 0 24px;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            line-height: 1.25;
+            letter-spacing: -1.2px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 620px;
+            margin: 0 auto;
+            font-weight: 500;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto 80px;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin: 40px 0 20px;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 5px;
+            height: 22px;
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .custom-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(108, 45, 145, 0.12);
+            transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--card-shadow-hover);
+            border-color: rgba(108, 45, 145, 0.4);
+        }
+
+        .promo-banner-img {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 14px;
+            margin-top: 10px;
+            border: 1px solid rgba(108, 45, 145, 0.1);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .speed-badge {
+            background: linear-gradient(135deg, rgba(108, 45, 145, 0.08), rgba(142, 68, 173, 0.05));
+            color: var(--primary);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+            border: 1px solid rgba(108, 45, 145, 0.1);
+        }
+
+        .package-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .price-tag {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 16px 0;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .price-tag span {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .package-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .btn-card-action {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(108, 45, 145, 0.15);
+        }
+
+        .custom-card:hover .btn-card-action {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            box-shadow: 0 8px 20px rgba(108, 45, 145, 0.25);
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .review-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(108, 45, 145, 0.2);
+        }
+
+        .review-info h4 { font-size: 1rem; font-weight: 700; color: var(--text-main); }
+        .review-info span { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
+        .rating { color: var(--secondary); font-size: 0.9rem; margin-bottom: 14px; letter-spacing: 2px; }
+        .review-text { font-size: 0.9rem; color: #334155; font-weight: 500; font-style: italic; }
+
+        /* --- Perbaikan Area Pop-up Chat Box --- */
+        .chat-widget { position: fixed; bottom: 24px; right: 24px; z-index: 999; }
+        
+        .chat-btn-toggle {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 12px 30px rgba(108, 45, 145, 0.3);
+            transition: all 0.25s ease;
+        }
+
+        .chat-btn-toggle:hover { transform: translateY(-2px); box-shadow: 0 16px 35px rgba(108, 45, 145, 0.4); }
+        
+        .chat-box {
+            display: none;
+            position: fixed;
+            bottom: 95px;
+            right: 24px;
+            width: 400px;
+            max-width: calc(100vw - 48px);
+            max-height: 82vh; /* Membatasi tinggi total widget di layar */
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(108, 45, 145, 0.1);
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-box.active { display: flex; }
+        .chat-header { flex-shrink: 0; background: var(--primary); color: #fff; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-type-tabs { flex-shrink: 0; display: flex; background: #f1f5f9; padding: 4px; margin: 16px 24px 4px; border-radius: 12px; }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-radius: 10px;
+        }
+
+        .tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        
+        /* Form dibatasi tingginya dan diberi scrollbar otomatis jika isinya panjang */
+        .chat-form { 
+            padding: 12px 24px 24px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 16px; 
+            max-height: 55vh; 
+            overflow-y: auto; 
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .chat-form input, .chat-form textarea { 
+            padding: 14px 18px; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 12px; 
+            width: 100%; 
+            font-size: 0.9rem; 
+            background: #f8fafc; 
+            outline: none; 
+            font-weight: 500; 
+            display: block;
+        }
+        
+        .chat-form input:focus, .chat-form textarea:focus { border-color: var(--primary-light); background: #fff; box-shadow: 0 0 0 3px rgba(108, 45, 145, 0.08); }
+        
+        /* Area Upload Bukti Komplain */
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .upload-area:hover {
+            border-color: var(--primary-light);
+            background: #f1f5f9;
+        }
+        .upload-area p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .file-preview-text {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: 700;
+            margin-top: 6px;
+            display: none;
+        }
+
+        /* Pop-up Panduan Upload */
+        .mini-popup-note {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            z-index: 2000;
+            padding: 24px;
+            border: 1px solid rgba(108, 45, 145, 0.2);
+        }
+        .mini-popup-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 1999;
+            backdrop-filter: blur(2px);
+        }
+        .mini-popup-note h4 { color: var(--primary-dark); font-size: 1.05rem; font-weight: 800; margin-bottom: 10px; }
+        .mini-popup-note ul { padding-left: 18px; font-size: 0.85rem; color: #334155; margin-bottom: 16px; font-weight: 500; }
+        .mini-popup-note ul li { margin-bottom: 6px; }
+        
+        .btn-close-note {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-submit { flex-shrink: 0; background: var(--primary); color: #fff; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; box-shadow: 0 4px 12px rgba(108, 45, 145, 0.15); margin-top: 4px; }
+        #map { height: 160px; width: 100%; border-radius: 14px; border: 1px solid #e2e8f0; display: block; }
+
+        #global-loading-overlay { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); z-index: 10000; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); font-size: 1.1rem; }
+        .loading-text { color: var(--text-muted); font-size: 1rem; grid-column: 1 / -1; text-align: center; padding: 40px; font-weight: 500; }
+
+        @media (max-width: 768px) {
+            .grid-layout {
+                display: flex !important;
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory; 
+                padding: 10px 24px 30px 24px; 
+                margin-left: -24px;
+                margin-right: -24px;
+                gap: 20px;
+            }
+
+            .grid-layout::-webkit-scrollbar { display: none; }
+            .custom-card { flex: 0 0 82%; scroll-snap-align: center; box-shadow: 0 10px 25px rgba(108, 45, 145, 0.05), 0 4px 10px rgba(0, 0, 0, 0.01); }
+        }
     
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17875032525"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+#promo-paket-utama .custom-card{border:3px solid #ffcc00;box-shadow:0 20px 40px rgba(255,204,0,.25)}
+.promo-ribbon{position:absolute;top:14px;left:14px;background:#ffcc00;color:#4a1e63;padding:8px 14px;border-radius:20px;font-weight:800}
 
-      gtag('config', 'AW-17875032525');  /* Google Ads */
-      gtag('config', 'G-N3FC0BQ8J7');     /* Google Analytics (TAMBAHAN BARU) */
-    </script>
-
-
+</style>
 </head>
 <body>
 
-    <div id="lightbox-overlay" onclick="closeLightbox()" aria-hidden="true">
-        <span class="lightbox-close">×</span>
-        <img id="lightbox-img" src="" alt="Promo Zoom View">
+    <div id="global-loading-overlay">Memproses data aman...</div>
+
+    <div class="mini-popup-overlay" id="noteOverlay"></div>
+    <div class="mini-popup-note" id="notePopup">
+        <h4>ℹ️ Panduan Bukti Kendala</h4>
+        <ul>
+            <li>Pastikan lampu indikator LOS/PON router terlihat jelas jika memfoto fisik alat.</li>
+            <li>Gunakan cuplikan layar (screenshot) hasil Speedtest jika keluhan Anda internet lambat.</li>
+            <li>Ukuran file maksimal adalah 10 MB.</li>
+        </ul>
+        <button class="btn-close-note" onclick="closeNoteAndTriggerUpload()">Saya Mengerti, Pilih File</button>
     </div>
 
-    <nav class="navbar sticky-top" role="navigation">
-        <div class="container d-flex justify-content-between align-items-center">
-            <a class="navbar-brand d-flex flex-column align-items-center" href="#">
-                <img src="images/logo.png" alt="MyRepublic Cabang Sragen" loading="lazy">
-                <span class="slogan-text">Internet Rocket Sragen</span>
-            </a>
-            
-            <div class="d-flex align-items-center gap-2">
-                
-<button onclick="openGantiPassModal()" class="btn btn-warning btn-sm fw-bold rounded-pill border-2 border-white shadow-sm" style="font-size: 0.75rem;">
-    🔑 Ganti Password
-</button>
-
-
-                <button onclick="openComplaintModal()" class="btn btn-warning btn-sm fw-bold rounded-pill border-2 border-white shadow-sm" style="font-size: 0.75rem;">
-                    ⚠️ Pengaduan
-                </button>
-                
-                <div class="d-none d-md-block">
-                    <span class="badge bg-white text-purple-900 p-2 rounded-pill border fw-bold" style="color: #6c2d91; font-size: 0.7rem;">📍 Sragen City Service</span>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <section class="video-banner-container">
-        <video autoplay loop muted playsinline poster="https://via.placeholder.com/1440x576/6c2d91/ffffff?text=MyRepublic+Fiber+Sragen">
-            <source src="https://www.dropbox.com/scl/fi/wwck1545yfmqejik6w1nt/wifi-myrepublic-paket-mygamer-di-solo-raya-ping-bagus-anti-lag.webm?rlkey=fmtad4ey3isnnfqy9q62zmz3f&st=mqotvc2m&dl=1" type="video/webm">
-            Your browser does not support the video tag.
-        </video>
-    </section>
-
-    <header class="hero-section text-center">
-        <div class="container">
-            <h1 class="display-5 fw-bold mb-3">Warga Sragen,<br>Saatnya Ganti ke Fiber!</h1>
-            <p class="mb-5 opacity-90 text-sm md:text-base">Nikmati Streaming & Gaming Tanpa Batas Kuota (FUP) dengan Jaringan Fiber Optic 100%.</p>
-            
-            <div class="row justify-content-center mb-5">
-                <div class="col-11 col-md-5 col-lg-4">
-                    <article class="promo-card featured-card text-center">
-                        <div class="best-seller-badge">PROMO TERLARIS</div>
-                        <div class="card-header-purple p-3">
-                            <h2 class="fw-bold m-0 h5">10Ring Mbps</h2>
-                        </div>
-                        <div class="p-4">
-                            <div class="mb-3 text-dark">
-                                <span class="text-muted text-decoration-line-through text-xs">Rp 150.000</span><br>
-                                <span class="h3 fw-bold" style="color: #d91b5c;">Rp 110.000</span>
-                                <p class="small text-muted mb-0" style="font-size: 0.7rem;">/ Bulan (Inc. PPN)</p>
-                            </div>
-                            <ul class="text-start mb-4 space-y-1 text-xs text-dark">
-                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Unlimited Tanpa FUP</li>
-                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Daftar Sekarang pasang Sekarang</li>
-                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Full Fiber Optic</li>
-                                <li class="flex items-center"><span class="text-green-500 mr-2">✔</span> Gratis Instalasi.</li>
-                            </ul>
-                            <button onclick="openRegistrationModal('10Ring')" class="btn btn-primary w-100 py-2 text-sm shadow-md">Daftar Sekarang</button>
-                        </div>
-                    </article>
-                </div>
+    <header>
+        <div class="nav-container">
+            <div class="brand">
+                <h1>MyRepublic</h1>
+                <span>Cluster Sragen</span>
             </div>
         </div>
     </header>
 
-    <main>
-        <div class="search-container">
-            <div class="search-box-auto" onclick="handleAutoGpsSearch()" id="main-search-btn" role="button" aria-label="Cek Ketersediaan Area via GPS">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    <span class="location-text" id="status-gps-text">Cek Ketersediaan Area via GPS Otomatis</span>
-                </div>
-                <button id="btn-cek-lokasi" class="bg-[#6c2d91] text-white px-5 py-2 rounded-full text-xs font-bold transition-all active:scale-95 shadow-md">Cek Lokasi Saya</button>
-            </div>
-            <div id="search-result" class="search-result-box p-4 text-center text-sm font-semibold" aria-live="polite"></div>
+    <section class="hero">
+        <h2>Koneksi Fiber Optik Tanpa Batas Kuota</h2>
+        <p>Nikmati kecepatan internet ultra stabil 1:1 simetris langsung dari jaringan infrastruktur resmi Sragen Sukowati.</p>
+    </section>
+
+    <main class="container">
+        <h3 class="section-title">Pilihan Paket & Harga Internet</h3>
+        <div id="promo-paket-utama" style="margin-bottom:24px;"></div>
+        <div class="grid-layout" id="harga-container">
+            <div class="loading-text">Mengambil daftar harga paket terbaru...</div>
         </div>
 
-        <div id="paket-container">
-            <section class="py-5 bg-light" id="daftar-harga-section">
-                <div class="container">
-                    <div class="text-center mb-4">
-                        <h2 class="fw-bold h4" style="color: #6c2d91;">Pilihan Paket Internet</h2>
-                        <p class="text-muted text-xs">Geser ke samping untuk melihat semua pilihan paket terbaik</p>
-                    </div>
-                    
-                    <div id="price-slider-container" class="slider-wrapper">
-                         <div class="text-center w-full py-5 text-muted">
-                            <span class="spinner-border spinner-border-sm me-2"></span> Memuat Paket...
-                         </div>
-                    </div>
-
-                    <div class="price-table-container d-none">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <tbody id="price-table-body">
-                                    <tr>
-                                        <td colspan="3" class="text-center py-4 text-muted">
-                                            <span class="spinner-border spinner-border-sm me-2"></span> Memuat Daftar Harga...
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </section>
+        <h3 class="section-title">Promo & Testimoni Pelanggan</h3>
+        <div class="grid-layout" id="promo-container">
+            <div class="loading-text">Menghubungkan ke database promo...</div>
         </div>
-
-        <section class="py-12 bg-gray-50" id="promo-gallery">
-            <div class="container">
-                <div class="text-center mb-8">
-                    <h2 class="fw-bold h4" style="color: #6c2d91;">Promo & Event Terbaru</h2>
-                    <div class="h-1 w-20 bg-warning mx-auto mt-2"></div>
-                </div>
-                <div class="row g-3 g-md-4 justify-content-center" id="gallery-wrapper">
-                    <div class="col-12 text-center text-muted py-5" id="promo-loading">
-                        <span class="spinner-border spinner-border-sm me-2"></span> Memuat Promo Terbaru...
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="about-section">
-            <div class="container">
-                <div class="row align-items-center g-5">
-                    <div class="col-lg-5">
-                        <h2 class="display-6 fw-bold mb-4" style="color: var(--mr-purple);">Tentang MyRepublic Sragen</h2>
-                        <p class="text-gray-600 mb-4 leading-relaxed">
-                            Kami adalah pelopor penyedia layanan internet <strong>Ultra-Fast Fiber Optic</strong> di Bumi Sukowati. Sejak hadir di Sragen, fokus utama kami adalah memberikan pengalaman berinternet yang belum pernah dirasakan sebelumnya: <strong>Cepat, Stabil, dan Tanpa Batas.</strong>
-                        </p>
-                        
-                        <div class="row g-4">
-                            <div class="col-6 col-md-4">
-                                <div class="text-center">
-                                    <span class="block text-3xl font-bold text-purple-600">150+</span>
-                                    <span class="text-xs text-gray-500 font-semibold uppercase">Cluster Area</span>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-4">
-                                <div class="text-center">
-                                    <span class="block text-3xl font-bold text-purple-600">24/7</span>
-                                    <span class="text-xs text-gray-500 font-semibold uppercase">Customer Care</span>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-4">
-                                <div class="text-center">
-                                    <span class="block text-3xl font-bold text-purple-600">0%</span>
-                                    <span class="text-xs text-gray-500 font-semibold uppercase">Tanpa FUP</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-6 offset-lg-1">
-                        <div class="row g-3">
-                            <div class="col-sm-6">
-<section class="about-section">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-sm-6 col-md-4">
-                <div class="about-icon-box">
-                    <span class="about-icon" aria-hidden="true">🚀</span>
-                    <h3 class="fw-bold mb-2 h5">Speed Maksimal</h3>
-                    <p class="text-xs text-gray-500">Nikmati kecepatan hingga 1Gbps untuk download dan upload yang simetris.</p>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="about-icon-box">
-                    <span class="about-icon" aria-hidden="true">🎮</span>
-                    <h3 class="fw-bold mb-2 h5">Low Latency</h3>
-                    <p class="text-xs text-gray-500">Optimasi khusus untuk gamer Sragen agar ping tetap hijau saat mabar.</p>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="about-icon-box">
-                    <span class="about-icon" aria-hidden="true">🌐</span>
-                    <h3 class="fw-bold mb-2 h5">100% Fiber Optic</h3>
-                    <p class="text-xs text-gray-500">Jaringan serat optik murni yang lebih stabil dan tahan gangguan cuaca.</p>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-md-4">
-                <div class="about-icon-box">
-                    <span class="about-icon" aria-hidden="true">♾️</span>
-                    <h3 class="fw-bold mb-2 h5">Unlimited Tanpa FUP</h3>
-                    <p class="text-xs text-gray-500">Bebas browsing dan streaming sepuasnya tanpa khawatir kuota habis.</p>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="about-icon-box">
-                    <span class="about-icon" aria-hidden="true">🛠️</span>
-                    <h3 class="fw-bold mb-2 h5">Instalasi Cepat</h3>
-                    <p class="text-xs text-gray-500">Proses pemasangan cepat oleh teknisi lokal Sragen yang berpengalaman.</p>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="about-icon-box">
-                    <span class="about-icon" aria-hidden="true">🎧</span>
-                    <h3 class="fw-bold mb-2 h5">Layanan 24/7</h3>
-                    <p class="text-xs text-gray-500">Tim support teknis siap membantu kendala internet Anda kapan saja.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-        <section class="py-16 bg-white border-t border-gray-100">
-            <div class="container">
-                <div class="row align-items-center g-5">
-                    <div class="col-lg-5">
-                        <div class="ps-lg-4">
-                            <span class="text-purple-600 font-bold uppercase tracking-widest text-xs mb-2 block">Lokasi Layanan</span>
-                            <h2 class="display-6 fw-bold mb-4" style="color: var(--mr-purple);">Peta Cakupan Fiber Sragen</h2>
-                            <p class="text-gray-600 mb-5">Klik pada area berwarna biru untuk melihat detail cakupan fiber optic kami. Area yang ditandai adalah wilayah yang sudah tersedia jaringan MyRepublic.</p>
-                            
-                            <div class="space-y-6">
-                                <div class="flex items-start">
-                                    <div class="bg-purple-100 p-3 rounded-2xl mr-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 class="fw-bold mb-1 h6">Kantor Layanan</h3>
-                                        <p class="text-sm text-gray-500">Jl. Raya Sukowati No. 120, Sragen Tengah.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-7">
-                        <div class="address-card">
-                            <div class="map-container">
-                                <div id="map-coverage" role="application" aria-label="Peta Cakupan Internet MyRepublic Sragen"></div>
-                            </div>
-                            <div class="p-4 bg-purple-900 text-white text-center">
-                                <p class="text-[10px] mb-2 opacity-80">Gunakan GPS di atas untuk cek otomatis di posisi Anda</p>
-                                <button id="btn-cek-lokasi-map" onclick="handleAutoGpsSearch()" class="text-sm font-bold flex items-center justify-center w-full bg-yellow-500 py-2 rounded-lg text-purple-900 shadow-lg transition-all active:scale-95">
-                                    <span id="btn-cek-lokasi-map-text">Cek Cover Area</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="py-16 bg-gray-50 border-t border-b border-gray-100">
-            <div class="container">
-                <div class="text-center mb-12">
-                    <h2 class="fw-bold h3" style="color: #6c2d91;">Apa Kata Warga Sragen?</h2>
-                    <div class="h-1 w-16 bg-warning mx-auto mt-2"></div>
-                </div>
-                <div class="row g-4" id="review-container"></div>
-            </div>
-        </section>
     </main>
 
-    <footer role="contentinfo">
-        <div class="container">
-            <div class="row g-4 text-xs md:text-sm">
-                <div class="col-lg-5">
-                    <h2 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Tentang Kami</h2>
-                    <div class="text-gray-400 mt-3 mb-4 space-y-3">
-                        <p><strong>MyRepublic Sragen</strong> merupakan ISP terkemuka yang hadir untuk menjawab kebutuhan konektivitas tinggi bagi masyarakat Sragen dengan teknologi <strong>Full Fiber Optic</strong> murni.</p>
-                    </div>
-                </div>
-                <div class="col-lg-3">
-                    <h2 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Kenapa MyRepublic?</h2>
-                    <ul class="list-unstyled text-gray-400 mt-3 space-y-2">
-                        <li>🚀 Speed Simetris 1:1</li>
-                        <li>💰 Harga Flat Selamanya</li>
-                        <li>🛠️ CS Responsif via Chat</li>
-                    </ul>
-                </div>
-                <div class="col-lg-4">
-    <h2 class="text-white fw-bold border-bottom border-warning pb-2 inline-block">Kontak Sragen</h2>
-    <ul class="list-unstyled text-gray-400 mt-3">
-        <li class="mb-3">📍 <strong>Area Layanan:</strong> Cakupan merata di pusat kota Sragen dan sekitarnya.</li>
-        <li class="mb-2">
-            <a href="https://wa.me/6281908999242" target="_blank" class="flex items-center text-gray-400 hover:text-green-400 transition-colors duration-300 no-underline">
-                <div class="bg-green-500 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 shadow-lg">
-                    <i class="fab fa-whatsapp text-lg"></i>
-                </div>
-                <div>
-                    <span class="block text-[10px] uppercase font-bold opacity-70">Hubungi Kami</span>
-                    <strong class="text-white text-sm">0819-0899-9242</strong>
-                </div>
-            </a>
-        </li>
-    </ul>
-</div>
+    <div class="chat-widget">
+        <button class="chat-btn-toggle" onclick="toggleChatBox()">Hubungi Layanan / Komplain</button>
+        
+        <div class="chat-box" id="chatBox">
+            <div class="chat-header">
+                <h3 id="chat-title">Cek Cover Area</h3>
+                <button style="background:none; border:none; color:#fff; cursor:pointer; font-size:1.5rem; font-weight:700;" onclick="toggleChatBox()">×</button>
             </div>
-            <hr class="mt-5 mb-4 border-gray-700">
-            <div class="text-center text-gray-500 text-[10px]">
-                © 2026 MyRepublic Sragen. All Rights Reserved. Internet Cepat, Harga Sahabat.
+            
+            <div class="chat-type-tabs">
+                <button class="tab-btn active" id="tab-sales" onclick="switchChatType('sales')">Cek Jaringan</button>
+                <button class="tab-btn" id="tab-complain" onclick="switchChatType('complain')">Komplain Masalah</button>
             </div>
-        </div>
-    </footer>
 
-    <div class="modal fade" id="modalDaftar" tabindex="-1" aria-labelledby="modalDaftarLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg"> 
-            <div class="modal-content shadow-2xl">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold text-sm" id="modalDaftarLabel">Form Registrasi Cepat</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <form class="chat-form" id="clientForm" onsubmit="handleSubmit(event)">
+                <input type="hidden" id="form-paket-terpilih" value="Umum (Tanpa Klik Tombol Paket)">
+                
+                <div class="field-group">
+                    <input type="text" id="form-nama" placeholder="Nama Lengkap Anda" required>
                 </div>
-                <div class="modal-body p-4 relative" id="registration-body">
-                    <div id="reg-success-note" class="p-3 rounded-lg text-xs font-bold mb-4 text-center">
-                        ✅ Pendaftaran Berhasil! <br> Mohon tunggu Tim MyRepublic menghubungi anda.
-                    </div>
-                    <div id="reg-form-fields">
-                        <div class="row g-3">
-                            <div class="col-md-6 mb-3 text-sm">
-                                <label for="reg-nama" class="form-label fw-semibold">Nama Lengkap</label>
-                                <input type="text" id="reg-nama" class="form-control rounded-pill text-sm" placeholder="Nama sesuai KTP">
-                            </div>
-                            <div class="col-md-6 mb-3 text-sm">
-                                <label for="reg-nik" class="form-label fw-semibold">Nomor NIK (KTP)</label>
-                                <input type="number" id="reg-nik" class="form-control rounded-pill text-sm" placeholder="16 digit angka NIK">
-                            </div>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-md-6 mb-3 text-sm">
-                                <label for="reg-wa" class="form-label fw-semibold">Nomor WhatsApp</label>
-                                <input type="number" id="reg-wa" class="form-control rounded-pill text-sm" placeholder="08xxxxxxxxxx">
-                            </div>
-                            <div class="col-md-6 mb-3 text-sm">
-                                <label for="reg-email" class="form-label fw-semibold">Alamat Email</label>
-                                <input type="email" id="reg-email" class="form-control rounded-pill text-sm" placeholder="contoh@email.com">
-                            </div>
-                        </div>
-                        <div class="mb-3 text-sm">
-                            <label for="reg-paket" class="form-label fw-semibold">Paket yang Dipilih</label>
-                            <input type="text" id="reg-paket" class="form-control bg-light rounded-pill fw-bold text-sm" readonly>
-                        </div>
-                        <div class="mb-3 text-sm">
-                            <label for="reg-alamat" class="form-label fw-semibold">Alamat Pemasangan Lengkap</label>
-                            <textarea id="reg-alamat" class="form-control text-sm" rows="2" placeholder="Contoh: Perum Sragen Harmony Blok A No 1..."></textarea>
-                        </div>
-                        <div class="row g-3 mt-1">
-                            <div class="col-md-6 mb-3 text-sm">
-                                <label class="form-label fw-semibold">Unggah Foto Rumah (Min. 3 Foto)</label>
-                                <input type="file" id="reg-foto-rumah-1" class="form-control text-xs mb-2" accept="image/*">
-                                <input type="file" id="reg-foto-rumah-2" class="form-control text-xs mb-2" accept="image/*">
-                                <input type="file" id="reg-foto-rumah-3" class="form-control text-xs mb-2" accept="image/*">
-                                <div class="upload-guide-box">
-                                    <p class="text-[9px] font-bold text-purple-900 mb-1">CONTOH FOTO RUMAH:</p>
-                                    <img src="images/rumah.png" class="upload-guide-img" alt="Contoh Foto Rumah">
-                                    <p class="text-[8px] text-gray-500 italic">Pastikan seluruh bangunan rumah terlihat jelas dari berbagai sudut.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3 text-sm">
-                                <label class="form-label fw-semibold">Unggah Foto Meteran PLN (1 Foto)</label>
-                                <input type="file" id="reg-foto-pln" class="form-control text-xs" accept="image/*">
-                                <div class="upload-guide-box">
-                                    <p class="text-[9px] font-bold text-purple-900 mb-1">CONTOH FOTO PLN:</p>
-                                    <img src="images/pln.png" class="upload-guide-img" alt="Contoh Foto PLN">
-                                    <p class="text-[8px] text-gray-500 italic">Pastikan nomor ID pelanggan PLN terbaca jelas.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <button onclick="submitRegistrationToBot()" id="btn-submit-reg" class="btn btn-primary p-3 mt-3 shadow-lg text-sm w-100 fw-bold">Konfirmasi & Kirim Pendaftaran</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalKomplain" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title fw-bold">📢 Formulir Pengaduan Gangguan</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-4 bg-light">
-                    <div class="alert alert-warning d-flex align-items-center mb-3 p-2 text-sm" role="alert">
-                        <span class="fs-4 me-2">📅</span>
-                        <div>
-                            <strong>Tanggal Laporan:</strong> <span id="comp-auto-hari"></span>, <span id="comp-auto-tanggal"></span>
-                        </div>
-                    </div>
-
-                    <form id="formKomplainUnified">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-xs">Nama Lengkap</label>
-                                <input type="text" id="comp-nama" class="form-control text-sm" placeholder="Sesuai KTP" required oninput="this.value = this.value.toUpperCase()">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-xs">ID Pelanggan</label>
-                                <input type="number" id="comp-id" class="form-control text-sm" placeholder="Contoh: 100xxxxx" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold text-xs">Nomor HP Aktif</label>
-                                <input type="tel" id="comp-hp" class="form-control text-sm" placeholder="08xxxxxxxx" required>
-                            </div>
-<div class="col-md-6">
-    <label class="form-label fw-bold text-xs">Paket Internet</label>
-    <select id="comp-paket" class="form-select text-sm" required>
-        <option value="">-- Pilih Paket --</option>
-        <option value="10Ring">10Ring</option>
-        <option value="Eco15">Eco15</option>
-        <option value="Eco20">Eco20</option>
-        <option value="Jet20">Jet20</option>
-        <option value="30ValueLite">30ValueLite</option>
-        <option value="Neo100">Neo100</option>
-        <option value="Value30">Value30</option>
-        <option value="Fast50">Fast50</option>
-        <option value="Velo150">Velo150</option>
-        <option value="Nova100">Nova100</option>
-        <option value="Nexus300">Nexus300</option>
-        <option value="Gamer250">Gamer250</option>
-        <option value="Prime500">Prime500</option>
-        <option value="Gamer500">Gamer500</option>
-        <option value="Wonder750">Wonder750</option>
-        <option value="Gamer750">Gamer750</option>
-        <option value="Ultra1Gbps">Ultra1Gbps</option>
-        <option value="Gamer1Gbps">Gamer1Gbps</option>
-        <option value="Lainnya">Lainnya</option>
-    </select>
-</div>
-
-                                </select>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label fw-bold text-xs">Detail Kendala</label>
-                                <textarea id="comp-kendala" class="form-control text-sm" rows="3" placeholder="Lampu modem merah / Internet lambat / Putus-putus..." required></textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label fw-bold text-xs">Alamat Pemasangan</label>
-                                <textarea id="comp-alamat" class="form-control text-sm" rows="2" placeholder="Jalan, RT/RW, Desa, Kecamatan..." required></textarea>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label fw-bold text-xs text-danger">Upload Video Perangkat (Modem/Router)</label>
-                                <div class="p-3 bg-white border rounded text-center">
-                                    <input type="file" id="comp-video" class="form-control mb-2 text-sm" accept="video/*" required>
-                                    <small class="text-muted d-block text-xs">Maksimal durasi 10 detik. Pastikan lampu indikator terlihat.</small>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="card bg-white border-warning">
-                                    <div class="card-body p-3">
-                                        <label class="fw-bold mb-2 text-xs">Posisi Anda Saat Ini?</label>
-                                        <div class="d-flex gap-3 mb-2 text-sm">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="comp-posisi" id="posisiYa" value="ya" onclick="toggleCompLoc(true)">
-                                                <label class="form-check-label" for="posisiYa">Di Lokasi Rumah</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="comp-posisi" id="posisiTidak" value="tidak" onclick="toggleCompLoc(false)">
-                                                <label class="form-check-label" for="posisiTidak">Di Luar Rumah</label>
-                                            </div>
-                                        </div>
-                                        <div id="comp-loc-box" style="display:none;">
-                                            <button type="button" onclick="getCompLocation()" class="btn btn-warning btn-sm w-100 fw-bold text-xs">📍 Ambil Titik Koordinat</button>
-                                            <input type="hidden" id="comp-coords">
-                                            <small id="comp-loc-status" class="d-block mt-2 text-primary fst-italic text-xs"></small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="form-check bg-white p-3 rounded border">
-                                    <input class="form-check-input" type="checkbox" id="comp-agreement" required>
-                                    <label class="form-check-label text-xs" for="comp-agreement">
-                                        Saya menyatakan data benar. Jika diperlukan kunjungan teknisi & kerusakan disebabkan kelalaian pengguna, saya bersedia menanggung biaya sesuai ketentuan.
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" id="btn-submit-comp" class="btn btn-danger w-100 py-3 mt-4 fw-bold shadow text-sm">
-                            🚀 KIRIM PENGADUAN SEKARANG
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="modalGantiPass" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header" style="background: linear-gradient(135deg, #6c2d91 0%, #4a1f63 100%); color: white; border-bottom: 4px solid #ffcc00;">
-                    <div>
-                        <h5 class="modal-title fw-bold">Konfigurasi Router ZTE F670L</h5>
-                        <small style="opacity:0.9; color: #ffcc00; font-weight: 600;">Panduan Ganti Nama & Password WiFi</small>
-                    </div>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="field-group">
+                    <input type="tel" id="form-hp" placeholder="Nomor WhatsApp/HP Aktif" required>
                 </div>
                 
-                <div class="modal-body p-0" style="background-color: #f0f2f5;">
-<div class="tab-container sticky-top bg-white shadow-sm d-flex justify-content-center py-2">
-    <div class="tab-wrapper p-1 bg-gray-100 rounded-pill d-flex">
-        <button class="tab-btn active rounded-pill px-4 py-2" onclick="openTabGuide(event, 'langkah')">
-            PANDUAN GAMBAR
-        </button>
-        <div class="mx-1"></div> <button class="tab-btn rounded-pill px-4 py-2" onclick="openTabGuide(event, 'video')">
-            VIDEO TUTORIAL
-        </button>
-    </div>
-</div>
-
-
-                    <div id="langkah" class="tab-content-guide active p-3">
-                        <div class="container-fluid" style="max-width: 800px;">
-                            <div class="step-card">
-                                <span class="step-label">LANGKAH 01</span>
-                                <h3 class="step-title">Login ke Sistem</h3>
-                                <p>Buka Browser (Chrome/Safari), ketik: <b>192.168.1.1</b></p>
-                                <div class="login-simulation">
-                                    <div class="login-header">
-                                        <span style="font-size: 14px;">🔒</span> Welcome to F670L. Please login.
-                                    </div>
-                                    <div class="login-body">
-                                        <div class="login-row">
-                                            <label>Username</label>
-                                            <input type="text" class="login-input" value="admin" readonly>
-                                        </div>
-                                        <div class="login-row">
-                                            <label>Password</label>
-                                            <input type="text" class="login-input" value="Web@0063" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="login-footer">
-                                        <button class="login-btn">Login</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="step-card">
-                                <span class="step-label">LANGKAH 02</span>
-                                <h3 class="step-title">Masuk Menu Network</h3>
-                                <p>Klik menu <b>Network</b> > lalu pilih <b>WLAN</b> (Wireless LAN).</p>
-                                <img src="images/2.png" class="step-img" alt="Langkah 2" onerror="this.style.display='none'">
-                            </div>
-
-                            <div class="step-card">
-                                <span class="step-label">LANGKAH 03</span>
-                                <h3 class="step-title">SSID Settings</h3>
-                                <p>Pilih <b>SSID Settings</b>. Pilih SSID1 (untuk 2.4GHz) atau SSID5 (untuk 5GHz).</p>
-                                <img src="images/3.png" class="step-img" alt="Langkah 3" onerror="this.style.display='none'">
-                            </div>
-
-                            <div class="step-card">
-                                <span class="step-label">LANGKAH 04</span>
-                                <h3 class="step-title">Ubah Nama & Password</h3>
-                                <p>Ganti nama di kolom <b>SSID Name</b> dan password di <b>WPA Passphrase</b> (Min. 8 Karakter).</p>
-                                
-                                <div class="router-simulation">
-                                    <div class="ssid-toggle-row">
-                                        <span style="color: #00a1e9; font-size: 10px;">▼</span>
-                                        <span style="color: #333; font-size: 14px; text-decoration: underline; cursor: pointer; font-weight: bold;">SSID1 (2,4GHz)</span>
-                                    </div>
-                                    <div class="sim-row">
-                                        <label>SSID Name</label>
-                                        <div class="sim-input-wrapper">
-                                            <input type="text" class="sim-input" value="MYREPUBLIC_WIFI">
-                                        </div>
-                                    </div>
-                                    <div class="sim-row">
-                                        <label>WPA Passphrase</label>
-                                        <div class="sim-input-wrapper">
-                                            <input type="text" class="sim-input" value="RAHASIA123">
-                                            <span style="margin-left:5px">👁️</span>
-                                        </div>
-                                    </div>
-                                    <div class="sim-btn-group">
-                                        <button class="sim-btn">Apply</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="step-card">
-                                <span class="step-label">LANGKAH 05</span>
-                                <h3 class="step-title">Simpan & Reconnect</h3>
-                                <p>Klik <b>Submit/Apply</b>. WiFi akan terputus, silakan login ulang dengan password baru.</p>
-                                <img src="images/4.png" class="step-img" alt="Langkah 5" onerror="this.style.display='none'">
-                            </div>
-                        </div>
+                <div id="dynamic-fields" style="display: flex; flex-direction: column; gap: 16px;">
+                    <div class="field-group">
+                        <input type="text" id="form-alamat" placeholder="Alamat Lengkap Rumah (Sragen)" required>
                     </div>
-
-                    <div id="video" class="tab-content-guide p-3" style="display:none;">
-                        <div class="container-fluid">
-                            <div class="phone-container">
-                                <div class="phone-screen">
-                                    <iframe 
-                                        src="https://www.dropbox.com/scl/fi/rr4m1o32rmvjr3lp9jewr/Proyek_12-31_HD-720p_LOW_FR30.mp4?rlkey=b2d3mkynag551g40zrl8rdivu&st=ztjy5yxr&raw=1" 
-                                        allow="autoplay; encrypted-media" 
-                                        allowfullscreen>
-                                    </iframe>
-                                </div>
-                            </div>
-                            <p class="text-center text-muted small">Jika video tidak muncul, pastikan koneksi lancar.</p>
-                        </div>
+                    <div class="field-group">
+                        <div id="map"></div>
+                        <input type="text" id="form-coords" placeholder="Mencari lokasi otomatis..." readonly style="margin-top: 4px;">
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    <button id="chat-toggle-btn" onclick="toggleChat()" class="fixed bottom-6 right-6 bg-purple-600 p-4 rounded-full shadow-2xl z-[9999] hover:scale-110 transition-transform" style="background-color: #6c2d91;" aria-label="Buka Chat Bantuan">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-        </svg>
-    </button>
-
-    <div id="chat-widget" class="chat-container">
-        <div id="chat-blocked-overlay" class="blocked-overlay">
-            <span class="text-4xl mb-2" aria-hidden="true">⏳</span>
-            <h3 class="font-bold text-purple-900 text-sm">Pesan Belum Dibalas</h3>
-            <p class="text-[10px] text-gray-500 px-4">Tunggu admin membalas pesan Anda sebelumnya (Maks. 5 pesan tanpa balasan).</p>
-            <button onclick="toggleChat()" class="mt-4 text-xs underline text-purple-600">Tutup</button>
-        </div>
-        <div id="chat-form-overlay">
-            <button onclick="toggleChat()" class="absolute top-4 left-4 text-purple-600 hover:text-purple-800 transition-colors" aria-label="Kembali">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-                </svg>
-            </button>
-            <div class="text-center mb-6">
-                <div class="bg-purple-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3"><span class="text-xl" aria-hidden="true">👋</span></div>
-                <h3 class="font-bold text-purple-900 text-sm">Konsultasi Gratis</h3>
-                <p class="text-[10px] text-gray-500">Mulai berbicara dengan Admin Sragen</p>
-            </div>
-            <div class="space-y-3 pb-20">
-                <input type="text" id="chat-reg-nama" placeholder="Nama Lengkap" class="w-full border p-2 rounded-xl text-xs outline-none">
-                <input type="email" id="chat-reg-email" placeholder="Alamat Email" class="w-full border p-2 rounded-xl text-xs outline-none">
-                <input type="number" id="chat-reg-wa" placeholder="No WhatsApp" class="w-full border p-2 rounded-xl text-xs outline-none">
-                <button id="btn-start-chat" onclick="submitChatForm()" class="w-full bg-[#6c2d91] text-white font-bold py-3 rounded-xl text-xs shadow-lg">Mulai Chat Sekarang</button>
-            </div>
-        </div>
-        <div class="chat-header">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center font-bold text-xs">MR</div>
-                <div>
-                    <h3 class="font-bold text-xs leading-none">Admin MyRepublic Sragen</h3>
-                    <p class="text-[9px] opacity-80 mt-1">● Online</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-1">
-                <button onclick="toggleChat()" class="hover:bg-white/10 p-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" /></svg></button>
-                <button onclick="clearChatSessionPrompt()" class="hover:bg-white/10 p-2 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
-            </div>
-        </div>
-        <div id="chat-content"></div>
-        <div class="chat-input-area" id="input-container-chat">
-            <input type="text" id="user-input" placeholder="Tulis pesan..." onkeypress="if(event.key === 'Enter') sendMessage()">
-            <button id="send-msg-btn" onclick="sendMessage()" class="bg-[#6c2d91] text-white p-2 rounded-full shadow-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-90" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
-            </button>
-        </div>
-        <div id="reset-session-area" class="hidden p-2 text-center">
-            <button onclick="clearChatSession()" class="text-[9px] text-gray-400 underline italic">Mulai percakapan baru</button>
+                <button type="submit" class="btn-submit">Kirim Data</button>
+            </form>
         </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <script src="script.js"></script>
-    
-    <div id="global-loading-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 999999; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
-    <div class="text-center">
-        <div class="spinner-border text-warning" style="width: 4rem; height: 4rem; border-width: .5em;" role="status"></div>
-        <h2 class="text-white mt-4 fw-bold h5">Sedang Mengirim Laporan...</h2>
-        <p class="text-gray-400 text-xs px-5">Mohon jangan menutup atau me-refresh halaman.<br>Proses unggah media sedang berlangsung.</p>
-    </div>
-</div>
+    <script>
+        const URL_SHEET1_PROMO = "https://docs.google.com/spreadsheets/d/e/2PACX-1vStVKNVl4FfeX193YQRDEFGE32rSDirwTdTY-unjHs5OseIiBROW0KKaMRtVTmMhQg0bnqmo3gaAejO/pub?gid=0&single=true&output=csv";
+        const URL_SHEET2_HARGA = "https://docs.google.com/spreadsheets/d/e/2PACX-1vStVKNVl4FfeX193YQRDEFGE32rSDirwTdTY-unjHs5OseIiBROW0KKaMRtVTmMhQg0bnqmo3gaAejO/pub?gid=500363833&single=true&output=csv";
 
+        const BOT_TOKEN = '8330506170:AAH8JHSDZ-r99YxkGu4Y-bwCea4Ap2TGhOc';
+        const CHAT_ID = '-1003594385102'; 
+        const TOPIC_SALES = '2'; 
+        const TOKEN_COMPLAINT = "8531770277:AAHKW3KhdwXop-hpu_sE21djyqdu2Wl8vmU";
+        const TOPIC_COMPLAINT = '13';
 
+        let currentType = 'sales';
+        let mapInitialized = false;
+        let map, marker;
+
+        function parseCSV(text) {
+            const lines = text.split('\n').filter(l => l.trim() !== '');
+            if(lines.length === 0) return [];
+            const delimiter = lines[0].includes(';') ? ';' : ',';
+            const headers = lines[0].split(delimiter).map(h => h.replace(/["\r]/g, '').trim());
+            return lines.slice(1).map(line => {
+                const values = line.split(delimiter).map(v => v.replace(/["\r]/g, '').trim());
+                let obj = {};
+                headers.forEach((header, index) => { obj[header] = values[index] || ''; });
+                return obj;
+            });
+        }
+
+        async function fetchSpreadsheetData() {
+            try {
+                const resHarga = await fetch(URL_SHEET2_HARGA);
+                const csvHarga = await resHarga.text();
+                renderHarga(parseCSV(csvHarga));
+            } catch (err) {
+                document.getElementById('harga-container').innerHTML = `<div class="loading-text">Gagal memuat data harga paket.</div>`;
+            }
+            try {
+                const resPromo = await fetch(URL_SHEET1_PROMO);
+                const csvPromo = await resPromo.text();
+                renderPromo(parseCSV(csvPromo));
+            } catch (err) {
+                document.getElementById('promo-container').innerHTML = `<div class="loading-text">Gagal memuat data testimoni promo.</div>`;
+            }
+        }
+
+        function renderHarga(data) {
+            const container = document.getElementById('harga-container');
+            if(!data || data.length === 0) { container.innerHTML = `<div class="loading-text">Format database harga kosong.</div>`; return; }
+            const keys = Object.keys(data[0]);
+            const first=data[0];
+            const others=data.slice(1);
+            document.getElementById('promo-paket-utama').innerHTML=`
+            <div class="custom-card"><div class="promo-ribbon">🔥 PROMO TERBAIK</div>
+            <br><br><div><div class="card-top"><h4 class="package-name">${first[keys[0]]||'Paket'}</h4><span class="speed-badge">${first[keys[1]]||''}</span></div></br>
+            <div class="price-tag">${first[keys[2]]||''}<span>/ bln</span></div><p class="package-desc">${first[keys[3]]||''}</p></div>
+            <button class="btn-card-action" onclick="toggleChatBoxWithPackage('${first[keys[0]]}')">Pilih Paket</button></div>`;
+            container.innerHTML = others.map(item => `
+                <div class="custom-card">
+                    <div>
+                        <div class="card-top">
+                            <h4 class="package-name">${item[keys[0]] || 'Paket Internet'}</h4>
+                            <span class="speed-badge">${item[keys[1]] || 'Simetris'}</span>
+                        </div>
+                        <div class="price-tag">${item[keys[2]] || 'Hubungi Sales'} <span>/ bln</span></div>
+                        <p class="package-desc">${item[keys[3]] || 'Tanpa batasan kuota FUP penuh.'}</p>
+                    </div>
+                    <button class="btn-card-action" onclick="toggleChatBoxWithPackage('${item[keys[0]]}')">Pilih Paket</button>
+                </div>
+            `).join('');
+        }
+
+        function renderPromo(data) {
+            const container = document.getElementById('promo-container');
+            if(!data || data.length === 0) { container.innerHTML = `<div class="loading-text">Belum ada promo/testimoni aktif.</div>`; return; }
+            const keys = Object.keys(data[0]);
+            container.innerHTML = data.map(item => {
+                const nama = item[keys[0]] || 'Pelanggan';
+                const ratingCount = parseInt(item[keys[3]]) || 5;
+                const isiTeks = (item[keys[2]] || '').trim();
+                let kontenHTML = (isiTeks.startsWith('http://') || isiTeks.startsWith('https://')) 
+                    ? `<img src="${isiTeks}" class="promo-banner-img" alt="Promo MyRepublic" onerror="this.style.display='none';">`
+                    : `<p class="review-text">"${isiTeks}"</p>`;
+                return `
+                    <div class="custom-card">
+                        <div>
+                            <div class="review-header">
+                                <div class="review-avatar">${nama.charAt(0)}</div>
+                                <div class="review-info">
+                                    <h4>${nama}</h4>
+                                    <span>${item[keys[1]] || 'Sragen'}</span>
+                                </div>
+                            </div>
+                            <div class="rating">${"⭐".repeat(ratingCount)}</div>
+                            ${kontenHTML}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleChatBoxWithPackage(packageName) {
+            const chatBox = document.getElementById('chatBox');
+            if(!chatBox.classList.contains('active')) { toggleChatBox(); }
+            switchChatType('sales');
+            const hiddenPaket = document.getElementById('form-paket-terpilih');
+            if(hiddenPaket) { hiddenPaket.value = packageName; }
+            const alamatField = document.getElementById('form-alamat');
+            if(alamatField) { alamatField.value = ''; }
+        }
+
+        function toggleChatBox() {
+            const chatBox = document.getElementById('chatBox');
+            chatBox.classList.toggle('active');
+            if (chatBox.classList.contains('active') && !mapInitialized) { initLazyMap(); }
+        }
+
+        function switchChatType(type) {
+            currentType = type;
+            document.getElementById('tab-sales').classList.toggle('active', type === 'sales');
+            document.getElementById('tab-complain').classList.toggle('active', type === 'complain');
+            const dynamicFields = document.getElementById('dynamic-fields');
+
+            if(type === 'sales') {
+                document.getElementById('chat-title').innerText = "Cek Cover Area";
+                dynamicFields.innerHTML = `
+                    <div class="field-group">
+                        <input type="text" id="form-alamat" placeholder="Alamat Lengkap Rumah (Sragen)" required>
+                    </div>
+                    <div class="field-group">
+                        <div id="map"></div>
+                        <input type="text" id="form-coords" placeholder="Mencari lokasi otomatis..." readonly style="margin-top: 4px;">
+                    </div>
+                `;
+                mapInitialized = false;
+                initLazyMap();
+            } else {
+                document.getElementById('chat-title').innerText = "Pusat Gangguan & Komplain";
+                dynamicFields.innerHTML = `
+                    <div class="field-group">
+                        <input type="text" id="form-idpel" placeholder="ID Pelanggan (Contoh: 102495)" required>
+                    </div>
+                    <div class="field-group">
+                        <textarea id="form-keluhan" rows="3" placeholder="Tuliskan detail gangguan internet..." required></textarea>
+                    </div>
+                    <div class="field-group">
+                        <div class="upload-area" onclick="openMiniNote()">
+                            <p>📸 Unggah Bukti Kendala (Foto/Video Router)</p>
+                            <span id="preview-file-label" class="file-preview-text"></span>
+                        </div>
+                        <input type="file" id="form-file" accept="image/*,video/*" style="display: none;" onchange="handleFileProcessing(this)">
+                    </div>
+                `;
+            }
+        }
+
+        function openMiniNote() {
+            document.getElementById('noteOverlay').style.display = 'block';
+            document.getElementById('notePopup').style.display = 'block';
+        }
+
+        function closeNoteAndTriggerUpload() {
+            document.getElementById('noteOverlay').style.display = 'none';
+            document.getElementById('notePopup').style.display = 'none';
+            document.getElementById('form-file').click();
+        }
+
+        function handleFileProcessing(input) {
+            const file = input.files[0];
+            const label = document.getElementById('preview-file-label');
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert("Berkas terlalu besar! Maksimal kapasitas file adalah 10 MB.");
+                    input.value = "";
+                    label.style.display = "none";
+                    return;
+                }
+                label.innerText = `📎 Terpilih: ${file.name}`;
+                label.style.display = "block";
+            }
+        }
+
+        function initLazyMap() {
+            if(mapInitialized || !document.getElementById('map')) return;
+            
+            let defaultLat = -7.4266;
+            let defaultLng = 111.0224;
+
+            map = L.map('map').setView([defaultLat, defaultLng], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            marker = L.marker([defaultLat, defaultLng], {draggable: true}).addTo(map);
+            
+            document.getElementById('form-coords').value = `${defaultLat}, ${defaultLng}`;
+            const up = (la, ln) => document.getElementById('form-coords').value = `${la.toFixed(6)}, ${ln.toFixed(6)}`;
+            
+            marker.on('dragend', () => { const p = marker.getLatLng(); up(p.lat, p.lng); });
+            map.on('click', (e) => { marker.setLatLng(e.latlng); up(e.latlng.lat, e.latlng.lng); });
+            mapInitialized = true;
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const userLat = position.coords.latitude;
+                        const userLng = position.coords.longitude;
+                        map.setView([userLat, userLng], 16);
+                        marker.setLatLng([userLat, userLng]);
+                        up(userLat, userLng);
+                    },
+                    (error) => {
+                        console.log("Akses GPS tidak aktif, menggunakan koordinat pusat Sragen.");
+                    },
+                    { enableHighAccuracy: true, timeout: 8000 }
+                );
+            }
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const overlay = document.getElementById('global-loading-overlay');
+            overlay.style.display = 'flex';
+
+            const nama = document.getElementById('form-nama').value;
+            const hp = document.getElementById('form-hp').value;
+            let msg = `🚀 *DATA BARU MASUK WEBSITE SRAGEN*\n━━━━━━━━━━━━━━━━━━━━\n👤 *Nama:* ${nama}\n📞 *WhatsApp:* ${hp}\n`;
+            
+            let currentToken = BOT_TOKEN;
+            let threadId = TOPIC_SALES;
+            let isComplaint = false;
+
+            if (currentType === 'sales') {
+                const paket = document.getElementById('form-paket-terpilih').value;
+                const coords = document.getElementById('form-coords').value;
+                const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(coords)}`;
+                
+                msg += `📦 *Paket Pilihan:* ${paket}\n📁 *Kategori:* Cek Cover Area\n📍 *Alamat:* ${document.getElementById('form-alamat').value}\n🗺️ *Koordinat:* [${coords}](${mapsUrl})`;
+                currentToken = BOT_TOKEN;
+                threadId = TOPIC_SALES;
+            } else {
+                msg += `📁 *Kategori:* Komplain\n🆔 *ID Pelanggan:* ${document.getElementById('form-idpel').value}\n📝 *Keluhan:* ${document.getElementById('form-keluhan').value}`;
+                currentToken = TOKEN_COMPLAINT;
+                threadId = TOPIC_COMPLAINT;
+                isComplaint = true;
+            }
+
+            try {
+                let sendSuccess = false;
+                const fileInput = document.getElementById('form-file');
+
+                if (isComplaint && fileInput && fileInput.files.length > 0) {
+                    const fileObj = fileInput.files[0];
+                    const formData = new FormData();
+                    formData.append('chat_id', CHAT_ID);
+                    formData.append('message_thread_id', threadId);
+                    formData.append('caption', msg);
+                    formData.append('parse_mode', 'Markdown');
+
+                    let apiMethod = "sendPhoto";
+                    const ext = fileObj.name.toLowerCase();
+                    
+                    if (ext.endsWith('.mp4') || ext.endsWith('.mov') || ext.endsWith('.3gp') || ext.endsWith('.avi')) {
+                        apiMethod = "sendVideo";
+                        formData.append('video', fileObj);
+                    } else if (ext.endsWith('.jpg') || ext.endsWith('.jpeg') || ext.endsWith('.png') || ext.endsWith('.webp')) {
+                        apiMethod = "sendPhoto";
+                        formData.append('photo', fileObj);
+                    } else {
+                        apiMethod = "sendDocument";
+                        formData.append('document', fileObj);
+                    }
+
+                    const fileRes = await fetch(`https://api.telegram.org/bot${currentToken}/${apiMethod}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    sendSuccess = fileRes.ok;
+                } else {
+                    const textRes = await fetch(`https://api.telegram.org/bot${currentToken}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ chat_id: CHAT_ID, message_thread_id: threadId, text: msg, parse_mode: 'Markdown' })
+                    });
+                    sendSuccess = textRes.ok;
+                }
+
+                if (sendSuccess) {
+                    alert('Data sukses dikirim. Pengajuan/Laporan Anda segera diproses oleh tim Sragen.');
+                    document.getElementById('clientForm').reset();
+                    document.getElementById('form-paket-terpilih').value = "Umum (Tanpa Klik Tombol Paket)";
+                    
+                    const label = document.getElementById('preview-file-label');
+                    if(label) label.style.display = "none";
+                    
+                    toggleChatBox();
+                } else { 
+                    alert('Gagal mengirim ke sistem bot. Silakan periksa kembali kecocokan token / ID Chat.'); 
+                }
+            } catch (err) { 
+                alert('Gangguan jaringan sistem atau ukuran dokumen terlalu besar.'); 
+            } finally { 
+                overlay.style.display = 'none'; 
+            }
+        }
+
+        window.onload = fetchSpreadsheetData;
+    </script>
 </body>
 </html>
