@@ -469,14 +469,14 @@
             <div class="loading-text">Mengambil daftar harga paket terbaru...</div>
         </div>
 
-        <h3 class="section-title">Promo & Testimoni Pelanggan</h3>
+        <h3 class="section-title">Promo</h3>
         <div class="grid-layout" id="promo-container">
             <div class="loading-text">Menghubungkan ke database promo...</div>
         </div>
     </main>
 
     <div class="chat-widget">
-        <button class="chat-btn-toggle" onclick="toggleChatBox()">Hubungi Layanan / Komplain</button>
+        <button class="chat-btn-toggle" onclick="toggleChatBox()">Cek Coverage / Komplain</button>
         
         <div class="chat-box" id="chatBox">
             <div class="chat-header">
@@ -568,7 +568,7 @@
             const others=data.slice(1);
             document.getElementById('promo-paket-utama').innerHTML=`
             <div class="custom-card"><div class="promo-ribbon">🔥 PROMO TERBAIK</div>
-            <br><br><div><div class="card-top"><h4 class="package-name">${first[keys[0]]||'Paket'}</h4><span class="speed-badge">${first[keys[1]]||''}</span></div></br>
+            <br><div><div class="card-top"><h4 class="package-name">${first[keys[0]]||'Paket'}</h4><span class="speed-badge">${first[keys[1]]||''}</span></div></br>
             <div class="price-tag">${first[keys[2]]||''}<span>/ bln</span></div><p class="package-desc">${first[keys[3]]||''}</p></div>
             <button class="btn-card-action" onclick="toggleChatBoxWithPackage('${first[keys[0]]}')">Pilih Paket</button></div>`;
             container.innerHTML = others.map(item => `
