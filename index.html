@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyRepublic Cabang Sragen | Internet Fiber Cepat & Stabil</title>
-    <meta name="description" content="Layanan resmi MyRepublic Sragen. Nikmati internet fiber optic 100% tanpa batas kuota (FUP). Daftar sekarang untuk koneksi cepat dan stabil di Sragen.">
+    <title>MyRepublic Cabang Sragen | Internet Fiber Cepat & Stabil</title>
+    <meta name="description" content="Layanan resmi MyRepublic INDONESIA. Nikmati internet fiber optic 100% tanpa batas kuota (FUP). Daftar sekarang untuk koneksi cepat dan stabil di Sragen.">
     
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,6 +50,11 @@
             color: var(--text-main);
             line-height: 1.6;
             overflow-x: hidden;
+        }
+
+        /* Kelas pengunci scroll saat popup aktif */
+        body.popup-open {
+            overflow: hidden;
         }
 
         header {
@@ -137,6 +142,13 @@
             border-radius: 3px;
         }
 
+        .section-divider {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(to right, rgba(108, 45, 145, 0), rgba(108, 45, 145, 0.25), rgba(108, 45, 145, 0));
+            margin: 50px 0;
+        }
+
         .grid-layout {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -163,6 +175,93 @@
             border-color: rgba(108, 45, 145, 0.4);
         }
 
+        .article-holder-out {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px;
+            margin-top: 32px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(108, 45, 145, 0.12);
+        }
+
+        .article-holder-out h4 {
+            color: var(--primary-dark);
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .article-holder-out p {
+            color: #334155;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        .article-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .feature-item {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 16px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .feature-item h5 {
+            color: var(--primary-dark);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .feature-item p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        .article-cta-box {
+            background: linear-gradient(135deg, rgba(108, 45, 145, 0.05), rgba(142, 68, 173, 0.05));
+            border: 1px dashed var(--primary);
+            padding: 24px;
+            border-radius: 16px;
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .article-cta-box h5 {
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .btn-article-cta {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-top: 12px;
+            box-shadow: 0 4px 12px rgba(108, 45, 145, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .btn-article-cta:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
         .promo-banner-img {
             width: 100%;
             height: auto;
@@ -171,6 +270,20 @@
             border-radius: 14px;
             margin-top: 10px;
             border: 1px solid rgba(108, 45, 145, 0.1);
+        }
+
+        .full-promo-container {
+            width: 100%;
+            margin-top: 32px;
+        }
+        
+        .full-promo-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 24px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(108, 45, 145, 0.12);
         }
 
         .card-top {
@@ -267,13 +380,8 @@
         .rating { color: var(--secondary); font-size: 0.9rem; margin-bottom: 14px; letter-spacing: 2px; }
         .review-text { font-size: 0.9rem; color: #334155; font-weight: 500; font-style: italic; }
         
-        
-        
-        
-        
-
-        /* --- Perbaikan Area Pop-up Chat Box --- */
-        .chat-widget { position: fixed; bottom: 24px; right: 24px; z-index: 999; }
+        /* WIDGET & CHAT BOX AREA */
+        .chat-widget { position: fixed; bottom: 24px; right: 24px; z-index: 2000; }
         
         .chat-btn-toggle {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -290,6 +398,24 @@
 
         .chat-btn-toggle:hover { transform: translateY(-2px); box-shadow: 0 16px 35px rgba(108, 45, 145, 0.4); }
         
+        /* Efek Buram Latar Belakang (Blur 80% / 8px) */
+        .chat-backdrop-blur {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 12, 22, 0.4); /* Efek gelap transparan */
+            backdrop-filter: blur(8px);        /* Tingkat keburaman tinggi (80% fokus) */
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1990;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .chat-backdrop-blur.active {
+            display: block;
+            opacity: 1;
+        }
+
         .chat-box {
             display: none;
             position: fixed;
@@ -297,16 +423,25 @@
             right: 24px;
             width: 400px;
             max-width: calc(100vw - 48px);
-            max-height: 82vh; /* Membatasi tinggi total widget di layar */
+            max-height: 82vh;
             background: #ffffff;
             border-radius: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(108, 45, 145, 0.1);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(108, 45, 145, 0.15);
             flex-direction: column;
             overflow: hidden;
+            z-index: 2001;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
         }
 
-        .chat-box.active { display: flex; }
+        .chat-box.active { 
+            display: flex; 
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
         .chat-header { flex-shrink: 0; background: var(--primary); color: #fff; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
         .chat-type-tabs { flex-shrink: 0; display: flex; background: #f1f5f9; padding: 4px; margin: 16px 24px 4px; border-radius: 12px; }
         
@@ -324,7 +459,6 @@
 
         .tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
         
-        /* Form dibatasi tingginya dan diberi scrollbar otomatis jika isinya panjang */
         .chat-form { 
             padding: 12px 24px 24px; 
             display: flex; 
@@ -354,7 +488,6 @@
         
         .chat-form input:focus, .chat-form textarea:focus { border-color: var(--primary-light); background: #fff; box-shadow: 0 0 0 3px rgba(108, 45, 145, 0.08); }
         
-        /* Area Upload Bukti Komplain */
         .upload-area {
             border: 2px dashed #cbd5e1;
             padding: 16px;
@@ -364,24 +497,10 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .upload-area:hover {
-            border-color: var(--primary-light);
-            background: #f1f5f9;
-        }
-        .upload-area p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-        .file-preview-text {
-            font-size: 0.8rem;
-            color: var(--primary);
-            font-weight: 700;
-            margin-top: 6px;
-            display: none;
-        }
+        .upload-area:hover { border-color: var(--primary-light); background: #f1f5f9; }
+        .upload-area p { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+        .file-preview-text { font-size: 0.8rem; color: var(--primary); font-weight: 700; margin-top: 6px; display: none; }
 
-        /* Pop-up Panduan Upload */
         .mini-popup-note {
             display: none;
             position: fixed;
@@ -392,7 +511,7 @@
             background: #ffffff;
             border-radius: 20px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            z-index: 2000;
+            z-index: 3000;
             padding: 24px;
             border: 1px solid rgba(108, 45, 145, 0.2);
         }
@@ -401,7 +520,7 @@
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.4);
-            z-index: 1999;
+            z-index: 2999;
             backdrop-filter: blur(2px);
         }
         .mini-popup-note h4 { color: var(--primary-dark); font-size: 1.05rem; font-weight: 800; margin-bottom: 10px; }
@@ -442,16 +561,75 @@
 
             .grid-layout::-webkit-scrollbar { display: none; }
             .custom-card { flex: 0 0 82%; scroll-snap-align: center; box-shadow: 0 10px 25px rgba(108, 45, 145, 0.05), 0 4px 10px rgba(0, 0, 0, 0.01); }
+            #promo-paket-utama .custom-card { flex: 0 0 100% !important; margin: 0 24px; }
+            .chat-box { right: 12px; bottom: 85px; max-width: calc(100vw - 24px); }
+            .chat-widget { right: 12px; bottom: 16px; }
         }
     
-#promo-paket-utama .custom-card{border:3px solid #ffcc00;box-shadow:0 20px 40px rgba(255,204,0,.25)}
-.promo-ribbon{position:absolute;top:14px;left:14px;background:#ffcc00;color:#4a1e63;padding:8px 14px;border-radius:20px;font-weight:800}
+        #promo-paket-utama .custom-card {
+            background: linear-gradient(145deg, #321347, #531f70);
+            border: 2px solid var(--secondary);
+            box-shadow: 0 25px 55px rgba(108, 45, 145, 0.35), 0 0 30px rgba(255, 204, 0, 0.15);
+            color: #ffffff;
+            padding: 36px;
+            transform: scale(1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
 
-</style>
+        #promo-paket-utama .custom-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 30px 65px rgba(108, 45, 145, 0.5), 0 0 40px rgba(255, 204, 0, 0.3);
+        }
+
+        #promo-paket-utama .package-name { color: #ffffff; font-size: 1.6rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        #promo-paket-utama .speed-badge { background: linear-gradient(135deg, var(--secondary), #ffa600); color: #321347; font-weight: 800; border: none; box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3); }
+        #promo-paket-utama .price-tag { color: var(--secondary); font-size: 2.4rem; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        #promo-paket-utama .price-tag span { color: rgba(255, 255, 255, 0.7); }
+        #promo-paket-utama .package-desc { color: rgba(255, 255, 255, 0.85); font-weight: 500; }
+
+        #promo-paket-utama .btn-card-action {
+            background: linear-gradient(135deg, var(--secondary), #ffa600);
+            color: #321347;
+            font-weight: 800;
+            font-size: 1rem;
+            border: none;
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.3);
+        }
+
+        #promo-paket-utama .custom-card:hover .btn-card-action {
+            background: linear-gradient(135deg, #fff275, var(--secondary));
+            box-shadow: 0 8px 25px rgba(255, 204, 0, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .promo-ribbon {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: linear-gradient(135deg, #ff3838, #ff4d4d);
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(255, 56, 56, 0.4);
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); box-shadow: 0 4px 12px rgba(255, 56, 56, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 4px 20px rgba(255, 56, 56, 0.7); }
+            100% { transform: scale(1); box-shadow: 0 4px 12px rgba(255, 56, 56, 0.4); }
+        }
+    </style>
 </head>
 <body>
 
-    <div id="global-loading-overlay">Memproses data aman...</div>
+    <div id="global-loading-overlay">Memproses data jangan keluar halaman...</div>
+
+    <!-- BACKGROUND BLUR LAYER -->
+    <div class="chat-backdrop-blur" id="chatBackdrop" onclick="toggleChatBox()"></div>
 
     <div class="mini-popup-overlay" id="noteOverlay"></div>
     <div class="mini-popup-note" id="notePopup">
@@ -468,27 +646,60 @@
         <div class="nav-container">
             <div class="brand">
                 <h1>MyRepublic</h1>
-                <span>Cluster Sragen</span>
+                <span>INDONESIA</span>
             </div>
         </div>
     </header>
 
     <section class="hero">
         <h2>Koneksi Fiber Optik Tanpa Batas Kuota</h2>
-        <p>Nikmati kecepatan internet ultra stabil 1:1 simetris langsung dari jaringan infrastruktur resmi Sragen Sukowati.</p>
+        <p>Nikmati kecepatan internet ultra stabil 1:1 simetris langsung dari jaringan infrastruktur resmi di  INDONESIA.</p>
     </section>
 
     <main class="container">
         <h3 class="section-title">Pilihan Paket & Harga Internet</h3>
-        <div id="promo-paket-utama" style="margin-bottom:24px;"></div>
+        <div id="promo-paket-utama" style="margin-bottom:28px;"></div>
         <div class="grid-layout" id="harga-container">
             <div class="loading-text">Mengambil daftar harga paket terbaru...</div>
         </div>
+
+        <div class="article-holder-out">
+            <h4>Mengapa Memilih MyRepublic Internet Fiber?</h4>
+            <p><strong>MyRepublic</strong> adalah pelopor layanan internet fiber optik berskala internasional yang hadir secara resmi untuk masyarakat INDONESIA. Berbeda dengan provider konvensional, MyRepublic menawarkan pengalaman berinternet premium bebas hambatan dengan keunggulan teknologi mutakhir.</p>
+            <p>Kami memahami bahwa koneksi yang lambat dan batasan kuota sering kali menjadi kendala utama aktivitas digital Anda sehari-hari, baik untuk bekerja dari rumah (<em>Work From Home</em>), kebutuhan belajar anak, <em>streaming</em> film keluarga tanpa kendala <em>buffering</em>, hingga kebutuhan <em>gaming</em> kompetitif tingkat tinggi.</p>
+
+            <div class="article-features">
+                <div class="feature-item">
+                    <h5>🚀 Kecepatan 1:1 Simetris</h5>
+                    <p>Kecepatan <em>Upload</em> dan <em>Download</em> yang sama persis sehingga kirim dokumen besar atau video call jadi super instan.</p>
+                </div>
+                <div class="feature-item">
+                    <h5>♾️ Murni Tanpa FUP (Tanpa Batas)</h5>
+                    <p>Internet sepuasnya tanpa takut penurunan kecepatan di tengah bulan. Bebas kuota selamanya.</p>
+                </div>
+                <div class="feature-item">
+                    <h5>🎮 Ping Sangat Rendah</h5>
+                    <p>Dilengkapi dengan fitur <em>custom routing</em> khusus untuk jalur server game dan <em>streaming</em> hiburan global terpopuler.</p>
+                </div>
+            </div>
+
+            <p>Jangan biarkan produktivitas dan hiburan keluarga Anda terputus akibat jaringan yang tidak menentu. Tim teknisi resmi kami siap memproses pengecekan tiang terdekat dan instalasi cepat langsung menuju rumah Anda.</p>
+            
+            <div class="article-cta-box">
+                <h5>Ingin Memastikan Apakah Rumah Anda Sudah Tercover Jaringan?</h5>
+                <p style="font-size: 0.9rem; margin-bottom: 8px;">Gunakan peta koordinat otomatis kami di widget bawah untuk mengunci promo instalasi gratis bulan ini.</p>
+                <button class="btn-article-cta" onclick="toggleChatBox()">Mulai Cek Coverage Sekarang</button>
+            </div>
+        </div>
+
+        <hr class="section-divider">
 
         <h3 class="section-title">Promo</h3>
         <div class="grid-layout" id="promo-container">
             <div class="loading-text">Menghubungkan ke database promo...</div>
         </div>
+
+        <div class="full-promo-container" id="full-promo-bottom"></div>
     </main>
 
     <div class="chat-widget">
@@ -517,7 +728,7 @@
                 
                 <div id="dynamic-fields" style="display: flex; flex-direction: column; gap: 16px;">
                     <div class="field-group">
-                        <input type="text" id="form-alamat" placeholder="Alamat Lengkap Rumah (Sragen)" required>
+                        <input type="text" id="form-alamat" placeholder="Alamat" required>
                     </div>
                     <div class="field-group">
                         <div id="map"></div>
@@ -583,10 +794,18 @@
             const first=data[0];
             const others=data.slice(1);
             document.getElementById('promo-paket-utama').innerHTML=`
-            <div class="custom-card"><div class="promo-ribbon">🔥 PROMO TERBAIK</div>
-            <br><div><div class="card-top"><h4 class="package-name">${first[keys[0]]||'Paket'}</h4><span class="speed-badge">${first[keys[1]]||''}</span></div></br>
-            <div class="price-tag">${first[keys[2]]||''}<span>/ bln</span></div><p class="package-desc">${first[keys[3]]||''}</p></div>
-            <button class="btn-card-action" onclick="toggleChatBoxWithPackage('${first[keys[0]]}')">Pilih Paket</button></div>`;
+            <div class="custom-card">
+                <div class="promo-ribbon">🔥 PROMO TERBAIK</div>
+                <div style="margin-top: 12px;">
+                    <div class="card-top">
+                        <h4 class="package-name">${first[keys[0]]||'Paket'}</h4>
+                        <span class="speed-badge">${first[keys[1]]||''}</span>
+                    </div>
+                    <div class="price-tag">${first[keys[2]]||''}<span>/ bln</span></div>
+                    <p class="package-desc">${first[keys[3]]||''}</p>
+                </div>
+                <button class="btn-card-action" onclick="toggleChatBoxWithPackage('${first[keys[0]]}')" style="margin-top: 20px;">Pilih Paket</button>
+            </div>`;
             container.innerHTML = others.map(item => `
                 <div class="custom-card">
                     <div>
@@ -604,9 +823,26 @@
 
         function renderPromo(data) {
             const container = document.getElementById('promo-container');
+            const bottomContainer = document.getElementById('full-promo-bottom');
             if(!data || data.length === 0) { container.innerHTML = `<div class="loading-text">Belum ada promo/testimoni aktif.</div>`; return; }
             const keys = Object.keys(data[0]);
-            container.innerHTML = data.map(item => {
+
+            let filteredData = [...data];
+            let firstPromoText = (data[0][keys[2]] || '').trim();
+
+            if (firstPromoText.startsWith('http://') || firstPromoText.startsWith('https://')) {
+                bottomContainer.innerHTML = `<img src="${firstPromoText}" class="full-promo-img" alt="Promo Utama MyRepublic">`;
+                filteredData = data.slice(1);
+            } else {
+                bottomContainer.innerHTML = "";
+            }
+
+            if(filteredData.length === 0) {
+                container.innerHTML = `<div class="loading-text">Tidak ada ulasan teks promo lainnya saat ini.</div>`;
+                return;
+            }
+
+            container.innerHTML = filteredData.map(item => {
                 const nama = item[keys[0]] || 'Pelanggan';
                 const ratingCount = parseInt(item[keys[3]]) || 5;
                 const isiTeks = (item[keys[2]] || '').trim();
@@ -620,7 +856,7 @@
                                 <div class="review-avatar">${nama.charAt(0)}</div>
                                 <div class="review-info">
                                     <h4>${nama}</h4>
-                                    <span>${item[keys[1]] || 'Sragen'}</span>
+                                    <span>${item[keys[1]] || 'INDONESIA'}</span>
                                 </div>
                             </div>
                             <div class="rating">${"⭐".repeat(ratingCount)}</div>
@@ -641,10 +877,18 @@
             if(alamatField) { alamatField.value = ''; }
         }
 
+        // FUNGSI TOGGLE POPUP DENGAN PERUBAHAN EFEK BACKDROP BLUR
         function toggleChatBox() {
             const chatBox = document.getElementById('chatBox');
+            const backdrop = document.getElementById('chatBackdrop');
+            
             chatBox.classList.toggle('active');
-            if (chatBox.classList.contains('active') && !mapInitialized) { initLazyMap(); }
+            backdrop.classList.toggle('active');
+            document.body.classList.toggle('popup-open'); // Kunci scroll halaman belakang
+            
+            if (chatBox.classList.contains('active') && !mapInitialized) { 
+                initLazyMap(); 
+            }
         }
 
         function switchChatType(type) {
@@ -657,7 +901,7 @@
                 document.getElementById('chat-title').innerText = "Cek Cover Area";
                 dynamicFields.innerHTML = `
                     <div class="field-group">
-                        <input type="text" id="form-alamat" placeholder="Alamat Lengkap Rumah (Sragen)" required>
+                        <input type="text" id="form-alamat" placeholder="Alamat" required>
                     </div>
                     <div class="field-group">
                         <div id="map"></div>
@@ -739,7 +983,7 @@
                         up(userLat, userLng);
                     },
                     (error) => {
-                        console.log("Akses GPS tidak aktif, menggunakan koordinat pusat Sragen.");
+                        console.log("Akses GPS tidak aktif, menggunakan koordinat.");
                     },
                     { enableHighAccuracy: true, timeout: 8000 }
                 );
@@ -753,7 +997,29 @@
 
             const nama = document.getElementById('form-nama').value;
             const hp = document.getElementById('form-hp').value;
-            let msg = `🚀 *DATA BARU MASUK WEBSITE SRAGEN*\n━━━━━━━━━━━━━━━━━━━━\n👤 *Nama:* ${nama}\n📞 *WhatsApp:* ${hp}\n`;
+            
+            const jam = new Date().getHours();
+            let ucapanWaktu = "malam"; 
+            if (jam >= 5 && jam < 11) {
+                ucapanWaktu = "pagi";
+            } else if (jam >= 11 && jam < 15) {
+                ucapanWaktu = "siang";
+            } else if (jam >= 15 && jam < 19) {
+                ucapanWaktu = "sore";
+            }
+
+            const alamatInput = document.getElementById('form-alamat');
+            const alamatPendaftaran = alamatInput ? alamatInput.value : '-';
+
+            let cleanedHp = hp.replace(/[^0-9]/g, '');
+            if (cleanedHp.startsWith('0')) {
+                cleanedHp = '62' + cleanedHp.substring(1);
+            }
+
+            const textFormatWA = `Selamat ${ucapanWaktu} Bpk/Ibu ${nama} saya Tim MyRepublic Ingin konfirmasi apakah betul ingin melakukan pemasangan WiFi MyRepublic. apabila iya saat ini kami akan melakukan kunjungan ke lokasi Alamat: ${alamatPendaftaran} untuk survey jalur kabel 🙏 Terimakasih.`;
+            const directLinkWA = `https://wa.me/${cleanedHp}?text=${encodeURIComponent(textFormatWA)}`;
+
+            let msg = `🚀 *DATA BARU MASUK WEBSITE*\n━━━━━━━━━━━━━━━━━━━━\n👤 *Nama:* ${nama}\n📞 *WhatsApp:* [${hp}](${directLinkWA})\n`;
             
             let currentToken = BOT_TOKEN;
             let threadId = TOPIC_SALES;
@@ -764,7 +1030,7 @@
                 const coords = document.getElementById('form-coords').value;
                 const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(coords)}`;
                 
-                msg += `📦 *Paket Pilihan:* ${paket}\n📁 *Kategori:* Cek Cover Area\n📍 *Alamat:* ${document.getElementById('form-alamat').value}\n🗺️ *Koordinat:* [${coords}](${mapsUrl})`;
+                msg += `📦 *Paket Pilihan:* ${paket}\n📁 *Kategori:* Cek Cover Area\n📍 *Alamat:* ${alamatPendaftaran}\n🗺️ *Koordinat:* [${coords}](${mapsUrl})`;
                 currentToken = BOT_TOKEN;
                 threadId = TOPIC_SALES;
             } else {
@@ -815,7 +1081,7 @@
                 }
 
                 if (sendSuccess) {
-                    alert('Data sukses dikirim. Pengajuan/Laporan Anda segera diproses oleh tim Sragen.');
+                    alert('Data sukses dikirim. Pengajuan/Laporan Anda segera diproses oleh tim MyRepublic.');
                     document.getElementById('clientForm').reset();
                     document.getElementById('form-paket-terpilih').value = "Umum (Tanpa Klik Tombol Paket)";
                     
