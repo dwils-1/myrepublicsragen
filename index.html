@@ -52,7 +52,6 @@
             overflow-x: hidden;
         }
 
-        /* Kelas pengunci scroll saat popup aktif */
         body.popup-open {
             overflow: hidden;
         }
@@ -99,6 +98,21 @@
             text-align: center;
         }
 
+        /* EFEK KACA SHOWER SCREEN KUNING TEBAL TEKSTUR */
+        .glass-shower-screen {
+            display: inline-block;
+            text-align: center;
+            background: rgba(255, 204, 0, 0.2); 
+            backdrop-filter: blur(16px) saturate(140%);
+            -webkit-backdrop-filter: blur(16px) saturate(140%);
+            border: 3px solid rgba(255, 204, 0, 0.4);
+            box-shadow: 0 15px 35px rgba(255, 204, 0, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+            padding: 24px 36px;
+            border-radius: 24px;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
         .hero h2 {
             font-size: 2.2rem;
             font-weight: 800;
@@ -109,11 +123,10 @@
         }
 
         .hero p {
-            color: var(--text-muted);
+            color: #2c3e50;
             font-size: 1rem;
-            max-width: 620px;
             margin: 0 auto;
-            font-weight: 500;
+            font-weight: 600;
         }
 
         .container {
@@ -149,56 +162,47 @@
             margin: 50px 0;
         }
 
-        /* Style untuk garis pemisah dengan teks artikel */
+        /* TOMBOL SELEKTOR HIDE/SHOW UNTUK GARIS ARTIKEL */
         .article-divider-container {
             display: flex;
             align-items: center;
             text-align: center;
             margin: 40px 0 20px;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            opacity: 0.8;
         }
 
         .article-divider-line {
             flex: 1;
-            border-bottom: 1px dashed rgba(108, 45, 145, 0.2);
+            border-bottom: 2px dashed rgba(108, 45, 145, 0.2);
         }
 
-        .article-divider-text {
-            padding: 0 15px;
-            color: var(--primary);
-        }
-
-        .grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-        }
-
-        .custom-card {
+        .btn-toggle-article {
             background: #ffffff;
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid rgba(108, 45, 145, 0.12);
-            transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
+            border: 1px solid rgba(108, 45, 145, 0.3);
+            color: var(--primary);
+            padding: 8px 18px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(108, 45, 145, 0.05);
+            transition: all 0.25s ease;
+            margin: 0 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .custom-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--card-shadow-hover);
-            border-color: rgba(108, 45, 145, 0.4);
+        .btn-toggle-article:hover {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(108, 45, 145, 0.15);
         }
 
+        /* ANIMASI BUKA/TUTUP KONTEN ARTIKEL */
         .article-holder-out {
             background: #ffffff;
             border-radius: 24px;
@@ -206,6 +210,21 @@
             margin-top: 12px;
             box-shadow: var(--card-shadow);
             border: 1px solid rgba(108, 45, 145, 0.12);
+            max-height: 2000px;
+            opacity: 1;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), opacity 0.4s ease, padding 0.4s ease, margin-top 0.4s ease;
+        }
+
+        .article-holder-out.hidden-content {
+            max-height: 0 !important;
+            opacity: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            margin-top: 0 !important;
+            border-color: transparent !important;
+            box-shadow: none !important;
+            pointer-events: none;
         }
 
         .article-holder-out h4 {
@@ -284,6 +303,32 @@
         .btn-article-cta:hover {
             background: var(--primary-light);
             transform: translateY(-2px);
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .custom-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(108, 45, 145, 0.12);
+            transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .custom-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--card-shadow-hover);
+            border-color: rgba(108, 45, 145, 0.4);
         }
 
         .promo-banner-img {
@@ -404,7 +449,6 @@
         .rating { color: var(--secondary); font-size: 0.9rem; margin-bottom: 14px; letter-spacing: 2px; }
         .review-text { font-size: 0.9rem; color: #334155; font-weight: 500; font-style: italic; }
         
-        /* WIDGET & CHAT BOX AREA */
         .chat-widget { position: fixed; bottom: 24px; right: 24px; z-index: 2000; }
         
         .chat-btn-toggle {
@@ -422,13 +466,12 @@
 
         .chat-btn-toggle:hover { transform: translateY(-2px); box-shadow: 0 16px 35px rgba(108, 45, 145, 0.4); }
         
-        /* Efek Buram Latar Belakang (Blur 80% / 8px) */
         .chat-backdrop-blur {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(15, 12, 22, 0.4); /* Efek gelap transparan */
-            backdrop-filter: blur(8px);        /* Tingkat keburaman tinggi (80% fokus) */
+            background: rgba(15, 12, 22, 0.4);
+            backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             z-index: 1990;
             opacity: 0;
@@ -457,7 +500,7 @@
             z-index: 2001;
             transform: translateY(20px);
             opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, bottom 0.1s ease, max-height 0.1s ease;
         }
 
         .chat-box.active { 
@@ -490,6 +533,7 @@
             gap: 16px; 
             max-height: 55vh; 
             overflow-y: auto; 
+            scroll-behavior: smooth;
         }
 
         .field-group {
@@ -563,7 +607,7 @@
             font-size: 0.9rem;
         }
 
-        .btn-submit { flex-shrink: 0; background: var(--primary); color: #fff; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; box-shadow: 0 4px 12px rgba(108, 45, 145, 0.15); margin-top: 4px; }
+        .btn-submit { flex-shrink: 0; background: var(--primary); color: #fff; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; box-shadow: 0 4px 12px rgba(108, 45, 145, 0.15); width: 100%; display: block; }
         #map { height: 160px; width: 100%; border-radius: 14px; border: 1px solid #e2e8f0; display: block; }
 
         #global-loading-overlay { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); z-index: 10000; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); font-size: 1.1rem; }
@@ -588,6 +632,8 @@
             #promo-paket-utama .custom-card { flex: 0 0 100% !important; margin: 0 24px; }
             .chat-box { right: 12px; bottom: 85px; max-width: calc(100vw - 24px); }
             .chat-widget { right: 12px; bottom: 16px; }
+            .glass-shower-screen { padding: 16px 20px; border-radius: 18px; }
+            .hero h2 { font-size: 1.7rem; }
         }
     
         #promo-paket-utama .custom-card {
@@ -652,7 +698,6 @@
 
     <div id="global-loading-overlay">Memproses data jangan keluar halaman...</div>
 
-    <!-- BACKGROUND BLUR LAYER -->
     <div class="chat-backdrop-blur" id="chatBackdrop" onclick="toggleChatBox()"></div>
 
     <div class="mini-popup-overlay" id="noteOverlay"></div>
@@ -676,8 +721,10 @@
     </header>
 
     <section class="hero">
-        <h2>Koneksi Fiber Optik Tanpa Batas Kuota</h2>
-        <p>Nikmati kecepatan internet ultra stabil 1:1 simetris langsung dari jaringan infrastruktur resmi di  INDONESIA.</p>
+        <div class="glass-shower-screen">
+            <h2>Koneksi Fiber Optik Tanpa Batas Kuota</h2>
+            <p>Nikmati kecepatan internet ultra stabil 1:1 simetris langsung dari jaringan infrastruktur resmi di INDONESIA.</p>
+        </div>
     </section>
 
     <main class="container">
@@ -687,14 +734,15 @@
             <div class="loading-text">Mengambil daftar harga paket terbaru...</div>
         </div>
 
-        <!-- PEMISAH GARIS TIPIS DENGAN TULISAN ARTIKEL -->
         <div class="article-divider-container">
             <div class="article-divider-line"></div>
-            <span class="article-divider-text">Artikel</span>
+            <button class="btn-toggle-article" id="toggleArticleBtn" onclick="toggleArticleContent()">
+                <span>Sembunyikan Artikel</span> 📐
+            </button>
             <div class="article-divider-line"></div>
         </div>
 
-        <div class="article-holder-out">
+        <div class="article-holder-out" id="articleContentArea">
             <h4>Mengapa Memilih MyRepublic Internet Fiber?</h4>
             <p><strong>MyRepublic</strong> adalah pelopor layanan internet fiber optik berskala internasional yang hadir secara resmi untuk masyarakat INDONESIA. Berbeda dengan provider konvensional, MyRepublic menawarkan pengalaman berinternet premium bebas hambatan dengan keunggulan teknologi mutakhir.</p>
             <p>Kami memahami bahwa koneksi yang lambat dan batasan kuota sering kali menjadi kendala utama aktivitas digital Anda sehari-hari, baik untuk bekerja dari rumah (<em>Work From Home</em>), kebutuhan belajar anak, <em>streaming</em> film keluarga tanpa kendala <em>buffering</em>, hingga kebutuhan <em>gaming</em> kompetitif tingkat tinggi.</p>
@@ -758,16 +806,10 @@
                 </div>
                 
                 <div id="dynamic-fields" style="display: flex; flex-direction: column; gap: 16px;">
-                    <div class="field-group">
-                        <input type="text" id="form-alamat" placeholder="Alamat" required>
                     </div>
-                    <div class="field-group">
-                        <div id="map"></div>
-                        <input type="text" id="form-coords" placeholder="Mencari lokasi otomatis..." readonly style="margin-top: 4px;">
-                    </div>
-                </div>
 
-                <button type="submit" class="btn-submit">Kirim Data</button>
+                <div id="submit-btn-placeholder">
+                    </div>
             </form>
         </div>
     </div>
@@ -787,6 +829,20 @@
         let currentType = 'sales';
         let mapInitialized = false;
         let map, marker;
+
+        // FUNGSI TOGGLE HIDE / SHOW UNTUK AREA ARTIKEL
+        function toggleArticleContent() {
+            const container = document.getElementById('articleContentArea');
+            const button = document.getElementById('toggleArticleBtn');
+            
+            if (container.classList.contains('hidden-content')) {
+                container.classList.remove('hidden-content');
+                button.innerHTML = `<span>Sembunyikan Artikel</span> 📐`;
+            } else {
+                container.classList.add('hidden-content');
+                button.innerHTML = `<span>Tampilkan Artikel</span> 📁`;
+            }
+        }
 
         function parseCSV(text) {
             const lines = text.split('\n').filter(l => l.trim() !== '');
@@ -908,17 +964,19 @@
             if(alamatField) { alamatField.value = ''; }
         }
 
-        // FUNGSI TOGGLE POPUP DENGAN PERUBAHAN EFEK BACKDROP BLUR
         function toggleChatBox() {
             const chatBox = document.getElementById('chatBox');
             const backdrop = document.getElementById('chatBackdrop');
             
             chatBox.classList.toggle('active');
             backdrop.classList.toggle('active');
-            document.body.classList.toggle('popup-open'); // Kunci scroll halaman belakang
+            document.body.classList.toggle('popup-open');
             
-            if (chatBox.classList.contains('active') && !mapInitialized) { 
-                initLazyMap(); 
+            if (chatBox.classList.contains('active')) { 
+                if(!mapInitialized) {
+                    initLazyMap(); 
+                }
+                attachFocusAutoScroll();
             }
         }
 
@@ -927,6 +985,7 @@
             document.getElementById('tab-sales').classList.toggle('active', type === 'sales');
             document.getElementById('tab-complain').classList.toggle('active', type === 'complain');
             const dynamicFields = document.getElementById('dynamic-fields');
+            const submitPlaceholder = document.getElementById('submit-btn-placeholder');
 
             if(type === 'sales') {
                 document.getElementById('chat-title').innerText = "Cek Cover Area";
@@ -934,13 +993,15 @@
                     <div class="field-group">
                         <input type="text" id="form-alamat" placeholder="Alamat" required>
                     </div>
+                    <button type="submit" class="btn-submit">Kirim Data</button>
                     <div class="field-group">
                         <div id="map"></div>
                         <input type="text" id="form-coords" placeholder="Mencari lokasi otomatis..." readonly style="margin-top: 4px;">
                     </div>
                 `;
+                submitPlaceholder.innerHTML = ''; 
                 mapInitialized = false;
-                initLazyMap();
+                setTimeout(initLazyMap, 50);
             } else {
                 document.getElementById('chat-title').innerText = "Pusat Gangguan & Komplain";
                 dynamicFields.innerHTML = `
@@ -958,7 +1019,9 @@
                         <input type="file" id="form-file" accept="image/*,video/*" style="display: none;" onchange="handleFileProcessing(this)">
                     </div>
                 `;
+                submitPlaceholder.innerHTML = '<button type="submit" class="btn-submit">Kirim Data</button>';
             }
+            attachFocusAutoScroll();
         }
 
         function openMiniNote() {
@@ -1021,6 +1084,37 @@
             }
         }
 
+        function attachFocusAutoScroll() {
+            const inputs = document.querySelectorAll('.chat-form input, .chat-form textarea');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    setTimeout(() => {
+                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                });
+            });
+        }
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', () => {
+                const chatBox = document.getElementById('chatBox');
+                const chatForm = document.querySelector('.chat-form');
+                if (chatBox && chatBox.classList.contains('active')) {
+                    const keyboardHeight = window.innerHeight - window.visualViewport.height;
+                    
+                    if (keyboardHeight > 100) { 
+                        chatBox.style.bottom = `${keyboardHeight + 12}px`;
+                        chatBox.style.maxHeight = `${window.visualViewport.height - 40}px`;
+                        if(chatForm) chatForm.style.maxHeight = '35vh';
+                    } else { 
+                        chatBox.style.bottom = window.innerWidth <= 768 ? '85px' : '95px';
+                        chatBox.style.maxHeight = '82vh';
+                        if(chatForm) chatForm.style.maxHeight = '55vh';
+                    }
+                }
+            });
+        }
+
         async function handleSubmit(event) {
             event.preventDefault();
             const overlay = document.getElementById('global-loading-overlay');
@@ -1059,7 +1153,7 @@
             if (currentType === 'sales') {
                 const paket = document.getElementById('form-paket-terpilih').value;
                 const coords = document.getElementById('form-coords').value;
-                const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(coords)}`;
+                const mapsUrl = `http://maps.google.com/?q=${encodeURIComponent(coords)}`;
                 
                 msg += `📦 *Paket Pilihan:* ${paket}\n📁 *Kategori:* Cek Cover Area\n📍 *Alamat:* ${alamatPendaftaran}\n🗺️ *Koordinat:* [${coords}](${mapsUrl})`;
                 currentToken = BOT_TOKEN;
