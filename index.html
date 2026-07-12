@@ -3,24 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyRepublic Cabang Sragen | Internet Fiber Cepat & Stabil</title>
-    <meta name="description" content="Layanan resmi MyRepublic INDONESIA. Nikmati internet fiber optic 100% tanpa batas kuota (FUP). Daftar sekarang untuk koneksi cepat dan stabil di Sragen.">
-    
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <title>Sales MyRepublic Indonesia - Pasang WiFi Cepat & Stabil</title>
+    <meta name="description" content="Butuh pemasangan WiFi MyRepublic? Hubungi sales MyRepublic resmi di sini. Internet fiber optik 100% tanpa batas kuota. Daftar pemasangan WiFi sekarang, cepat dan stabil.">
+    <meta name="keywords" content="sales myrepublic, pemasangan wifi MyRepublic, sales wifi, daftar myrepublic">
     
     <meta name="theme-color" content="#6c2d91">
     <link rel="icon" type="image/png" href="images/favicon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon.png">
-    <link rel="manifest" href="site.webmanifest">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Sales MyRepublic Indonesia",
+      "image": "images/favicon.png",
+      "description": "Layanan resmi pendaftaran WiFi MyRepublic Indonesia. Internet fiber optik 100% tanpa batas kuota (FUP), cepat dan stabil.",
+      "url": "https://website-anda.com",
+      "telephone": "",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "ID"
+      },
+      "areaServed": "Indonesia"
+    }
+    </script>
     
     <style>
         :root {
@@ -29,12 +40,30 @@
             --primary-dark: #4a1e63;
             --secondary: #ffcc00;
             --bg-main: #f4f6fa;
+            --bg-card: #ffffff;
+            --bg-input: #f8fafc;
             --text-main: #1e1b24;
             --text-muted: #64748b;
+            --text-article: #334155;
+            --border-color: rgba(108, 45, 145, 0.12);
+            --header-bg: rgba(255, 255, 255, 0.85);
             
             --card-shadow: 0 12px 30px rgba(108, 45, 145, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
             --card-shadow-hover: 0 20px 40px rgba(108, 45, 145, 0.14), 0 8px 24px rgba(108, 45, 145, 0.06);
             --font-base: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --bg-main: #0b0713;
+            --bg-card: #150f22;
+            --bg-input: #1f1730;
+            --text-main: #f3f0f7;
+            --text-muted: #94a3b8;
+            --text-article: #cbd5e1;
+            --border-color: rgba(168, 85, 247, 0.2);
+            --header-bg: rgba(21, 15, 34, 0.85);
+            --card-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            --card-shadow-hover: 0 20px 40px rgba(168, 85, 247, 0.2);
         }
 
         * {
@@ -50,6 +79,7 @@
             color: var(--text-main);
             line-height: 1.6;
             overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         body.popup-open {
@@ -57,13 +87,13 @@
         }
 
         header {
-            background: rgba(255, 255, 255, 0.85);
+            background: var(--header-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             position: sticky;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid rgba(108, 45, 145, 0.06);
+            border-bottom: 1px solid var(--border-color);
             padding: 16px 24px;
         }
 
@@ -81,6 +111,7 @@
             color: var(--primary);
             letter-spacing: -0.5px;
         }
+        [data-theme="dark"] .brand h1 { color: #b066ff; }
 
         .brand span {
             font-size: 0.75rem;
@@ -91,6 +122,25 @@
             letter-spacing: 0.5px;
         }
 
+        .theme-toggle-btn {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+        .theme-toggle-btn:hover {
+            transform: scale(1.05);
+            background: var(--border-color);
+        }
+
         .hero {
             max-width: 1100px;
             margin: 40px auto 20px;
@@ -98,19 +148,22 @@
             text-align: center;
         }
 
-        /* EFEK KACA SHOWER SCREEN KUNING TEBAL TEKSTUR */
         .glass-shower-screen {
             display: inline-block;
             text-align: center;
-            background: rgba(255, 204, 0, 0.2); 
+            background: rgba(255, 204, 0, 0.15); 
             backdrop-filter: blur(16px) saturate(140%);
             -webkit-backdrop-filter: blur(16px) saturate(140%);
             border: 3px solid rgba(255, 204, 0, 0.4);
-            box-shadow: 0 15px 35px rgba(255, 204, 0, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 15px 35px rgba(255, 204, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.3);
             padding: 24px 36px;
             border-radius: 24px;
             max-width: 720px;
             margin: 0 auto;
+        }
+        [data-theme="dark"] .glass-shower-screen {
+            background: rgba(255, 204, 0, 0.08);
+            border: 3px solid rgba(255, 204, 0, 0.3);
         }
 
         .hero h2 {
@@ -121,9 +174,10 @@
             letter-spacing: -1.2px;
             margin-bottom: 12px;
         }
+        [data-theme="dark"] .hero h2 { color: #ffcc00; }
 
         .hero p {
-            color: #2c3e50;
+            color: var(--text-main);
             font-size: 1rem;
             margin: 0 auto;
             font-weight: 600;
@@ -143,8 +197,8 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            letter-spacing: -0.5px;
         }
+        [data-theme="dark"] .section-title { color: #f3f0f7; }
 
         .section-title::before {
             content: '';
@@ -158,11 +212,10 @@
         .section-divider {
             border: 0;
             height: 1px;
-            background: linear-gradient(to right, rgba(108, 45, 145, 0), rgba(108, 45, 145, 0.25), rgba(108, 45, 145, 0));
+            background: linear-gradient(to right, rgba(108, 45, 145, 0), var(--border-color), rgba(108, 45, 145, 0));
             margin: 50px 0;
         }
 
-        /* TOMBOL SELEKTOR HIDE/SHOW UNTUK GARIS ARTIKEL */
         .article-divider-container {
             display: flex;
             align-items: center;
@@ -172,13 +225,13 @@
 
         .article-divider-line {
             flex: 1;
-            border-bottom: 2px dashed rgba(108, 45, 145, 0.2);
+            border-bottom: 2px dashed var(--border-color);
         }
 
         .btn-toggle-article {
-            background: #ffffff;
-            border: 1px solid rgba(108, 45, 145, 0.3);
-            color: var(--primary);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
             padding: 8px 18px;
             font-size: 0.8rem;
             font-weight: 700;
@@ -186,7 +239,6 @@
             letter-spacing: 1px;
             border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(108, 45, 145, 0.05);
             transition: all 0.25s ease;
             margin: 0 15px;
             display: inline-flex;
@@ -198,22 +250,19 @@
             background: var(--primary);
             color: #ffffff;
             border-color: var(--primary);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 14px rgba(108, 45, 145, 0.15);
         }
 
-        /* ANIMASI BUKA/TUTUP KONTEN ARTIKEL */
         .article-holder-out {
-            background: #ffffff;
+            background: var(--bg-card);
             border-radius: 24px;
             padding: 32px;
             margin-top: 12px;
             box-shadow: var(--card-shadow);
-            border: 1px solid rgba(108, 45, 145, 0.12);
+            border: 1px solid var(--border-color);
             max-height: 2000px;
             opacity: 1;
             overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), opacity 0.4s ease, padding 0.4s ease, margin-top 0.4s ease;
+            transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), opacity 0.4s ease, padding 0.4s ease;
         }
 
         .article-holder-out.hidden-content {
@@ -232,14 +281,13 @@
             font-size: 1.4rem;
             font-weight: 800;
             margin-bottom: 16px;
-            letter-spacing: -0.5px;
         }
+        [data-theme="dark"] .article-holder-out h4 { color: #b066ff; }
 
         .article-holder-out p {
-            color: #334155;
+            color: var(--text-article);
             font-size: 0.95rem;
             margin-bottom: 16px;
-            line-height: 1.7;
         }
 
         .article-features {
@@ -250,24 +298,10 @@
         }
 
         .feature-item {
-            background: #f8fafc;
+            background: var(--bg-input);
             padding: 16px;
             border-radius: 16px;
             border-left: 4px solid var(--primary);
-        }
-
-        .feature-item h5 {
-            color: var(--primary-dark);
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        .feature-item p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 0;
-            line-height: 1.5;
         }
 
         .article-cta-box {
@@ -276,14 +310,6 @@
             padding: 24px;
             border-radius: 16px;
             text-align: center;
-            margin-top: 24px;
-        }
-
-        .article-cta-box h5 {
-            color: var(--primary-dark);
-            font-size: 1.1rem;
-            font-weight: 800;
-            margin-bottom: 8px;
         }
 
         .btn-article-cta {
@@ -293,16 +319,8 @@
             padding: 12px 28px;
             border-radius: 12px;
             font-weight: 700;
-            font-size: 0.9rem;
             cursor: pointer;
             margin-top: 12px;
-            box-shadow: 0 4px 12px rgba(108, 45, 145, 0.15);
-            transition: all 0.2s ease;
-        }
-
-        .btn-article-cta:hover {
-            background: var(--primary-light);
-            transform: translateY(-2px);
         }
 
         .grid-layout {
@@ -311,24 +329,35 @@
             gap: 24px;
         }
 
+        /* HOVER EFFECT 3D DINAMIS PADA KARTU */
+        .custom-card-wrapper {
+            perspective: 1000px;
+        }
+
         .custom-card {
-            background: #ffffff;
+            background: var(--bg-card);
             border-radius: 24px;
             padding: 32px;
             box-shadow: var(--card-shadow);
-            border: 1px solid rgba(108, 45, 145, 0.12);
-            transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             position: relative;
             overflow: hidden;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1);
+            transition: box-shadow 0.35s ease, border-color 0.35s ease, background-color 0.3s ease;
         }
 
         .custom-card:hover {
-            transform: translateY(-6px);
             box-shadow: var(--card-shadow-hover);
-            border-color: rgba(108, 45, 145, 0.4);
+            border-color: rgba(168, 85, 247, 0.4);
+        }
+
+        .custom-card > * {
+            transform: translateZ(30px);
         }
 
         .promo-banner-img {
@@ -338,7 +367,7 @@
             object-fit: cover;
             border-radius: 14px;
             margin-top: 10px;
-            border: 1px solid rgba(108, 45, 145, 0.1);
+            border: 1px solid var(--border-color);
         }
 
         .full-promo-container {
@@ -352,7 +381,7 @@
             display: block;
             border-radius: 24px;
             box-shadow: var(--card-shadow);
-            border: 1px solid rgba(108, 45, 145, 0.12);
+            border: 1px solid var(--border-color);
         }
 
         .card-top {
@@ -369,16 +398,17 @@
             border-radius: 30px;
             font-size: 0.8rem;
             font-weight: 700;
-            display: inline-block;
-            border: 1px solid rgba(108, 45, 145, 0.1);
+            border: 1px solid var(--border-color);
+        }
+        [data-theme="dark"] .speed-badge {
+            background: rgba(168, 85, 247, 0.15);
+            color: #d8b4fe;
         }
 
         .package-name {
             font-size: 1.4rem;
             font-weight: 800;
             color: var(--text-main);
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
         }
 
         .price-tag {
@@ -390,17 +420,16 @@
             align-items: baseline;
             gap: 4px;
         }
+        [data-theme="dark"] .price-tag { color: #ffcc00; }
 
         .price-tag span {
             font-size: 0.9rem;
             color: var(--text-muted);
-            font-weight: 500;
         }
 
         .package-desc {
             font-size: 0.9rem;
             color: var(--text-muted);
-            font-weight: 500;
             margin-bottom: 24px;
         }
 
@@ -412,15 +441,12 @@
             border-radius: 16px;
             cursor: pointer;
             font-weight: 700;
-            font-size: 0.95rem;
             width: 100%;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(108, 45, 145, 0.15);
         }
 
         .custom-card:hover .btn-card-action {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            box-shadow: 0 8px 20px rgba(108, 45, 145, 0.25);
         }
 
         .review-header {
@@ -440,37 +466,55 @@
             align-items: center;
             justify-content: center;
             font-weight: 800;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 10px rgba(108, 45, 145, 0.2);
         }
 
-        .review-info h4 { font-size: 1rem; font-weight: 700; color: var(--text-main); }
-        .review-info span { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
-        .rating { color: var(--secondary); font-size: 0.9rem; margin-bottom: 14px; letter-spacing: 2px; }
-        .review-text { font-size: 0.9rem; color: #334155; font-weight: 500; font-style: italic; }
+        .review-info h4 { font-size: 1rem; font-weight: 700; }
+        .rating { color: var(--secondary); font-size: 0.9rem; margin-bottom: 14px; }
+        .review-text { font-size: 0.9rem; color: var(--text-article); font-style: italic; }
         
-        .chat-widget { position: fixed; bottom: 24px; right: 24px; z-index: 2000; }
+        .site-footer {
+            background: var(--bg-card);
+            padding: 24px;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 40px;
+        }
+        
+        /* CHAT FLOATING WINDOW */
+        .chat-widget { 
+            position: fixed; 
+            bottom: 24px; 
+            right: 24px; 
+            z-index: 2000; 
+        }
         
         .chat-btn-toggle {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: #fff;
             border: none;
-            padding: 16px 32px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 0.95rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 12px 30px rgba(108, 45, 145, 0.3);
-            transition: all 0.25s ease;
+            box-shadow: 0 8px 24px rgba(108, 45, 145, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .chat-btn-toggle:hover { transform: translateY(-2px); box-shadow: 0 16px 35px rgba(108, 45, 145, 0.4); }
+        .chat-btn-toggle:hover { 
+            transform: scale(1.08) translateY(-2px); 
+        }
+        
+        .chat-icon-svg { width: 26px; height: 26px; fill: currentColor; }
         
         .chat-backdrop-blur {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(15, 12, 22, 0.4);
+            background: rgba(15, 12, 22, 0.5);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             z-index: 1990;
@@ -478,39 +522,31 @@
             transition: opacity 0.3s ease;
         }
         
-        .chat-backdrop-blur.active {
-            display: block;
-            opacity: 1;
-        }
+        .chat-backdrop-blur.active { display: block; opacity: 1; }
 
         .chat-box {
             display: none;
             position: fixed;
-            bottom: 95px;
+            bottom: 96px;
             right: 24px;
             width: 400px;
             max-width: calc(100vw - 48px);
-            max-height: 82vh;
-            background: #ffffff;
+            max-height: 90vh;
+            background: var(--bg-card);
             border-radius: 24px;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
-            border: 1px solid rgba(108, 45, 145, 0.15);
+            border: 1px solid var(--border-color);
             flex-direction: column;
             overflow: hidden;
             z-index: 2001;
             transform: translateY(20px);
             opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease, bottom 0.1s ease, max-height 0.1s ease;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
         }
 
-        .chat-box.active { 
-            display: flex; 
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
+        .chat-box.active { display: flex; transform: translateY(0); opacity: 1; }
         .chat-header { flex-shrink: 0; background: var(--primary); color: #fff; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; }
-        .chat-type-tabs { flex-shrink: 0; display: flex; background: #f1f5f9; padding: 4px; margin: 16px 24px 4px; border-radius: 12px; }
+        .chat-type-tabs { flex-shrink: 0; display: flex; background: var(--bg-main); padding: 4px; margin: 16px 24px 4px; border-radius: 12px; }
         
         .tab-btn {
             flex: 1;
@@ -524,48 +560,62 @@
             border-radius: 10px;
         }
 
-        .tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        .tab-btn.active { background: var(--bg-card); color: var(--primary); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); }
+        [data-theme="dark"] .tab-btn.active { color: #b066ff; }
         
         .chat-form { 
             padding: 12px 24px 24px; 
             display: flex; 
             flex-direction: column; 
             gap: 16px; 
-            max-height: 55vh; 
+            max-height: 70vh; 
             overflow-y: auto; 
-            scroll-behavior: smooth;
         }
 
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+        .field-group { display: flex; flex-direction: column; gap: 6px; position: relative; }
+        
+        /* Notifikasi Info Validasi Nomor */
+        .input-hint-msg {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 2px;
+            display: none;
         }
+        .input-hint-msg.success { color: #2ecc71; display: block; }
+        .input-hint-msg.error { color: #e74c3c; display: block; }
 
         .chat-form input, .chat-form textarea { 
             padding: 14px 18px; 
-            border: 1px solid #e2e8f0; 
+            border: 1px solid var(--border-color); 
             border-radius: 12px; 
             width: 100%; 
             font-size: 0.9rem; 
-            background: #f8fafc; 
+            background: var(--bg-input); 
+            color: var(--text-main);
             outline: none; 
             font-weight: 500; 
-            display: block;
         }
         
-        .chat-form input:focus, .chat-form textarea:focus { border-color: var(--primary-light); background: #fff; box-shadow: 0 0 0 3px rgba(108, 45, 145, 0.08); }
+        .chat-form input:focus, .chat-form textarea:focus { border-color: var(--primary-light); background: var(--bg-card); }
         
+        /* Peta Map Leaflet */
+        #map {
+            width: 100%;
+            height: 160px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 4px;
+            z-index: 1;
+        }
+
         .upload-area {
-            border: 2px dashed #cbd5e1;
+            border: 2px dashed var(--border-color);
             padding: 16px;
             border-radius: 12px;
             text-align: center;
-            background: #f8fafc;
+            background: var(--bg-input);
             cursor: pointer;
-            transition: all 0.2s ease;
         }
-        .upload-area:hover { border-color: var(--primary-light); background: #f1f5f9; }
         .upload-area p { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
         .file-preview-text { font-size: 0.8rem; color: var(--primary); font-weight: 700; margin-top: 6px; display: none; }
 
@@ -576,12 +626,12 @@
             left: 50%;
             transform: translate(-50%, -50%);
             width: 320px;
-            background: #ffffff;
+            background: var(--bg-card);
             border-radius: 20px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             z-index: 3000;
             padding: 24px;
-            border: 1px solid rgba(108, 45, 145, 0.2);
+            border: 1px solid var(--border-color);
         }
         .mini-popup-overlay {
             display: none;
@@ -591,9 +641,8 @@
             z-index: 2999;
             backdrop-filter: blur(2px);
         }
-        .mini-popup-note h4 { color: var(--primary-dark); font-size: 1.05rem; font-weight: 800; margin-bottom: 10px; }
-        .mini-popup-note ul { padding-left: 18px; font-size: 0.85rem; color: #334155; margin-bottom: 16px; font-weight: 500; }
-        .mini-popup-note ul li { margin-bottom: 6px; }
+        .mini-popup-note h4 { font-size: 1.05rem; font-weight: 800; margin-bottom: 10px; }
+        .mini-popup-note ul { padding-left: 18px; font-size: 0.85rem; color: var(--text-article); margin-bottom: 16px; }
         
         .btn-close-note {
             background: var(--primary);
@@ -604,14 +653,12 @@
             border-radius: 10px;
             font-weight: 700;
             cursor: pointer;
-            font-size: 0.9rem;
         }
 
-        .btn-submit { flex-shrink: 0; background: var(--primary); color: #fff; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; box-shadow: 0 4px 12px rgba(108, 45, 145, 0.15); width: 100%; display: block; }
-        #map { height: 160px; width: 100%; border-radius: 14px; border: 1px solid #e2e8f0; display: block; }
-
-        #global-loading-overlay { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); z-index: 10000; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); font-size: 1.1rem; }
-        .loading-text { color: var(--text-muted); font-size: 1rem; grid-column: 1 / -1; text-align: center; padding: 40px; font-weight: 500; }
+        .btn-submit { background: var(--primary); color: #fff; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 1rem; width: 100%; }
+        
+        #global-loading-overlay { display: none; position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); z-index: 10000; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); }
+        [data-theme="dark"] #global-loading-overlay { background: rgba(15, 12, 22, 0.95); color: #b066ff; }
 
         @media (max-width: 768px) {
             .grid-layout {
@@ -619,85 +666,79 @@
                 flex-direction: row !important;
                 overflow-x: auto !important;
                 scroll-behavior: smooth;
-                -webkit-overflow-scrolling: touch;
-                scroll-snap-type: x mandatory; 
                 padding: 10px 24px 30px 24px; 
                 margin-left: -24px;
                 margin-right: -24px;
                 gap: 20px;
             }
-
             .grid-layout::-webkit-scrollbar { display: none; }
-            .custom-card { flex: 0 0 82%; scroll-snap-align: center; box-shadow: 0 10px 25px rgba(108, 45, 145, 0.05), 0 4px 10px rgba(0, 0, 0, 0.01); }
-            #promo-paket-utama .custom-card { flex: 0 0 100% !important; margin: 0 24px; }
-            .chat-box { right: 12px; bottom: 85px; max-width: calc(100vw - 24px); }
-            .chat-widget { right: 12px; bottom: 16px; }
-            .glass-shower-screen { padding: 16px 20px; border-radius: 18px; }
+            .custom-card-wrapper { flex: 0 0 82%; }
+            #promo-paket-utama .custom-card-wrapper { flex: 0 0 100% !important; margin: 0 24px; }
+            
+            .chat-box { right: 16px; left: 16px; bottom: 88px !important; width: auto !important; max-height: 80vh !important; }
             .hero h2 { font-size: 1.7rem; }
         }
     
+        /* PROMO KARTU UTAMA */
         #promo-paket-utama .custom-card {
-            background: linear-gradient(145deg, #321347, #531f70);
+            background: linear-gradient(135deg, #2b0f3d, #491763);
             border: 2px solid var(--secondary);
-            box-shadow: 0 25px 55px rgba(108, 45, 145, 0.35), 0 0 30px rgba(255, 204, 0, 0.15);
             color: #ffffff;
-            padding: 36px;
-            transform: scale(1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 42px 32px 32px 32px;
+            position: relative;
         }
-
-        #promo-paket-utama .custom-card:hover {
-            transform: translateY(-4px) scale(1.01);
-            box-shadow: 0 30px 65px rgba(108, 45, 145, 0.5), 0 0 40px rgba(255, 204, 0, 0.3);
-        }
-
-        #promo-paket-utama .package-name { color: #ffffff; font-size: 1.6rem; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        #promo-paket-utama .speed-badge { background: linear-gradient(135deg, var(--secondary), #ffa600); color: #321347; font-weight: 800; border: none; box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3); }
-        #promo-paket-utama .price-tag { color: var(--secondary); font-size: 2.4rem; text-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-        #promo-paket-utama .price-tag span { color: rgba(255, 255, 255, 0.7); }
-        #promo-paket-utama .package-desc { color: rgba(255, 255, 255, 0.85); font-weight: 500; }
-
-        #promo-paket-utama .btn-card-action {
-            background: linear-gradient(135deg, var(--secondary), #ffa600);
-            color: #321347;
-            font-weight: 800;
-            font-size: 1rem;
-            border: none;
-            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.3);
-        }
-
-        #promo-paket-utama .custom-card:hover .btn-card-action {
-            background: linear-gradient(135deg, #fff275, var(--secondary));
-            box-shadow: 0 8px 25px rgba(255, 204, 0, 0.5);
-            transform: translateY(-2px);
-        }
+        #promo-paket-utama .package-name { color: #ffffff; font-size: 1.6rem; }
+        #promo-paket-utama .speed-badge { background: #ffcc00; color: #2b0f3d; font-weight: 800; border: none; }
+        #promo-paket-utama .price-tag { color: #ffcc00; font-size: 2.6rem; }
+        #promo-paket-utama .price-tag span { color: rgba(255, 255, 255, 0.6); }
+        #promo-paket-utama .package-desc { color: rgba(255, 255, 255, 0.8); }
+        #promo-paket-utama .btn-card-action { background: linear-gradient(135deg, #ffcc00, #ffa600); color: #2b0f3d; font-weight: 800; margin-top: 24px; }
 
         .promo-ribbon {
             position: absolute;
-            top: 16px;
+            top: 14px;
             left: 16px;
             background: linear-gradient(135deg, #ff3838, #ff4d4d);
             color: #ffffff;
-            padding: 6px 14px;
+            padding: 5px 14px;
             border-radius: 20px;
             font-weight: 800;
             font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 12px rgba(255, 56, 56, 0.4);
-            animation: pulseGlow 2s infinite;
         }
 
-        @keyframes pulseGlow {
-            0% { transform: scale(1); box-shadow: 0 4px 12px rgba(255, 56, 56, 0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 4px 20px rgba(255, 56, 56, 0.7); }
-            100% { transform: scale(1); box-shadow: 0 4px 12px rgba(255, 56, 56, 0.4); }
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .scroll-animate.reveal { opacity: 1; transform: translateY(0); }
+
+        /* EFEK SKELETON LOADING PADA KARTU PAKET & PROMO */
+        .skeleton-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            height: 300px;
+        }
+        .skeleton-line {
+            background: linear-gradient(90deg, var(--bg-input) 25%, var(--border-color) 50%, var(--bg-input) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-pulse 1.5s infinite linear;
+            border-radius: 8px;
+        }
+        @keyframes skeleton-pulse {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
     </style>
 </head>
 <body>
 
     <div id="global-loading-overlay">Memproses data jangan keluar halaman...</div>
-
     <div class="chat-backdrop-blur" id="chatBackdrop" onclick="toggleChatBox()"></div>
 
     <div class="mini-popup-overlay" id="noteOverlay"></div>
@@ -717,24 +758,31 @@
                 <h1>MyRepublic</h1>
                 <span>INDONESIA</span>
             </div>
+            <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">🌙</button>
         </div>
     </header>
 
     <section class="hero">
-        <div class="glass-shower-screen">
+        <div class="glass-shower-screen scroll-animate">
             <h2>Koneksi Fiber Optik Tanpa Batas Kuota</h2>
             <p>Nikmati kecepatan internet ultra stabil 1:1 simetris langsung dari jaringan infrastruktur resmi di INDONESIA.</p>
         </div>
     </section>
 
     <main class="container">
-        <h3 class="section-title">Pilihan Paket & Harga Internet</h3>
-        <div id="promo-paket-utama" style="margin-bottom:28px;"></div>
+        <h3 class="section-title scroll-animate">Pilihan Paket & Harga Internet</h3>
+        
+        <div id="promo-paket-utama" class="scroll-animate" style="margin-bottom:28px;">
+            <div class="skeleton-card"><div class="skeleton-line" style="width:50%; height:30px;"></div><div class="skeleton-line" style="width:80%; height:50px;"></div><div class="skeleton-line" style="width:100%; height:80px;"></div></div>
+        </div>
+        
         <div class="grid-layout" id="harga-container">
-            <div class="loading-text">Mengambil daftar harga paket terbaru...</div>
+            <div class="skeleton-card"><div class="skeleton-line" style="width:40%; height:25px;"></div><div class="skeleton-line" style="width:70%; height:40px;"></div><div class="skeleton-line" style="width:100%; height:60px;"></div></div>
+            <div class="skeleton-card"><div class="skeleton-line" style="width:40%; height:25px;"></div><div class="skeleton-line" style="width:70%; height:40px;"></div><div class="skeleton-line" style="width:100%; height:60px;"></div></div>
+            <div class="skeleton-card"><div class="skeleton-line" style="width:40%; height:25px;"></div><div class="skeleton-line" style="width:70%; height:40px;"></div><div class="skeleton-line" style="width:100%; height:60px;"></div></div>
         </div>
 
-        <div class="article-divider-container">
+        <div class="article-divider-container scroll-animate">
             <div class="article-divider-line"></div>
             <button class="btn-toggle-article" id="toggleArticleBtn" onclick="toggleArticleContent()">
                 <span>Sembunyikan Artikel</span> 📐
@@ -742,15 +790,14 @@
             <div class="article-divider-line"></div>
         </div>
 
-        <div class="article-holder-out" id="articleContentArea">
+        <div class="article-holder-out scroll-animate" id="articleContentArea">
             <h4>Mengapa Memilih MyRepublic Internet Fiber?</h4>
-            <p><strong>MyRepublic</strong> adalah pelopor layanan internet fiber optik berskala internasional yang hadir secara resmi untuk masyarakat INDONESIA. Berbeda dengan provider konvensional, MyRepublic menawarkan pengalaman berinternet premium bebas hambatan dengan keunggulan teknologi mutakhir.</p>
-            <p>Kami memahami bahwa koneksi yang lambat dan batasan kuota sering kali menjadi kendala utama aktivitas digital Anda sehari-hari, baik untuk bekerja dari rumah (<em>Work From Home</em>), kebutuhan belajar anak, <em>streaming</em> film keluarga tanpa kendala <em>buffering</em>, hingga kebutuhan <em>gaming</em> kompetitif tingkat tinggi.</p>
+            <p><strong>MyRepublic</strong> adalah pelopor layanan internet fiber optik berskala internasional yang hadir secara resmi untuk masyarakat INDONESIA. Berbeda dengan provider konvensional, MyRepublic arrogant pengalaman berinternet premium bebas hambatan dengan keunggulan teknologi mutakhir.</p>
 
             <div class="article-features">
                 <div class="feature-item">
                     <h5>🚀 Kecepatan 1:1 Simetris</h5>
-                    <p>Kecepatan <em>Upload</em> dan <em>Download</em> yang sama persis sehingga kirim dokumen besar atau video call jadi super instan.</p>
+                    <p>Kecepatan <em>Upload</em> and <em>Download</em> yang sama persis sehingga kirim dokumen besar jadi super instan.</p>
                 </div>
                 <div class="feature-item">
                     <h5>♾️ Murni Tanpa FUP (Tanpa Batas)</h5>
@@ -761,8 +808,6 @@
                     <p>Dilengkapi dengan fitur <em>custom routing</em> khusus untuk jalur server game dan <em>streaming</em> hiburan global terpopuler.</p>
                 </div>
             </div>
-
-            <p>Jangan biarkan produktivitas dan hiburan keluarga Anda terputus akibat jaringan yang tidak menentu. Tim teknisi resmi kami siap memproses pengecekan tiang terdekat dan instalasi cepat langsung menuju rumah Anda.</p>
             
             <div class="article-cta-box">
                 <h5>Ingin Memastikan Apakah Rumah Anda Sudah Tercover Jaringan?</h5>
@@ -771,18 +816,24 @@
             </div>
         </div>
 
-        <hr class="section-divider">
+        <hr class="section-divider scroll-animate">
 
-        <h3 class="section-title">Promo</h3>
+        <h3 class="section-title scroll-animate">Promo</h3>
+        
         <div class="grid-layout" id="promo-container">
-            <div class="loading-text">Menghubungkan ke database promo...</div>
+            <div class="skeleton-card"><div class="skeleton-line" style="width:30%; height:30px;"></div><div class="skeleton-line" style="width:100%; height:100px;"></div></div>
+            <div class="skeleton-card"><div class="skeleton-line" style="width:30%; height:30px;"></div><div class="skeleton-line" style="width:100%; height:100px;"></div></div>
         </div>
 
-        <div class="full-promo-container" id="full-promo-bottom"></div>
+        <div class="full-promo-container scroll-animate" id="full-promo-bottom"></div>
     </main>
 
     <div class="chat-widget">
-        <button class="chat-btn-toggle" onclick="toggleChatBox()">Cek Coverage / Komplain</button>
+        <button class="chat-btn-toggle" onclick="toggleChatBox()">
+            <svg class="chat-icon-svg" viewBox="0 0 24 24">
+                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+            </svg>
+        </button>
         
         <div class="chat-box" id="chatBox">
             <div class="chat-header">
@@ -801,18 +852,32 @@
                 <div class="field-group">
                     <input type="text" id="form-nama" placeholder="Nama Lengkap Anda" required>
                 </div>
+                
                 <div class="field-group">
-                    <input type="tel" id="form-hp" placeholder="Nomor WhatsApp/HP Aktif" required>
+                    <input type="tel" id="form-hp" placeholder="Nomor WhatsApp (Contoh: 08123...)" required oninput="validateAndFormatWA(this)">
+                    <span id="wa-status-hint" class="input-hint-msg"></span>
                 </div>
                 
                 <div id="dynamic-fields" style="display: flex; flex-direction: column; gap: 16px;">
+                    <div class="field-group">
+                        <input type="text" id="form-alamat" placeholder="Alamat Lengkap" required>
                     </div>
+                    <div class="field-group">
+                        <div id="map"></div>
+                        <input type="text" id="form-coords" placeholder="Mencari lokasi otomatis..." readonly style="background:var(--bg-main); font-size:0.8rem;">
+                    </div>
+                </div>
 
                 <div id="submit-btn-placeholder">
-                    </div>
+                    <button type="submit" class="btn-submit">Kirim Data</button>
+                </div>
             </form>
         </div>
     </div>
+
+    <footer class="site-footer">
+        <p>© <span id="current-year"></span> MyRepublic Indonesia. All Rights Reserved.</p>
+    </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
@@ -830,11 +895,80 @@
         let mapInitialized = false;
         let map, marker;
 
-        // FUNGSI TOGGLE HIDE / SHOW UNTUK AREA ARTIKEL
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('reveal');
+                else entry.target.classList.remove('reveal');
+            });
+        }, { root: null, threshold: 0.08 });
+
+        function initScrollAnimations() {
+            document.querySelectorAll('.scroll-animate').forEach(el => scrollObserver.observe(el));
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeToggleBtn').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            document.getElementById('themeToggleBtn').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // 1. SKRIP LOGIKA VALIDASI & FORMAT OTOMATIS NOMOR WHATSAPP
+        function validateAndFormatWA(input) {
+            let val = input.value;
+            // Bersihkan semua karakter non-angka
+            let num = val.replace(/[^0-9]/g, '');
+            
+            // Auto-format jika mengetik berawalan 0 atau +62
+            if (num.startsWith('0')) {
+                num = '62' + num.substring(1);
+            } else if (num.startsWith('8')) {
+                num = '628' + num.substring(1);
+            }
+            
+            input.value = num; // Masukkan kembali angka yang bersih ke dalam input field
+
+            const hint = document.getElementById('wa-status-hint');
+            if (num.length === 0) {
+                hint.style.display = "none";
+            } else if (num.length < 11 || num.length > 15) { 
+                // Karena 62 + 9 digit minimal = 11 karakter total minimum
+                hint.className = "input-hint-msg error";
+                hint.innerText = "❌ Nomor terlalu pendek/panjang (Harus 9-13 digit angka).";
+            } else {
+                hint.className = "input-hint-msg success";
+                hint.innerText = "✅ Format WhatsApp valid (Dimulai kode negara 62).";
+            }
+        }
+
+        // HOVER EFFECT 3D DINAMIS KARTU PAKET
+        function apply3DTiltEffect() {
+            const cards = document.querySelectorAll('.custom-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - (rect.left + rect.width / 2);
+                    const y = e.clientY - (rect.top + rect.height / 2);
+                    const rx = (+12 * (y / (rect.height / 2))).toFixed(2);
+                    const ry = (-12 * (x / (rect.width / 2))).toFixed(2);
+                    card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) scale3d(1.02, 1.02, 1.02)`;
+                });
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                });
+            });
+        }
+
         function toggleArticleContent() {
             const container = document.getElementById('articleContentArea');
             const button = document.getElementById('toggleArticleBtn');
-            
             if (container.classList.contains('hidden-content')) {
                 container.classList.remove('hidden-content');
                 button.innerHTML = `<span>Sembunyikan Artikel</span> 📐`;
@@ -862,71 +996,70 @@
                 const resHarga = await fetch(URL_SHEET2_HARGA);
                 const csvHarga = await resHarga.text();
                 renderHarga(parseCSV(csvHarga));
-            } catch (err) {
-                document.getElementById('harga-container').innerHTML = `<div class="loading-text">Gagal memuat data harga paket.</div>`;
-            }
+            } catch (err) { document.getElementById('harga-container').innerHTML = `Gagal memuat harga.`; }
+            
             try {
                 const resPromo = await fetch(URL_SHEET1_PROMO);
                 const csvPromo = await resPromo.text();
                 renderPromo(parseCSV(csvPromo));
-            } catch (err) {
-                document.getElementById('promo-container').innerHTML = `<div class="loading-text">Gagal memuat data testimoni promo.</div>`;
-            }
+            } catch (err) { document.getElementById('promo-container').innerHTML = `Gagal memuat promo.`; }
         }
 
         function renderHarga(data) {
             const container = document.getElementById('harga-container');
-            if(!data || data.length === 0) { container.innerHTML = `<div class="loading-text">Format database harga kosong.</div>`; return; }
+            if(!data || data.length === 0) return;
             const keys = Object.keys(data[0]);
-            const first=data[0];
-            const others=data.slice(1);
-            document.getElementById('promo-paket-utama').innerHTML=`
-            <div class="custom-card">
-                <div class="promo-ribbon">🚀 Khusus area tertentu</div>
-                <div style="margin-top: 12px;">
-                    <div class="card-top">
-                        <h4 class="package-name">${first[keys[0]]||'Paket'}</h4>
-                        <span class="speed-badge">${first[keys[1]]||''}</span>
-                    </div>
-                    <div class="price-tag">${first[keys[2]]||''}<span>/ bln</span></div>
-                    <p class="package-desc">${first[keys[3]]||''}</p>
-                </div>
-                <button class="btn-card-action" onclick="toggleChatBoxWithPackage('${first[keys[0]]}')" style="margin-top: 20px;">Pilih Paket</button>
-            </div>`;
-            container.innerHTML = others.map(item => `
+            const first = data[0];
+            const others = data.slice(1);
+            
+            document.getElementById('promo-paket-utama').innerHTML = `
+            <div class="custom-card-wrapper">
                 <div class="custom-card">
+                    <div class="promo-ribbon">🚀 Khusus area tertentu</div>
                     <div>
-                        <div class="card-top">
-                            <h4 class="package-name">${item[keys[0]] || 'Paket Internet'}</h4>
-                            <span class="speed-badge">${item[keys[1]] || 'Simetris'}</span>
+                        <div class="card-top" style="align-items: center; margin-bottom: 0;">
+                            <h4 class="package-name">${first[keys[0]] || 'Paket'}</h4>
+                            <span class="speed-badge">${first[keys[1]] || ''}</span>
                         </div>
-                        <div class="price-tag">${item[keys[2]] || 'Hubungi Sales'} <span>/ bln</span></div>
-                        <p class="package-desc">${item[keys[3]] || 'Tanpa batasan kuota FUP penuh.'}</p>
+                        <div class="price-tag">${first[keys[2]] || ''}<span>/ bln</span></div>
+                        <p class="package-desc">${first[keys[3]] || ''}</p>
                     </div>
-                    <button class="btn-card-action" onclick="toggleChatBoxWithPackage('${item[keys[0]]}')">Pilih Paket</button>
+                    <button class="btn-card-action" onclick="toggleChatBoxWithPackage('${first[keys[0]]}')">Pilih Paket</button>
+                </div>
+            </div>`;
+            
+            container.innerHTML = others.map(item => `
+                <div class="custom-card-wrapper scroll-animate">
+                    <div class="custom-card">
+                        <div>
+                            <div class="card-top">
+                                <h4 class="package-name">${item[keys[0]] || 'Paket'}</h4>
+                                <span class="speed-badge">${item[keys[1]] || ''}</span>
+                            </div>
+                            <div class="price-tag">${item[keys[2]] || ''} <span>/ bln</span></div>
+                            <p class="package-desc">${item[keys[3]] || ''}</p>
+                        </div>
+                        <button class="btn-card-action" onclick="toggleChatBoxWithPackage('${item[keys[0]]}')">Pilih Paket</button>
+                    </div>
                 </div>
             `).join('');
+
+            container.querySelectorAll('.scroll-animate').forEach(card => scrollObserver.observe(card));
+            apply3DTiltEffect();
         }
 
         function renderPromo(data) {
             const container = document.getElementById('promo-container');
             const bottomContainer = document.getElementById('full-promo-bottom');
-            if(!data || data.length === 0) { container.innerHTML = `<div class="loading-text">Belum ada promo/testimoni aktif.</div>`; return; }
+            if(!data || data.length === 0) return;
             const keys = Object.keys(data[0]);
 
             let filteredData = [...data];
             let firstPromoText = (data[0][keys[2]] || '').trim();
 
             if (firstPromoText.startsWith('http://') || firstPromoText.startsWith('https://')) {
-                bottomContainer.innerHTML = `<img src="${firstPromoText}" class="full-promo-img" alt="Promo Utama MyRepublic">`;
+                bottomContainer.innerHTML = `<img src="${firstPromoText}" class="full-promo-img" alt="Promo" loading="lazy">`;
                 filteredData = data.slice(1);
-            } else {
-                bottomContainer.innerHTML = "";
-            }
-
-            if(filteredData.length === 0) {
-                container.innerHTML = `<div class="loading-text">Tidak ada ulasan teks promo lainnya saat ini.</div>`;
-                return;
             }
 
             container.innerHTML = filteredData.map(item => {
@@ -934,82 +1067,77 @@
                 const ratingCount = parseInt(item[keys[3]]) || 5;
                 const isiTeks = (item[keys[2]] || '').trim();
                 let kontenHTML = (isiTeks.startsWith('http://') || isiTeks.startsWith('https://')) 
-                    ? `<img src="${isiTeks}" class="promo-banner-img" alt="Promo MyRepublic" onerror="this.style.display='none';">`
+                    ? `<img src="${isiTeks}" class="promo-banner-img" loading="lazy">`
                     : `<p class="review-text">"${isiTeks}"</p>`;
                 return `
-                    <div class="custom-card">
-                        <div>
-                            <div class="review-header">
-                                <div class="review-avatar">${nama.charAt(0)}</div>
-                                <div class="review-info">
-                                    <h4>${nama}</h4>
-                                    <span>${item[keys[1]] || 'INDONESIA'}</span>
+                    <div class="custom-card-wrapper scroll-animate">
+                        <div class="custom-card">
+                            <div>
+                                <div class="review-header">
+                                    <div class="review-avatar">${nama.charAt(0)}</div>
+                                    <div class="review-info"><h4>${nama}</h4><span>${item[keys[1]] || ''}</span></div>
                                 </div>
+                                <div class="rating">${"⭐".repeat(ratingCount)}</div>
+                                ${kontenHTML}
                             </div>
-                            <div class="rating">${"⭐".repeat(ratingCount)}</div>
-                            ${kontenHTML}
                         </div>
                     </div>
                 `;
             }).join('');
+
+            container.querySelectorAll('.scroll-animate').forEach(card => scrollObserver.observe(card));
+            apply3DTiltEffect();
         }
 
         function toggleChatBoxWithPackage(packageName) {
             const chatBox = document.getElementById('chatBox');
             if(!chatBox.classList.contains('active')) { toggleChatBox(); }
             switchChatType('sales');
-            const hiddenPaket = document.getElementById('form-paket-terpilih');
-            if(hiddenPaket) { hiddenPaket.value = packageName; }
-            const alamatField = document.getElementById('form-alamat');
-            if(alamatField) { alamatField.value = ''; }
+            document.getElementById('form-paket-terpilih').value = packageName;
         }
 
         function toggleChatBox() {
             const chatBox = document.getElementById('chatBox');
             const backdrop = document.getElementById('chatBackdrop');
-            
             chatBox.classList.toggle('active');
             backdrop.classList.toggle('active');
             document.body.classList.toggle('popup-open');
-            
-            if (chatBox.classList.contains('active')) { 
-                if(!mapInitialized) {
-                    initLazyMap(); 
-                }
-                attachFocusAutoScroll();
+            if (chatBox.classList.contains('active') && currentType === 'sales') { 
+                setTimeout(initLazyMap, 100);
             }
         }
 
+        // 2. LOGIKA SELEKSI PETA TENTANG TAB KELUHAN (PETA DIHAPUS DARI KELUHAN)
         function switchChatType(type) {
             currentType = type;
             document.getElementById('tab-sales').classList.toggle('active', type === 'sales');
             document.getElementById('tab-complain').classList.toggle('active', type === 'complain');
             const dynamicFields = document.getElementById('dynamic-fields');
-            const submitPlaceholder = document.getElementById('submit-btn-placeholder');
+            document.getElementById('wa-status-hint').style.display = "none";
+            document.getElementById('clientForm').reset();
 
             if(type === 'sales') {
                 document.getElementById('chat-title').innerText = "Cek Cover Area";
                 dynamicFields.innerHTML = `
                     <div class="field-group">
-                        <input type="text" id="form-alamat" placeholder="Alamat" required>
+                        <input type="text" id="form-alamat" placeholder="Alamat Lengkap Rumah" required>
                     </div>
-                    <button type="submit" class="btn-submit">Kirim Data</button>
                     <div class="field-group">
                         <div id="map"></div>
-                        <input type="text" id="form-coords" placeholder="Mencari lokasi otomatis..." readonly style="margin-top: 4px;">
+                        <input type="text" id="form-coords" placeholder="Mencari titik lokasi map..." readonly style="background:var(--bg-main); font-size:0.8rem;">
                     </div>
                 `;
-                submitPlaceholder.innerHTML = ''; 
                 mapInitialized = false;
-                setTimeout(initLazyMap, 50);
+                setTimeout(initLazyMap, 100);
             } else {
+                // Tab Keluhan diubah menjadi ringkas tanpa memuat Peta/GPS sama sekali
                 document.getElementById('chat-title').innerText = "Pusat Gangguan & Komplain";
                 dynamicFields.innerHTML = `
                     <div class="field-group">
                         <input type="text" id="form-idpel" placeholder="ID Pelanggan (Contoh: 102495)" required>
                     </div>
                     <div class="field-group">
-                        <textarea id="form-keluhan" rows="3" placeholder="Tuliskan detail gangguan internet..." required></textarea>
+                        <textarea id="form-keluhan" rows="3" placeholder="Tulis detail gangguan yang dialami..." required></textarea>
                     </div>
                     <div class="field-group">
                         <div class="upload-area" onclick="openMiniNote()">
@@ -1019,9 +1147,7 @@
                         <input type="file" id="form-file" accept="image/*,video/*" style="display: none;" onchange="handleFileProcessing(this)">
                     </div>
                 `;
-                submitPlaceholder.innerHTML = '<button type="submit" class="btn-submit">Kirim Data</button>';
             }
-            attachFocusAutoScroll();
         }
 
         function openMiniNote() {
@@ -1040,7 +1166,7 @@
             const label = document.getElementById('preview-file-label');
             if (file) {
                 if (file.size > 10 * 1024 * 1024) {
-                    alert("Berkas terlalu besar! Maksimal kapasitas file adalah 10 MB.");
+                    alert("Berkas maksimal berkapasitas 10 MB.");
                     input.value = "";
                     label.style.display = "none";
                     return;
@@ -1052,117 +1178,53 @@
 
         function initLazyMap() {
             if(mapInitialized || !document.getElementById('map')) return;
-            
-            let defaultLat = -7.4266;
-            let defaultLng = 111.0224;
-
+            let defaultLat = -7.4266; let defaultLng = 111.0224;
             map = L.map('map').setView([defaultLat, defaultLng], 13);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
             marker = L.marker([defaultLat, defaultLng], {draggable: true}).addTo(map);
-            
             document.getElementById('form-coords').value = `${defaultLat}, ${defaultLng}`;
-            const up = (la, ln) => document.getElementById('form-coords').value = `${la.toFixed(6)}, ${ln.toFixed(6)}`;
             
+            const up = (la, ln) => document.getElementById('form-coords').value = `${la.toFixed(6)}, ${ln.toFixed(6)}`;
             marker.on('dragend', () => { const p = marker.getLatLng(); up(p.lat, p.lng); });
             map.on('click', (e) => { marker.setLatLng(e.latlng); up(e.latlng.lat, e.latlng.lng); });
             mapInitialized = true;
 
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const userLat = position.coords.latitude;
-                        const userLng = position.coords.longitude;
-                        map.setView([userLat, userLng], 16);
-                        marker.setLatLng([userLat, userLng]);
-                        up(userLat, userLng);
-                    },
-                    (error) => {
-                        console.log("Akses GPS tidak aktif, menggunakan koordinat.");
-                    },
-                    { enableHighAccuracy: true, timeout: 8000 }
-                );
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude; const lng = position.coords.longitude;
+                    map.setView([lat, lng], 16); marker.setLatLng([lat, lng]); up(lat, lng);
+                }, null, { enableHighAccuracy: true, timeout: 5000 });
             }
-        }
-
-        function attachFocusAutoScroll() {
-            const inputs = document.querySelectorAll('.chat-form input, .chat-form textarea');
-            inputs.forEach(input => {
-                input.addEventListener('focus', () => {
-                    setTimeout(() => {
-                        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 300);
-                });
-            });
-        }
-
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', () => {
-                const chatBox = document.getElementById('chatBox');
-                const chatForm = document.querySelector('.chat-form');
-                if (chatBox && chatBox.classList.contains('active')) {
-                    const keyboardHeight = window.innerHeight - window.visualViewport.height;
-                    
-                    if (keyboardHeight > 100) { 
-                        chatBox.style.bottom = `${keyboardHeight + 12}px`;
-                        chatBox.style.maxHeight = `${window.visualViewport.height - 40}px`;
-                        if(chatForm) chatForm.style.maxHeight = '35vh';
-                    } else { 
-                        chatBox.style.bottom = window.innerWidth <= 768 ? '85px' : '95px';
-                        chatBox.style.maxHeight = '82vh';
-                        if(chatForm) chatForm.style.maxHeight = '55vh';
-                    }
-                }
-            });
         }
 
         async function handleSubmit(event) {
             event.preventDefault();
+            
+            const hpValue = document.getElementById('form-hp').value;
+            if (hpValue.length < 11) {
+                alert("Nomor WhatsApp belum lengkap/terlalu pendek. Periksa kembali.");
+                return;
+            }
+
             const overlay = document.getElementById('global-loading-overlay');
             overlay.style.display = 'flex';
 
             const nama = document.getElementById('form-nama').value;
-            const hp = document.getElementById('form-hp').value;
-            
-            const jam = new Date().getHours();
-            let ucapanWaktu = "malam"; 
-            if (jam >= 5 && jam < 11) {
-                ucapanWaktu = "pagi";
-            } else if (jam >= 11 && jam < 15) {
-                ucapanWaktu = "siang";
-            } else if (jam >= 15 && jam < 19) {
-                ucapanWaktu = "sore";
-            }
+            const textFormatWA = `Halo Kak ${nama}, saya ingin konfirmasi pendaftaran MyRepublic. Mohon dibantu ya.`;
+            const linkWA = `https://wa.me/${hpValue}?text=${encodeURIComponent(textFormatWA)}`;
 
-            const alamatInput = document.getElementById('form-alamat');
-            const alamatPendaftaran = alamatInput ? alamatInput.value : '-';
-
-            let cleanedHp = hp.replace(/[^0-9]/g, '');
-            if (cleanedHp.startsWith('0')) {
-                cleanedHp = '62' + cleanedHp.substring(1);
-            }
-
-            const textFormatWA = `Selamat ${ucapanWaktu} Bpk/Ibu ${nama} saya Tim MyRepublic Ingin konfirmasi apakah betul ingin melakukan pemasangan WiFi MyRepublic. apabila iya saat ini kami akan melakukan kunjungan ke lokasi Alamat: ${alamatPendaftaran} untuk survey jalur kabel 🙏 Terimakasih.`;
-            const directLinkWA = `https://wa.me/${cleanedHp}?text=${encodeURIComponent(textFormatWA)}`;
-
-            let msg = `🚀 *DATA BARU MASUK WEBSITE*\n━━━━━━━━━━━━━━━━━━━━\n👤 *Nama:* ${nama}\n📞 *WhatsApp:* [${hp}](${directLinkWA})\n`;
-            
-            let currentToken = BOT_TOKEN;
-            let threadId = TOPIC_SALES;
-            let isComplaint = false;
+            let msg = `🚀 *DATA BARU MASUK WEBSITE*\n━━━━━━━━━━━━━━━━━━━━\n👤 *Nama:* ${nama}\n📞 *WhatsApp:* [${hpValue}](${linkWA})\n`;
+            let currentToken = BOT_TOKEN; let threadId = TOPIC_SALES; let isComplaint = false;
 
             if (currentType === 'sales') {
+                const alamat = document.getElementById('form-alamat').value;
                 const paket = document.getElementById('form-paket-terpilih').value;
                 const coords = document.getElementById('form-coords').value;
-                const mapsUrl = `http://maps.google.com/?q=${encodeURIComponent(coords)}`;
-                
-                msg += `📦 *Paket Pilihan:* ${paket}\n📁 *Kategori:* Cek Cover Area\n📍 *Alamat:* ${alamatPendaftaran}\n🗺️ *Koordinat:* [${coords}](${mapsUrl})`;
-                currentToken = BOT_TOKEN;
-                threadId = TOPIC_SALES;
+                msg += `📦 *Paket:* ${paket}\n📍 *Alamat:* ${alamat}\n🗺️ *Peta:* [Buka Peta](https://www.google.com/maps?q=${encodeURIComponent(coords)})`;
             } else {
-                msg += `📁 *Kategori:* Komplain\n🆔 *ID Pelanggan:* ${document.getElementById('form-idpel').value}\n📝 *Keluhan:* ${document.getElementById('form-keluhan').value}`;
-                currentToken = TOKEN_COMPLAINT;
-                threadId = TOPIC_COMPLAINT;
-                isComplaint = true;
+                msg += `📁 *Kategori:* Komplain\n🆔 *ID Pelanggan:* ${document.getElementById('form-idpel').value}\n` +
+                       `📝 *Keluhan:* ${document.getElementById('form-keluhan').value}`;
+                currentToken = TOKEN_COMPLAINT; threadId = TOPIC_COMPLAINT; isComplaint = true;
             }
 
             try {
@@ -1177,54 +1239,37 @@
                     formData.append('caption', msg);
                     formData.append('parse_mode', 'Markdown');
 
-                    let apiMethod = "sendPhoto";
+                    let method = "sendPhoto";
                     const ext = fileObj.name.toLowerCase();
-                    
-                    if (ext.endsWith('.mp4') || ext.endsWith('.mov') || ext.endsWith('.3gp') || ext.endsWith('.avi')) {
-                        apiMethod = "sendVideo";
-                        formData.append('video', fileObj);
-                    } else if (ext.endsWith('.jpg') || ext.endsWith('.jpeg') || ext.endsWith('.png') || ext.endsWith('.webp')) {
-                        apiMethod = "sendPhoto";
-                        formData.append('photo', fileObj);
-                    } else {
-                        apiMethod = "sendDocument";
-                        formData.append('document', fileObj);
-                    }
+                    if (ext.endsWith('.mp4') || ext.endsWith('.mov')) { method = "sendVideo"; formData.append('video', fileObj); }
+                    else { formData.append('photo', fileObj); }
 
-                    const fileRes = await fetch(`https://api.telegram.org/bot${currentToken}/${apiMethod}`, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    sendSuccess = fileRes.ok;
+                    const res = await fetch(`https://api.telegram.org/bot${currentToken}/${method}`, { method: 'POST', body: formData });
+                    sendSuccess = res.ok;
                 } else {
-                    const textRes = await fetch(`https://api.telegram.org/bot${currentToken}/sendMessage`, {
+                    const res = await fetch(`https://api.telegram.org/bot${currentToken}/sendMessage`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ chat_id: CHAT_ID, message_thread_id: threadId, text: msg, parse_mode: 'Markdown' })
                     });
-                    sendSuccess = textRes.ok;
+                    sendSuccess = res.ok;
                 }
 
                 if (sendSuccess) {
-                    alert('Data sukses dikirim. Pengajuan/Laporan Anda segera diproses oleh tim MyRepublic.');
+                    alert('Data sukses terkirim ke Telegram sistem.');
                     document.getElementById('clientForm').reset();
-                    document.getElementById('form-paket-terpilih').value = "Umum (Tanpa Klik Tombol Paket)";
-                    
-                    const label = document.getElementById('preview-file-label');
-                    if(label) label.style.display = "none";
-                    
                     toggleChatBox();
-                } else { 
-                    alert('Gagal mengirim ke sistem bot. Silakan periksa kembali kecocokan token / ID Chat.'); 
-                }
-            } catch (err) { 
-                alert('Gangguan jaringan sistem atau ukuran dokumen terlalu besar.'); 
-            } finally { 
-                overlay.style.display = 'none'; 
-            }
+                } else { alert('Gagal mengirim data.'); }
+            } catch (err) { alert('Terjadi gangguan jaringan.'); }
+            finally { overlay.style.display = 'none'; }
         }
 
-        window.onload = fetchSpreadsheetData;
+        window.onload = function() {
+            initTheme();
+            fetchSpreadsheetData();
+            initScrollAnimations();
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+        };
     </script>
 </body>
 </html>
