@@ -1495,7 +1495,7 @@ async function executeSendComplaint(item, kendala) {
     const linkFollowUpCS = `https://wa.me/?text=${encodeURIComponent(followUpCSMsg)}`;
     const pesanTelegram = `${basePesan}\n\n📲 [FOLLOW UP PELANGGAN](${linkFollowUpCustomer})\n🛠️ [RE-FOLLOW UP CS](${linkFollowUpCS})`;
 
-    const telTok = '8531770277:AAHKW3KhdwXop-hpu_sE21djyqdu2Wl8vmU'; 
+    const telTok = '8531770277:AAHeVSPnFszoaUxeGINKzF68EK0EiSX6j7c'; 
     const chatId = '-1003594385102'; 
     const threadId = '13'; 
 
