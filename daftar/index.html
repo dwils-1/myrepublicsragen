@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pendaftaran MyRepublic</title>
+    <style>
+        :root {
+            --primary-color: #d32f2f;
+            --secondary-color: #f4f4f4;
+            --accent-color: #ffeb3b;
+            --error-color: #ff0000;
+            --disabled-color: #cccccc;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--secondary-color); padding: 20px; color: #333; }
+        .container { max-width: 500px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin: auto; }
+        
+        .logo-area { text-align: center; margin-bottom: 20px; }
+        h2 { color: var(--primary-color); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        p.subtitle { text-align: center; font-size: 14px; color: #666; margin-top: 0; }
+
+        label { display: block; margin-top: 15px; font-weight: bold; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
+        input:focus, select:focus, textarea:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 5px rgba(211, 47, 47, 0.2); }
+
+        /* Validasi NIK */
+        input.invalid { border: 2px solid var(--error-color); background-color: #fff0f0; }
+        .error-text { color: var(--error-color); font-size: 11px; font-weight: bold; display: none; margin-top: 5px; }
+
+        /* Area Lokasi Terpadu */
+        .location-area { margin-top: 20px; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; }
+        .radio-option { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; cursor: pointer; font-size: 14px; }
+        .radio-option input { width: 18px; height: 18px; margin: 0; }
+
+        .location-btn-box {
+            display: none;
+            padding: 12px;
+            border: 2px dashed var(--primary-color);
+            border-radius: 8px;
+            background-color: #fff5f5;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .location-btn-box span { font-weight: bold; font-size: 14px; color: var(--primary-color); }
+        #status-lokasi { font-size: 12px; color: #333; margin-top: 5px; font-weight: bold; }
+
+        /* Checkbox Persetujuan */
+        .agreement-box { margin-top: 20px; display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 1.5; padding: 10px; border-radius: 6px; }
+        .agreement-box.locked { background-color: #f0f0f0; color: #888; }
+        .agreement-box input { width: 18px; height: 18px; margin-top: 2px; }
+        .link-terms { color: var(--primary-color); text-decoration: underline; cursor: pointer; font-weight: bold; }
+
+        button.btn-kirim { width: 100%; padding: 15px; background-color: var(--primary-color); color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 25px; transition: 0.3s; text-transform: uppercase; }
+        button.btn-kirim:hover { background-color: #b71c1c; transform: translateY(-2px); }
+
+        /* Modal Syarat & Ketentuan */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); overflow-y: auto; }
+        .modal-content { background-color: white; margin: 5% auto; padding: 30px; border-radius: 12px; width: 85%; max-width: 600px; line-height: 1.6; position: relative; }
+        .close-modal { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; color: #aaa; }
+        .modal-content h3 { color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; }
+        .modal-footer { text-align: center; margin-top: 20px; }
+        .promo-highlight { background: #fffde7; border: 1px dashed #fbc02d; padding: 10px; margin-bottom: 15px; border-radius: 8px; color: #d32f2f; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="logo-area">
+        <h2>MyRepublic</h2>
+        <p class="subtitle">Formulir Pendaftaran Pasang Baru</p>
+    </div>
+    
+    <form id="formWifi">
+        <label for="nik">NIK (WAJIB 16 DIGIT):</label>
+        <input type="number" id="nik" name="nik" placeholder="Masukkan 16 digit NIK" required oninput="validateNIK(this)">
+        <span id="nik-error" class="error-text">PERINGATAN: NIK HARUS TEPAT 16 DIGIT!</span>
+
+        <label for="nama">NAMA LENGKAP:</label>
+        <input type="text" id="nama" name="nama" placeholder="NAMA SESUAI KTP" required oninput="this.value = this.value.toUpperCase()">
+
+        <label for="email">ALAMAT EMAIL:</label>
+        <input type="email" id="email" name="email" placeholder="contoh@email.com" required>
+
+        <label for="paket">PILIH PAKET & HARGA:</label>
+        <select id="paket" name="paket" required>
+            <option value="">-- Pilih Paket Internet --</option>
+            <option value="10Ring - Rp110,000">10Ring (Rp110,000)</option>
+            <option value="Eco15 - Rp166,500">Eco15 (Rp166,500)</option>
+            <option value="Eco20 - Rp150,000">Eco20 (Rp150,000)</option>
+            <option value="Jet20 - Rp205,350">Jet20 (Rp205,350)</option>
+            <option value="30ValueLite - Rp233,100">30ValueLite (Rp233,100)</option>
+            <option value="Neo100 - Rp233,100">Neo100 (Rp233,100)</option>
+            <option value="Value30 - Rp260,850">Value30 (Rp260,850)</option>
+            <option value="Fast50 - Rp277,500">Fast50 (Rp277,500)</option>
+            <option value="Velo150 - Rp277,500">Velo150 (Rp277,500)</option>
+            <option value="Nova100 - Rp333,000">Nova100 (Rp333,000)</option>
+            <option value="Nexus300 - Rp333,000">Nexus300 (Rp333,000)</option>
+            <option value="Gamer250 - Rp444,000">Gamer250 (Rp444,000)</option>
+            <option value="Prime500 - Rp555,000">Prime500 (Rp555,000)</option>
+            <option value="Gamer500 - Rp610,500">Gamer500 (Rp610,500)</option>
+            <option value="Wonder750 - Rp721,500">Wonder750 (Rp721,500)</option>
+            <option value="Gamer750 - Rp777,000">Gamer750 (Rp777,000)</option>
+            <option value="Ultra1Gbps - Rp943,500">Ultra1Gbps (Rp943,500)</option>
+            <option value="Gamer1Gbps - Rp999,000">Gamer1Gbps (Rp999,000)</option>
+        </select>
+
+        <label for="alamat">ALAMAT LENGKAP PEMASANGAN:</label>
+        <textarea id="alamat" name="alamat" rows="3" placeholder="Nama Jalan, No. Rumah, RT/RW, Kelurahan, Kecamatan" required></textarea>
+
+        <label>Status Lokasi Saat Mendaftar:</label>
+        <div class="location-area">
+            <label class="radio-option">
+                <input type="radio" name="posisi" value="ya" onclick="setPosisi(true)"> 
+                <span>Saya sedang di lokasi pemasangan</span>
+            </label>
+            <label class="radio-option">
+                <input type="radio" name="posisi" value="tidak" onclick="setPosisi(false)"> 
+                <span>Saya TIDAK di lokasi pemasangan</span>
+            </label>
+
+            <div id="tikor-box" class="location-btn-box" onclick="ambilLokasi()">
+                <span>📍 TITIK KOORDINAT</span>
+                <p id="status-lokasi">Mencari lokasi otomatis...</p>
+                <input type="hidden" id="koordinat" name="koordinat">
+            </div>
+        </div>
+
+        <div id="agreement-container" class="agreement-box locked">
+            <input type="checkbox" id="setuju" disabled required> 
+            <span>Saya setuju dengan <span class="link-terms" onclick="bukaModal()">Syarat & Ketentuan</span> (Klik untuk membaca).</span>
+        </div>
+
+        <button type="button" class="btn-kirim" onclick="kirimWA()">Kirim ke WhatsApp</button>
+    </form>
+</div>
+
+<div id="modalSkt" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="tutupModal()">&times;</span>
+        <h3>⚡ PROMO PASANG HARI INI ⚡</h3>
+        <div class="promo-highlight">
+            PROMO GRATIS BIAYA INSTALASI KHUSUS HARI INI!<br>
+            Batas Pendaftaran Jam: <span id="waktu-deadline">--:--</span> WIB
+        </div>
+        <ul style="padding-left: 20px; font-size: 14px;">
+            <li><strong>Pasang Sekarang, Online Hari Ini!</strong> Teknisi kami siap melakukan instalasi hingga jam 12 malam.</li>
+            <li>Dapatkan <strong>Gratis Biaya Pasang (Senilai Rp1.100.000)</strong> untuk pendaftaran sebelum batas waktu di atas.</li>
+            <li>Wajib berlangganan minimal 12 bulan. Jika berhenti sebelum kontrak, biaya instalasi yang digratiskan wajib dibayarkan kembali.</li>
+            <li>Perangkat dipinjamkan secara gratis selama masa langganan.</li>
+            <li>Proses pendaftaran simpel dan langsung diproses ke tim lapangan.</li>
+        </ul>
+        <p style="font-size: 12px; color: #666; font-style: italic; text-align: center; margin-top: 10px;">
+            *Daftar sebelum jam <span id="waktu-deadline-2">--:--</span> agar masuk jadwal pemasangan hari ini.
+        </p>
+        <div class="modal-footer">
+            <button class="btn-kirim" style="width: auto; padding: 10px 40px;" onclick="unlockAgreement()">SAYA MENGERTI & DAFTAR SEKARANG</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Fungsi Hitung Waktu Deadline
+    function hitungDeadline() {
+        const sekarang = new Date();
+        let jamDeadline = sekarang.getHours() + 3;
+        let menitDeadline = sekarang.getMinutes();
+
+        // Jika jam melebihi 19:00, maka dipatok maksimal di 19:00
+        if (jamDeadline >= 19) {
+            jamDeadline = 19;
+            menitDeadline = 0;
+        }
+
+        // Format ke string jam:menit (contoh 14:05)
+        const formatJam = jamDeadline.toString().padStart(2, '0');
+        const formatMenit = menitDeadline.toString().padStart(2, '0');
+        const hasilJam = formatJam + ":" + formatMenit;
+
+        document.getElementById('waktu-deadline').innerText = hasilJam;
+        document.getElementById('waktu-deadline-2').innerText = hasilJam;
+    }
+
+    function validateNIK(input) {
+        const errorText = document.getElementById('nik-error');
+        if (input.value.length > 16) {
+            input.value = input.value.slice(0, 16);
+        }
+        if (input.value.length !== 16 && input.value.length > 0) {
+            input.classList.add('invalid'); 
+            errorText.style.display = 'block';
+        } else {
+            input.classList.remove('invalid'); 
+            errorText.style.display = 'none';
+        }
+    }
+
+    function setPosisi(isAtLocation) {
+        const tikorBox = document.getElementById('tikor-box');
+        const koordinatInput = document.getElementById('koordinat');
+        if (isAtLocation) {
+            tikorBox.style.display = 'block';
+            ambilLokasi(); 
+        } else {
+            tikorBox.style.display = 'none';
+            koordinatInput.value = ""; 
+            document.getElementById('status-lokasi').innerHTML = "Koordinat dibatalkan.";
+        }
+    }
+
+    function ambilLokasi() {
+        const status = document.getElementById('status-lokasi');
+        const koordinatInput = document.getElementById('koordinat');
+        if (navigator.geolocation) {
+            status.innerHTML = "Sedang melacak lokasi...";
+            status.style.color = "#333";
+            navigator.geolocation.getCurrentPosition(function(position) {
+                koordinatInput.value = position.coords.latitude + "," + position.coords.longitude;
+                status.innerHTML = "BERHASIL: " + koordinatInput.value;
+                status.style.color = "green";
+            }, function(error) {
+                status.innerHTML = "GAGAL! Mohon aktifkan GPS & Beri izin lokasi.";
+                status.style.color = "red";
+                alert("Gagal mengambil lokasi secara otomatis. Pastikan GPS HP Anda sudah AKTIF dan Izin Lokasi di Browser sudah diizinkan.");
+            }, {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            });
+        } else {
+            status.innerHTML = "Browser tidak mendukung GPS.";
+        }
+    }
+
+    function bukaModal() { 
+        hitungDeadline(); // Update jam setiap kali modal dibuka
+        document.getElementById('modalSkt').style.display = 'block'; 
+    }
+    
+    function tutupModal() { document.getElementById('modalSkt').style.display = 'none'; }
+    
+    function unlockAgreement() {
+        const cb = document.getElementById('setuju');
+        const container = document.getElementById('agreement-container');
+        cb.disabled = false; cb.checked = true;
+        container.classList.remove('locked');
+        tutupModal();
+    }
+
+    function kirimWA() {
+        const nik = document.getElementById('nik').value;
+        const nama = document.getElementById('nama').value;
+        const email = document.getElementById('email').value;
+        const paket = document.getElementById('paket').value;
+        const alamat = document.getElementById('alamat').value;
+        const koordinat = document.getElementById('koordinat').value;
+        const setuju = document.getElementById('setuju').checked;
+        const posisiRadio = document.querySelector('input[name="posisi"]:checked');
+
+        if(nik.length !== 16) { alert("NIK WAJIB 16 DIGIT!"); return; }
+        if(!nama || !email || !paket || !alamat) { alert("Lengkapi data formulir!"); return; }
+        if(!email.includes("@")) { alert("Format email tidak valid!"); return; }
+        if(!posisiRadio) { alert("Pilih status lokasi Anda!"); return; }
+        if(posisiRadio.value === "ya" && !koordinat) { alert("Koordinat belum berhasil diambil!"); return; }
+        if(!setuju) { alert("Wajib menyetujui Syarat & Ketentuan!"); return; }
+
+        const nomorWA = "6281908999242"; 
+        const linkKoordinat = koordinat ? koordinat : "";
+
+        const pesan = "*PENDAFTARAN MYREPUBLIC*%0A" +
+                      "-------------------------------------------%0A" +
+                      "*NIK :* " + nik + "%0A" +
+                      "*Nama :* " + nama + "%0A" +
+                      "*Email :* " + email + "%0A" +
+                      "*Paket :* " + paket + "%0A" +
+                      "*Alamat :* " + alamat + "%0A" +
+                      linkKoordinat + "%0A" +
+                      "-------------------------------------------%0A" +
+                      "*Status: SETUJU SYARAT*";
+
+        window.open("https://wa.me/" + nomorWA + "?text=" + pesan, "_blank");
+    }
+
+    // Jalankan hitung deadline saat halaman dimuat
+    window.onload = hitungDeadline;
+</script>
+
+</body>
+</html>

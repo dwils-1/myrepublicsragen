@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complaint Customer - MyRepublic</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="lock-screen">
+    <div class="spinner"></div>
+    <h3 style="color: var(--primary-color); margin: 0;">MENGIRIM LAPORAN...</h3>
+    <p style="font-size: 14px; color: #666;">Mohon jangan tutup atau keluar dari halaman ini.</p>
+</div>
+
+<div class="container">
+    <div class="logo-area">
+        <h2>MyRepublic</h2>
+        <p class="subtitle">Formulir Complaint Customer</p>
+    </div>
+
+    <form id="formWifi">
+
+        <label for="nama">NAMA LENGKAP:</label>
+        <input type="text" id="nama" placeholder="NAMA SESUAI KTP" required oninput="this.value = this.value.toUpperCase()">
+
+        <label for="id_pelanggan">ID PELANGGAN:</label>
+        <input type="text" id="id_pelanggan" placeholder="Masukan kode pembayaran" inputmode="numeric" required>
+
+        <label for="paket">PAKET YANG DIGUNAKAN:</label>
+        <select id="paket" required>
+            <option value="">-- Pilih Paket Internet --</option>
+            <option value="10Ring">10Ring</option>
+            <option value="Eco15">Eco15</option>
+            <option value="Eco20">Eco20</option>
+            <option value="Jet20">Jet20</option>
+            <option value="30ValueLite">30ValueLite</option>
+            <option value="Neo100">Neo100</option>
+            <option value="Value30">Value30</option>
+            <option value="Fast50">Fast50</option>
+            <option value="Velo150">Velo150</option>
+            <option value="Nova100">Nova100</option>
+            <option value="Nexus300">Nexus300</option>
+            <option value="Gamer250">Gamer250</option>
+            <option value="Prime500">Prime500</option>
+            <option value="Gamer500">Gamer500</option>
+            <option value="Wonder750">Wonder750</option>
+            <option value="Gamer750">Gamer750</option>
+            <option value="Ultra1Gbps">Ultra1Gbps</option>
+            <option value="Gamer1Gbps">Gamer1Gbps</option>
+        </select>
+
+        <label for="kendala">KENDALA :</label>
+        <textarea id="kendala" rows="3" placeholder="Jelaskan kendala secara detail..." required></textarea>
+
+        <label for="nohp">NOMOR HP AKTIF:</label>
+        <input type="tel" id="nohp" placeholder="Contoh: 0812..." required>
+
+        <label for="alamat">ALAMAT LENGKAP PEMASANGAN:</label>
+        <textarea id="alamat" rows="3" placeholder="Alamat lengkap..." required></textarea>
+
+        <label for="video_alat">UPLOAD VIDEO ALAT: <span style="font-size: 11px; color:red;">(Max 10 detik)</span></label>
+        <input type="file" id="video_alat" accept="video/*" required>
+
+
+<label for="foto_kendala">UPLOAD GAMBAR:</label>
+<p style="font-size: 11px; color: #d32f2f; margin-top: 0;"><b>WAJIB:</b> Melampirkan bukti gambar kerusakan atau screenshot kendala agar tim mempermudah perbaikan.</p>
+<input type="file" id="foto_kendala" accept="image/*" required>
+
+
+
+        <div class="location-area">
+            <div class="status-header"><b>Status Lokasi Saat Melapor:</b></div>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="posisi" value="ya" onclick="setPosisi(true)" required> 
+                    <span>Saya di lokasi</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="posisi" value="tidak" onclick="setPosisi(false)"> 
+                    <span>Tidak di lokasi</span>
+                </label>
+            </div>
+            <div id="tikor-box" class="location-btn-box" onclick="ambilLokasi()">
+                <span>TITIK KOORDINAT</span>
+                <p id="status-lokasi" style="font-size: 12px; margin-top: 5px;">Mencari lokasi otomatis...</p>
+                <input type="hidden" id="koordinat">
+            </div>
+        </div>
+
+        <div class="agreement-box">
+            <input type="checkbox" id="setuju" required> 
+            <label for="setuju" style="margin-top: 0; cursor: pointer; font-weight: normal;">
+                Saya setuju dengan <span style="color: blue; text-decoration: underline; cursor: pointer;" onclick="bukaModalSkt()">S&K Maintenance</span> yang berlaku.
+            </label>
+        </div>
+
+        <button type="submit" id="btnSubmit" class="btn-kirim">Kirim Laporan</button>
+    </form>
+</div>
+
+<div id="modalSpeedtest" class="modal" style="background-color: white;">
+    <div class="modal-content-full">
+        <span class="close-modal-fixed" onclick="tutupSpeedtest()">&times;</span>
+        <div class="iframe-container">
+            <iframe id="speedtestFrame" src="" allow="geolocation"></iframe>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-speedtest" style="width: auto; padding: 10px 40px; background-color: var(--success-color);" onclick="tutupSpeedtest()">SAYA SUDAH SCREENSHOT</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalSkt" class="modal">
+    <div class="modal-content" style="max-width: 500px; height: auto; margin: 10% auto; border-radius: 12px; padding: 20px; background: white; position: relative;">
+        <h3 style="color: var(--primary-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-top: 0;">SYARAT & KETENTUAN</h3>
+        <div style="font-size: 13px; line-height: 1.6; max-height: 300px; overflow-y: auto; padding-right: 10px;">
+            <p><b>1. Prosedur Pelaporan:</b> Pelanggan wajib memberikan data akurat dan melampirkan bukti Speedtest serta Video alat untuk diagnosa awal.</p>
+            <p><b>2. Jadwal Kunjungan:</b> Estimasi perbaikan adalah 3 jam setelah validasi, tergantung ketersediaan teknisi dan kompleksitas kendala di lapangan.</p>
+            <p><b>3. Perangkat:</b> Perangkat (ONT/Router) adalah milik MyRepublic. Teknisi berhak mengganti perangkat jika ditemukan kerusakan teknis.</p>
+            <p><b>4. Keamanan:</b> Pelanggan wajib memberikan akses ke area perangkat dan melakukan pengawasan selama proses perbaikan berlangsung.</p>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="button" class="btn-speedtest" style="background-color: var(--primary-color); width: auto; padding: 10px 30px;" onclick="tutupModalSkt()">SAYA MENGERTI</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

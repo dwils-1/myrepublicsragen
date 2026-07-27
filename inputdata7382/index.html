@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <title>MyRepublic System - Professional Unified</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-viewport">
+        <div class="top-nav">
+            <div class="flex flex-col">
+                <h1 class="text-white font-black text-xs tracking-tighter">MYREPUBLIC SYSTEM</h1>
+                <p id="currentDateDisplay" class="text-indigo-200 text-[9px] font-bold uppercase tracking-wider">Minggu, 18 Januari 2026</p>
+            </div>
+            <button onclick="window.open('https://sales.myrepublic.net.id/Login.jsp', '_blank')" class="portal-btn active:scale-95 transition-transform">🚀 PORTAL</button>
+        </div>
+
+        <div class="scrollable-content">
+            <div id="sectionTabel" class="w-full">
+                <div id="notifBilling" class="notif-banner" onclick="filterJatuhTempoHariIni()">
+                    <span class="text-xl">🔔</span>
+                    <div class="flex-1">
+                        <p id="notifText">Ada 0 Pelanggan masuk siklus tagihan hari ini!</p>
+                        <p class="text-[9px] opacity-70">KLIK UNTUK LIHAT DAFTAR</p>
+                    </div>
+                    <span class="bg-amber-600 text-white px-2 py-1 rounded-lg text-[10px]">CEK</span>
+                </div>
+
+                <div id="janjitemu" class="notif-banner" style="background: #4338ca; color: white; border-color: #3730a3;" onclick="lihatDaftarJanjiTemuHariIni()">
+                    <span class="text-xl">🤝</span>
+                    <div class="flex-1">
+                        <p id="notifJanjiText">Ada 0 Pelanggan rencana janji temu hari ini!</p>
+                        <p class="text-[9px] opacity-70">KLIK UNTUK LIHAT DAFTAR LEADS</p>
+                    </div>
+                    <span class="bg-indigo-900 text-white px-2 py-1 rounded-lg text-[10px]">CEK</span>
+                </div>
+                
+<div class="glass-card p-3 mb-6 border-l-8 border-indigo-600 flex items-center justify-between gap-3">
+    <div class="flex flex-col min-w-[60px]">
+        <h2 class="text-[8px] font-black text-indigo-900 uppercase tracking-tighter mb-1">Status Belt</h2>
+        <span id="belt-tag" class="text-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase belt-Checking">Checking</span>
+    </div>
+
+    <div class="flex-1 flex justify-around border-x border-slate-200 px-2">
+        <div class="text-center">
+            <p class="text-[7px] font-black text-slate-500 uppercase">Subs 3 bln</p>
+            <p id="belt-total-subs" class="text-sm font-black text-indigo-900 leading-none">0</p>
+        </div>
+        <div class="text-center">
+            <p class="text-[7px] font-black text-slate-500 uppercase">Estimasi</p>
+            <p id="belt-bonus-val" class="text-sm font-black text-green-600 leading-none">Rp0</p>
+        </div>
+    </div>
+
+    <div id="belt-sa-alert" class="hidden flex items-center">
+        <span class="text-lg animate-bounce">⚠️</span>
+    </div>
+</div>
+
+                <div class="glass-card p-6 overflow-hidden mb-6">
+                    <h2 class="text-2xl font-black text-indigo-900 uppercase mb-4 text-center">Rekapitulasi</h2>
+                    
+                    <div class="bg-green-600 rounded-3xl p-6 text-center mb-6 shadow-lg shadow-green-200">
+                        <p class="text-green-100 font-bold uppercase text-xs mb-1">Bonus Estimasi</p>
+                        <h3 id="t-bonus" class="text-4xl font-black text-white">Rp0</h3>
+                    </div>
+
+                    <div class="stats-group">
+                        <div id="displayBulan" class="col-span-3 text-center font-black text-indigo-600 text-[11px] mb-3 uppercase tracking-[0.2em] border-b-2 border-slate-200 pb-2">BULAN ...</div>
+                        <div class="grid grid-cols-3 gap-2 w-full">
+                            <div class="text-center">
+                                <p class="text-slate-500 font-bold uppercase text-[10px] mb-1">Total SA</p>
+                                <p id="t-sa" class="text-xl font-black text-indigo-900">0</p>
+                            </div>
+                            <div class="text-center border-x-2 border-slate-200">
+                                <p class="text-red-600 font-bold uppercase text-[10px] mb-1">SA KURANG</p>
+                                <p id="t-point" class="text-xl font-black text-red-600">0</p>
+                            </div>
+                            <div class="text-center">
+                                <p id="label-kurang" class="text-indigo-600 font-bold uppercase text-[10px] mb-1">SA BLN LALU</p>
+                                <p id="t-kurang" class="text-xl font-black text-indigo-900">0</p>
+                            </div>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-slate-200">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[10px] font-black text-slate-500 uppercase">Target Achievement</span>
+                                <span id="targetPercentText" class="text-[10px] font-black text-indigo-600">0%</span>
+                            </div>
+                            <div class="progress-container">
+                                <div id="targetProgressBar" class="progress-bar-fill bg-indigo-600"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overflow-hidden rounded-2xl border-2 border-indigo-50 mb-6">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="bg-red-600 text-white py-4 border-none text-center !text-white">STATUS OFF</th>
+                                    <th class="bg-green-600 text-white py-4 border-none text-center !text-white">AKTIF</th>
+                                    <th class="bg-indigo-600 text-white py-4 border-none text-center !text-white">ID BARU</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td id="t-off" class="text-red-600 text-3xl font-black px-4 py-8 border-r border-indigo-50 bg-white">0</td>
+                                    <td id="t-aktif" class="text-green-600 text-3xl font-black px-4 py-8 border-r border-indigo-50 bg-white">0</td>
+                                    <td id="t-baru" class="text-indigo-600 text-3xl font-black px-4 py-8 bg-white">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button onclick="muatDataTabel(this)" id="btnRefreshTabel" class="w-full bg-indigo-900 hover:bg-black text-white font-bold py-4 rounded-2xl uppercase text-xs transition-all shadow-lg active:scale-95 mb-6">🔄 Sinkronisasi Data Aktif</button>
+
+                    <div class="mt-4 pt-4 border-t-2 border-slate-100">
+                        <button onclick="toggleSection('innerBonusContent', 'iconBonusDekade')" class="w-full text-center font-black text-indigo-900 text-xs uppercase mb-4 tracking-widest flex items-center justify-center gap-2 hover:bg-slate-50 p-2 rounded-lg transition-all">
+                            💰 SA PERBULAN & TRIWULAN <span id="iconBonusDekade">▼</span>
+                        </button>
+                        <div id="innerBonusContent" class="hidden">
+                            <div class="radio-grid">
+                                <div class="radio-item-chip"><input type="radio" name="quarter" id="q1" value="q1"><label for="q1">Q1 (JAN-MAR)</label></div>
+                                <div class="radio-item-chip"><input type="radio" name="quarter" id="q2" value="q2"><label for="q2">Q2 (APR-JUN)</label></div>
+                                <div class="radio-item-chip"><input type="radio" name="quarter" id="q3" value="q3"><label for="q3">Q3 (JUL-SEP)</label></div>
+                                <div class="radio-item-chip"><input type="radio" name="quarter" id="q4" value="q4"><label for="q4">Q4 (OKT-DES)</label></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 mb-6">
+                                <button onclick="resetQuarterFilter()" class="bg-white border-2 border-slate-200 py-3 rounded-xl font-black text-[10px] uppercase">Reset</button>
+                                <button onclick="hitungBonusDekade()" class="bg-indigo-600 text-white py-3 rounded-xl font-black text-[10px] uppercase shadow-md">Hitung Bonus</button>
+                            </div>
+                            
+                            <div id="hasilBonusDekade" class="hidden">
+                                <div class="stats-group bg-indigo-50 border-indigo-100 mb-4 p-3">
+                                    <h4 class="text-center font-black text-indigo-900 text-[9px] uppercase mb-2 tracking-widest">TOTAL SA 3 BLN DAN BONUS FINAL</h4>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="text-center">
+                                            <p class="text-slate-500 font-bold uppercase text-[8px] mb-1">Total SA 3 Bln</p>
+                                            <p id="dk-total-sa" class="text-lg font-black text-indigo-900">0</p>
+                                        </div>
+                                        <div class="text-center border-l border-indigo-200">
+                                            <p class="text-green-600 font-bold uppercase text-[8px] mb-1">Sisa Bonus Final</p>
+                                            <p id="dk-total-rp" class="text-lg font-black text-green-600">Rp0</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-6">
+                                    <h4 class="text-center font-black text-indigo-900 text-[10px] uppercase mb-2 tracking-widest">📊 RINCIAN SA & BONUS BULANAN</h4>
+                                    <div class="overflow-hidden rounded-xl border-2 border-slate-200 shadow-sm">
+                                        <table class="w-full bg-white">
+                                            <thead class="rincian-bonus-header">
+                                                <tr>
+        <th class="border">BULAN</th>
+        <th class="border">SA</th>
+        <th class="border">INSENTIF</th>
+        <th class="border" style="display: none;">EST (100%)</th>
+        <th class="border">UPRES</th>
+        <th class="border">MODAL</th>
+        <th class="border">THP</th>
+    </tr>
+                                            </thead>
+                                            <tbody id="dk-monthly-bonus-body" class="font-bold text-slate-700"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="overflow-hidden rounded-xl border-2 border-indigo-50 mb-6">
+                                    <table>
+                                        <thead class="kategori-bonus-header">
+                                            <tr>
+                                                <th class="border">KATEGORI</th>
+                                                <th class="border">TOTAL SA</th>
+                                                <th class="border">BONUS PER ID (@)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="dk-table-body" class="bg-white"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t-2 border-slate-100">
+                        <button onclick="toggleSection('innerGradeContent', 'iconGrade');" class="w-full text-center font-black text-indigo-900 text-xs uppercase mb-4 tracking-widest flex items-center justify-center gap-2 hover:bg-slate-50 p-2 rounded-lg transition-all">
+                            🏆 NILAI & HISTORY <span id="iconGrade">▼</span>
+                        </button>
+                        <div id="innerGradeContent" class="hidden">
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div class="bg-slate-100 p-4 rounded-2xl text-center border-2 border-slate-200">
+                                    <p class="text-[10px] font-black text-slate-500 uppercase">Grade Bulan Ini</p>
+                                    <div id="grade-container" class="mt-1"><span class="grade-badge grade-U">---</span></div>
+                                </div>
+                                <div class="bg-blue-50 p-4 rounded-2xl text-center border-2 border-blue-100">
+                                    <p class="text-[10px] font-black text-indigo-600 uppercase">D vz D</p>
+                                    <p id="dvzd-status" class="text-lg font-black text-indigo-700">0 vs 0</p>
+                                    <p class="text-[8px] font-bold text-indigo-400 uppercase mt-1">Apple to Apple</p>
+                                </div>
+                            </div>
+                            <div class="border-t-2 border-dashed border-slate-200 pt-6">
+                                <h4 class="text-center font-black text-slate-500 text-[10px] uppercase mb-4 tracking-widest">📜 Catatan History Performa Bulanan</h4>
+                                <div class="history-table-container overflow-x-auto">
+                                    <table class="history-table w-full">
+                                        <thead>
+                                            <tr class="bg-slate-100">
+                                                <th style="color:black !important">BULAN/TAHUN</th>
+                                                <th style="color:black !important">TOTAL SA</th>
+                                                <th style="color:black !important">MOB</th>
+                                                <th style="color:black !important">GRADE</th>
+                                                <th style="color:black !important">KETERANGAN</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="historyTableBody" class="bg-white">
+                                            <tr><td colspan="5" class="py-4 text-slate-400 italic text-[10px]">Klik Sinkronisasi untuk menghitung history...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sectionCari" class="w-full hidden">
+                <div class="grid grid-cols-4 gap-2 mb-4">
+                    <div class="bg-orange-500 text-white rounded-2xl p-2 flex flex-col justify-center items-center shadow-lg">
+                        <span class="font-bold uppercase text-[7px] text-orange-100">Progress</span>
+                        <span id="totalProgressCount" class="text-xl font-black">0</span>
+                    </div>
+                    <div class="bg-amber-500 text-white rounded-2xl p-2 flex flex-col justify-center items-center shadow-lg">
+                        <span class="font-bold uppercase text-[7px] text-amber-100">Pending</span>
+                        <span id="totalPendingCount" class="text-xl font-black">0</span>
+                    </div>
+                    <div class="bg-red-600 text-white rounded-2xl p-2 flex flex-col justify-center items-center shadow-lg">
+                        <span class="font-bold uppercase text-[7px] text-red-100">Fast Pay</span>
+                        <span id="totalFastCount" class="text-xl font-black">0</span>
+                    </div>
+                    <div class="bg-sky-600 text-white rounded-2xl p-2 flex flex-col justify-center items-center shadow-lg">
+                        <span class="font-bold uppercase text-[7px] text-sky-100">Quality</span>
+                        <span id="totalQcCount" class="text-xl font-black">0</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 mb-6">
+                    <input type="text" id="userInput" placeholder="Nama, ID, atau Alamat..." class="input-field mb-3" oninput="cariDataRealTime()">
+                    <input type="text" id="dateInput" inputmode="numeric" pattern="[0-9]*" placeholder="Filter Tanggal (1-31)" class="input-field mb-3" oninput="cariDataRealTime()">
+                    
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <button onclick="cariData('progress', this)" class="bg-orange-600 text-white font-black py-3 rounded-xl uppercase text-[10px] transition-all active:scale-95">On Progress</button>
+                        <button onclick="cariData('pending', this)" class="bg-amber-600 text-white font-black py-3 rounded-xl uppercase text-[10px] transition-all active:scale-95">Pending List</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <button onclick="cariData('fast', this)" class="bg-red-600 text-white font-black py-3 rounded-xl uppercase text-[10px] transition-all active:scale-95">Fast Payment</button>
+                        <button onclick="cariData('qc', this)" class="bg-sky-600 text-white font-black py-3 rounded-xl uppercase text-[10px] transition-all active:scale-95">Quality Care</button>
+                    </div>
+                    
+                    <button type="button" onclick="lihatDaftarLeads()" class="w-full bg-slate-800 text-white py-3 rounded-xl font-black text-[10px] uppercase shadow-lg border-b-4 border-slate-950 active:scale-95 transition-all mb-3">📋 LIHAT SEMUA DAFTAR LEADS</button>
+                    
+                    <button type="button" onclick="openComplaintSearch()" class="w-full bg-red-700 text-white py-3 rounded-xl font-black text-[10px] uppercase shadow-lg border-b-4 border-red-950">⚠️ LAPOR COMPLAINT CUSTOMER</button>
+
+                    <div id="searchInfo" class="mt-4 hidden text-center">
+                        <span class="bg-indigo-100 text-indigo-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase">Ditemukan: <span id="searchResultCount">0</span> Pelanggan</span>
+                    </div>
+                </div>
+                
+                <div id="leadsList" class="hidden mb-6 space-y-4 pt-4 border-t-2 border-dashed border-slate-300">
+                    <div class="flex justify-between items-center mb-2 px-2">
+                        <h2 class="text-indigo-100 font-black text-sm uppercase tracking-widest">📋 DAFTAR PROSPEK LEADS</h2>
+                        <button onclick="tutupDaftar()" class="bg-red-500 text-white px-3 py-1 rounded-lg font-black text-[10px] uppercase">Tutup</button>
+                    </div>
+                    <div id="cardsContainer" class="space-y-4"></div>
+                </div>
+
+                <div id="resultsList" class="space-y-4 flex flex-col"></div>
+            </div>
+
+            <div id="sectionInput" class="w-full glass-card p-6 hidden">
+                <h2 class="text-2xl font-black text-center text-indigo-900 uppercase mb-4">Input Pelanggan</h2>
+                
+                <form id="rekapanForm" class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10" autocomplete="off">
+                    <div class="relative">
+                        <label class="absolute left-4 top-1 text-[9px] font-black text-black uppercase z-10">⌨️ Keterangan</label>
+                        <input type="text" name="command" id="inputManual" placeholder="CONTOH: PROMO" class="input-field pt-6 force-caps draft-sync">
+                    </div>
+                    <div class="relative">
+                        <label class="absolute left-4 top-1 text-[9px] font-black text-black uppercase z-10">📅 Tanggal</label>
+                        <input type="date" name="tanggal" id="inputTanggal" class="input-field pt-6 draft-sync" required>
+                    </div>
+                    <input type="text" name="nama" placeholder="NAMA PELANGGAN" class="input-field force-caps draft-sync" required>
+                    <input type="number" name="id_cst" placeholder="ID CST (DARI BILLING)" class="input-field draft-sync" required>
+                    <input type="email" name="email" placeholder="email@gmail.com" class="input-field draft-sync" required>
+                    <input type="tel" name="hp" id="inputHp" placeholder="NO HP (+628XXX)" class="input-field draft-sync" required>
+                    <select name="paket" id="selectPaket" class="input-field md:col-span-2 draft-sync" required>
+                        <option value="">-- PAKET LAYANAN --</option>
+                        <option value="50Ring">50Ring</option>
+                        <option value="Pass75">Pas75</option>
+                        <option value="Eco100">Eco100</option>
+                        <option value="Sahabat 100">Sahabat 100</option>
+                        <option value="30ValueLite">30ValueLite</option>
+                        <option value="Neo100">Neo100</option>
+                        <option value="Value30">Value30</option>
+                        <option value="Fast50">Fast50</option>
+                        <option value="Velo150">Velo150</option>
+                        <option value="Nova100">Nova100</option>
+                        <option value="Nexus300">Nexus300</option>
+                        <option value="Gamer250">Gamer250</option>
+                        <option value="Prime500">Prime500</option>
+                        <option value="Gamer500">Gamer500</option>
+                        <option value="Wonder750">Wonder750</option>
+                        <option value="Gamer750">Gamer750</option>
+                        <option value="Ultra1Gbps">Ultra1Gbps</option>
+                        <option value="Gamer1Gbps">Gamer1Gbps</option>
+                    </select>
+                    
+                    <div class="autocomplete-wrapper md:col-span-2">
+                        <textarea name="alamat" id="inputAlamat" placeholder="ALAMAT LENGKAP INSTALASI" rows="2" class="input-field force-caps draft-sync" required></textarea>
+                        <div id="alamatSuggestions" class="autocomplete-items hidden"></div>
+                    </div>
+                    
+                    <div class="md:col-span-2 grid grid-cols-2 gap-4">
+                        <div class="flex items-center p-4 bg-indigo-50 rounded-xl border-2 border-indigo-100">
+                            <input type="checkbox" id="onProgress" name="command_billing" value="on progress" class="w-6 h-6 accent-indigo-600 draft-sync" onclick="toggleCheckbox('pending', this)">
+                            <label for="onProgress" class="ml-3 font-bold text-indigo-900 uppercase text-xs">On Progress</label>
+                        </div>
+                        <div class="flex items-center p-4 bg-amber-50 rounded-xl border-2 border-amber-100">
+                            <input type="checkbox" id="pending" name="command_billing" value="pending" class="w-6 h-6 accent-amber-600 draft-sync" onclick="toggleCheckbox('onProgress', this)">
+                            <label for="pending" class="ml-3 font-bold text-amber-900 uppercase text-xs">Pending</label>
+                        </div>
+                    </div>
+                    <button type="submit" id="btnKirim" class="md:col-span-2 bg-indigo-600 text-white font-black py-4 rounded-xl shadow-lg uppercase hover:bg-indigo-700 transition-all">Simpan Data</button>
+                </form>
+            </div>
+
+            <div id="sectionLeads" class="w-full glass-card p-6 hidden">
+                <h2 class="text-2xl font-black text-center text-indigo-900 uppercase mb-4">Leads System</h2>
+                <form id="leadsForm" autocomplete="off" class="space-y-4">
+                    <input type="hidden" name="action" value="submitLeads">
+                    <input type="hidden" name="leads_tgl_d2d" id="leads_tgl_d2d_hidden">
+
+                    <div>
+                        <label class="leads-label">👤 Nama Calon Pelanggan</label>
+                        <input type="text" name="leads_nama" placeholder="NAMA LENGKAP" class="input-field force-caps draft-leads" required>
+                    </div>
+
+                    <div>
+                        <label class="leads-label">📱 Nomor WhatsApp (WA)</label>
+                        <input type="tel" name="leads_hp" placeholder="0812XXXXXX" class="input-field draft-leads" required>
+                    </div>
+
+                    <div>
+                        <label class="leads-label">📅 Rencana Janji Temu</label>
+                        <input type="date" name="leads_janji_temu" class="input-field draft-leads">
+                    </div>
+
+                    <div>
+                        <label class="leads-label">❓ Alasan / Kendala</label>
+                        <select name="leads_alasan" class="input-field force-caps draft-leads" required>
+                            <option value="">-- PILIH KENDALA --</option>
+                            <option value="MASIH TERIKAT KONTRAK PROVIDER LAIN">MASIH TERIKAT KONTRAK PROVIDER LAIN</option>
+                            <option value="HARGA DIANGGAP TERLALU MAHAL">HARGA DIANGGAP TERLALU MAHAL</option>
+                            <option value="MENUNGGU PERSETUJUAN KELUARGA/PEMILIK">MENUNGGU PERSETUJUAN KELUARGA/PEMILIK</option>
+                            <option value="SUDAH NYAMAN DENGAN PROVIDER LAMA">SUDAH NYAMAN DENGAN PROVIDER LAMA</option>
+                            <option value="JARINGAN BELUM MASUK (BLANK SPOT)">JARINGAN BELUM MASUK (BLANK SPOT)</option>
+                            <option value="ALASAN EKONOMI / BUDGET">ALASAN EKONOMI / BUDGET</option>
+                            <option value="HANYA TANYA-TANYA (PRICE LIST)">HANYA TANYA-TANYA (PRICE LIST)</option>
+                            <option value="LAIN-LAIN / KENDALA TEKNIS">LAIN-LAIN / KENDALA TEKNIS</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="leads-label">📍 Alamat Lengkap & Koordinat</label>
+                        <div class="relative mb-2">
+                            <input type="text" name="leads_koordinat" id="inputKoordinat" placeholder="TITIK KOORDINAT GPS" class="input-field draft-leads pr-20">
+                            <button type="button" onclick="getGeoLocation()" class="absolute right-2 top-2 bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black uppercase">📍 AMBIL</button>
+                        </div>
+                        <textarea name="leads_alamat" placeholder="ALAMAT LENGKAP" rows="3" class="input-field force-caps draft-leads" required></textarea>
+                    </div>
+
+                    <div class="pt-4 space-y-3">
+                        <button type="submit" id="btnKirimLeads" class="btn-leads-submit">Simpan Prospek</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <button onclick="switchTab('tabel')" id="tabTabel" class="tab-btn tab-active">
+                <span class="tab-icon text-xl">📊</span>
+                <span>TABEL</span>
+            </button>
+            <button onclick="switchTab('cari')" id="tabCari" class="tab-btn">
+                <span class="tab-icon text-xl">🔍</span>
+                <span>CARI</span>
+            </button>
+            <button onclick="switchTab('input')" id="tabInput" class="tab-btn">
+                <span class="tab-icon text-xl">📝</span>
+                <span>INPUT</span>
+            </button>
+            <button onclick="switchTab('leads')" id="tabLeads" class="tab-btn">
+                <span class="tab-icon text-xl">👥</span>
+                <span>LEADS</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="customModal">
+        <div class="modal-box shadow-2xl">
+            <div id="modalHeader" class="p-4 text-center">
+                <h3 id="modalTitle" class="text-white font-black tracking-widest uppercase text-sm"></h3>
+            </div>
+            <div class="p-6 text-center">
+                <div id="modalBody" class="text-slate-700 font-bold space-y-1 mb-6 text-sm uppercase"></div>
+                <p id="modalSubtext" class="text-[10px] text-slate-400 font-black mb-4 uppercase"></p>
+                <div class="grid grid-cols-2 gap-3" id="modalButtons"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="undoToast" class="bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4">
+        <span class="text-sm font-bold">Data disembunyikan</span>
+        <button onclick="undoBilling()" class="bg-yellow-500 text-black px-3 py-1 rounded-lg font-black text-xs uppercase">Undo</button>
+    </div>
+
+    <div id="lockScreen" class="fixed inset-0 z-[10002] bg-indigo-950 flex flex-col items-center justify-center p-6 transition-all duration-500">
+        <div class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-[380px] text-center">
+            <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="text-4xl">🔒</span>
+            </div>
+            <h2 class="text-2xl font-black text-indigo-900 mb-2">SISTEM TERKUNCI</h2>
+            <p class="text-slate-500 text-sm mb-6 font-semibold">Masukkan 4 Digit PIN</p>
+            <input type="password" id="pinInput" maxlength="4" readonly class="w-full text-center text-3xl tracking-[1em] font-black border-2 border-indigo-200 rounded-xl py-3 outline-none mb-4">
+            <div class="grid grid-cols-3 gap-3">
+                <button type="button" onclick="pressPin('1')" class="bg-slate-100 py-4 rounded-xl font-bold active:bg-indigo-200">1</button>
+                <button type="button" onclick="pressPin('2')" class="bg-slate-100 py-4 rounded-xl font-bold active:bg-indigo-200">2</button>
+                <button type="button" onclick="pressPin('3')" class="bg-slate-100 py-4 rounded-xl font-bold active:bg-indigo-200">3</button>
+                <button type="button" onclick="pressPin('4')" class="bg-slate-100 py-4 rounded-xl font-bold active:bg-indigo-200">4</button>
+                <button type="button" onclick="pressPin('5')" class="bg-slate-100 py-4 rounded-xl font-bold active:bg-indigo-200">5</button>
+                <button type="button" onclick="pressPin('6')" class="bg-slate-100 py-4 rounded-xl font-bold active:bg-indigo-200">6</button>
+                <button type="button" onclick="pressPin('7')" class="bg-slate-100 py-4 rounded-xl font-bold active:bg-indigo-200">7</button>
+                <button type="button" onclick="pressPin('8')" class="bg-slate-100 py-4 rounded-xl font-bold active:bg-indigo-200">8</button>
+                <button type="button" onclick="pressPin('9')" class="bg-slate-100 py-4 rounded-xl font-bold active:bg-indigo-200">9</button>
+                <button type="button" onclick="clearPin()" class="bg-red-50 text-red-600 py-4 rounded-xl font-bold active:bg-red-200">C</button>
+                <button type="button" onclick="pressPin('0')" class="bg-slate-100 py-4 rounded-xl font-bold active:bg-indigo-200">0</button>
+                <button type="button" onclick="checkPin()" id="btnEnter" class="bg-indigo-600 text-white py-4 rounded-xl font-bold active:bg-indigo-800">OK</button>
+            </div>
+        </div>
+    </div>
+	
+	
+<div id="captureCard" style="position: absolute; left: -9999px; width: 380px; background: #ffffff; border-radius: 24px; overflow: hidden; font-family: 'Segoe UI', Roboto, sans-serif; border: 2px solid #5B214A;">
+    
+    <div style="background: #5B214A; padding: 25px 20px; text-align: center; border-bottom: 4px solid #4A1B3C;">
+        <h2 style="color: #ffffff; margin: 0; font-size: 20px; font-weight: 900; letter-spacing: 2px;">MYREPUBLIC</h2>
+        <p style="font-size: 10px; color: #EAD7E5; margin: 5px 0 0 0; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Smart Digital Card</p>
+    </div>
+
+    <div style="padding: 20px;">
+        <div style="margin-bottom: 15px; border-bottom: 2px solid #EAD7E5; padding-bottom: 10px;">
+            <p style="font-size: 9px; color: #5B214A; margin: 0; font-weight: 800; text-transform: uppercase;">Nama Pelanggan</p>
+            <p id="card-name" style="font-weight: 900; color: #1e1b4b; margin: 0; font-size: 16px;"></p>
+        </div>
+		
+        <div style="background: #F8EEF5; border: 2px dashed #5B214A; padding: 12px; border-radius: 12px; margin-bottom: 15px; text-align: center;">
+            <p style="font-size: 9px; color: #5B214A; margin: 0; font-weight: 800; text-transform: uppercase;">Total Tagihan</p>
+            <p id="card-billing" style="font-weight: 900; color: #5B214A; margin: 0; font-size: 20px;"></p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+                <p style="font-size: 9px; color: #5B214A; margin: 0; font-weight: 800; text-transform: uppercase;">ID Pelanggan</p>
+                <p id="card-id" style="font-weight: 900; color: #5B214A; margin: 0; font-size: 14px;"></p>
+            </div>
+            <div>
+                <p style="font-size: 9px; color: #5B214A; margin: 0; font-weight: 800; text-transform: uppercase;">Jatuh Tempo</p>
+                <p id="card-japo" style="font-weight: 900; color: #ef4444; margin: 0; font-size: 14px;"></p>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+            <div>
+                <p style="font-size: 9px; color: #5B214A; margin: 0; font-weight: 800; text-transform: uppercase;">Email</p>
+                <p id="card-email" style="font-weight: 700; color: #4a2540; margin: 0; font-size: 11px;"></p>
+            </div>
+            <div>
+                <p style="font-size: 9px; color: #5B214A; margin: 0; font-weight: 800; text-transform: uppercase;">WhatsApp</p>
+                <p id="card-hp" style="font-weight: 700; color: #4a2540; margin: 0; font-size: 11px;"></p>
+            </div>
+        </div>
+
+        <div style="background: #F8EEF5; padding: 12px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid #5B214A;">
+            <p style="font-size: 9px; color: #5B214A; margin: 0; font-weight: 800; text-transform: uppercase;">Paket Layanan</p>
+            <p id="card-package" style="font-weight: 900; color: #1e1b4b; margin: 0; font-size: 13px;"></p>
+        </div>
+
+        <div style="padding-left: 10px;">
+            <p style="font-size: 9px; color: #5B214A; margin: 0; font-weight: 800; text-transform: uppercase;">Alamat Instalasi</p>
+            <p id="card-address" style="font-size: 10px; color: #334155; margin: 2px 0 0 0; font-weight: 600; line-height: 1.4;"></p>
+        </div>
+    </div>
+
+    <div style="background: #5B214A; padding: 10px; text-align: center;">
+        <p style="font-size: 8px; color: #ffffff; margin: 0; font-weight: 700;">Informasi & Kendala: myrepublicsragen.my.id</p>
+    </div>
+</div>
+
+    <script src="script.js"></script>
+</body>
+</html>

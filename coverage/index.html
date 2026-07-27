@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Coverage MyRepublic Sragen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary-color: #6a2c91; --bg-color: #f4f7f6; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .container { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .logo { width: 180px; margin-bottom: 20px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: #444; }
+        input { width: 100%; padding: 14px; border: 2px solid #eee; border-radius: 12px; box-sizing: border-box; font-family: inherit; font-size: 1rem; text-align: center; }
+        .btn-gps { background-color: #f3f0ff; color: var(--primary-color); border: 2px solid var(--primary-color); width: 100%; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 15px; transition: 0.3s; }
+        .btn-gps:hover { background-color: var(--primary-color); color: white; }
+        .btn-main { background-color: var(--primary-color); color: white; border: none; width: 100%; padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-main:hover { background-color: #522170; transform: translateY(-2px); }
+        button:disabled { background-color: #ccc !important; border-color: #ccc !important; color: #fff !important; cursor: not-allowed; }
+        #result { margin-top: 25px; padding: 15px; border-radius: 12px; display: none; font-size: 0.95rem; line-height: 1.6; text-align: left; }
+        .status-ok { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .status-no { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary-color); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; margin: 10px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="images/logo.png" alt="MyRepublic" class="logo" onerror="this.src='https://myrepublic.co.id/wp-content/uploads/2022/05/logo-myrepublic-1.png'">
+    
+    <h3>Cek Coverage Sragen</h3>
+    
+    <button class="btn-gps" id="btnGps" onclick="fillCoordsAndCheck()">📍 Ambil Lokasi GPS & Cek Otomatis</button>
+
+    <div class="divider" style="margin: 20px 0; border-bottom: 1px solid #eee; position: relative;">
+        <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: white; padding: 0 10px; font-size: 12px; color: #999;">ATAU INPUT MANUAL</span>
+    </div>
+
+    <div class="form-group">
+        <label>Titik Koordinat (Lat, Lon)</label>
+        <input type="text" id="manualCoords" placeholder="-7.4738, 110.9243">
+    </div>
+
+    <button class="btn-main" id="btnCheck" onclick="runCheck()">
+        <span id="btnText">CEK KETERSEDIAAN</span>
+        <div id="loader" class="loader"></div>
+    </button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+    // === KONFIGURASI ===
+    const BOT_TOKEN = '8330506170:AAH8JHSDZ-r99YxkGu4Y-bwCea4Ap2TGhOc'; 
+    const CHAT_ID = '-1003594385102'; 
+    const TOPIC_ID = 467; 
+    // ===================
+
+    let coverageData = [];
+
+    // Mengambil JSON dari folder awal (root) karena HTML ada di subfolder
+    fetch('../sragen_coverage.json')
+        .then(res => res.json())
+        .then(data => { coverageData = data; })
+        .catch(() => console.error("Gagal memuat file sragen_coverage.json"));
+
+    async function getAreaName(lat, lon) {
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18`);
+            const data = await response.json();
+            return data.address.village || data.address.suburb || data.address.town || data.address.city_district || "Cluster Sragen";
+        } catch (e) {
+            return "Cluster Sragen";
+        }
+    }
+
+    function fillCoordsAndCheck() {
+        if (navigator.geolocation) {
+            const btnGps = document.getElementById('btnGps');
+            btnGps.innerText = "⏳ Mencari Posisi...";
+            btnGps.disabled = true;
+
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude.toFixed(7);
+                    const lon = pos.coords.longitude.toFixed(7);
+                    document.getElementById('manualCoords').value = `${lat}, ${lon}`;
+                    btnGps.innerText = "✅ Lokasi Ditemukan";
+                    btnGps.disabled = false;
+                    runCheck("GPS OTOMATIS");
+                },
+                () => {
+                    alert("Gagal akses lokasi GPS. Pastikan izin aktif.");
+                    btnGps.disabled = false;
+                    btnGps.innerText = "📍 Ambil Lokasi GPS & Cek Otomatis";
+                },
+                { enableHighAccuracy: true }
+            );
+        }
+    }
+
+    async function runCheck(metode = "INPUT MANUAL") {
+        const coordsInput = document.getElementById('manualCoords').value;
+        if (!coordsInput) return alert("Koordinat kosong!");
+
+        const parts = coordsInput.split(',');
+        if (parts.length !== 2) return alert("Format salah! Gunakan: lat, lon");
+
+        const uLat = parseFloat(parts[0].trim());
+        const uLon = parseFloat(parts[1].trim());
+
+        setLoading(true);
+
+        let nearestDist = Infinity;
+        let nearestPoint = null;
+
+        // Cari titik FAT terdekat di JSON
+        coverageData.forEach(p => {
+            const d = getHaversine(uLat, uLon, p[1], p[0]);
+            if (d < nearestDist) {
+                nearestDist = d;
+                nearestPoint = p;
+            }
+        });
+
+        const distMeter = Math.round(nearestDist * 1000);
+        const isCovered = distMeter <= 150; 
+        const statusTxt = isCovered ? "TERCOVER" : "BELUM TERCOVER";
+        const icon = isCovered ? "✅" : "❌";
+
+        // Cari nama desa berdasarkan koordinat JSON terdekat agar akurat
+        const namaDesa = await getAreaName(nearestPoint[1], nearestPoint[0]);
+
+        const resDiv = document.getElementById('result');
+        resDiv.style.display = 'block';
+        resDiv.className = isCovered ? 'status-ok' : 'status-no';
+        resDiv.innerHTML = `
+            <strong>${statusTxt}</strong><br>
+            📍 Desa Terdekat: ${namaDesa}<br>
+            🎯 Jarak ke FAT: ${distMeter} meter<br>
+            📝 Metode: ${metode}
+        `;
+
+        sendToTelegram(distMeter, statusTxt, icon, namaDesa, uLat, uLon, metode);
+        setLoading(false);
+    }
+
+    function sendToTelegram(jarak, status, icon, desa, lat, lon, metode) {
+        const gMaps = `https://www.google.com/maps?q=${lat},${lon}`;
+        const message = `🔍 *CEK COVERAGE ${metode}*
+━━━━━━━━━━━━━━━
+📍 *Desa Terdekat:* ${desa}
+🎯 *Jarak ke FAT:* ${jarak} meter
+${icon} *Status:* ${status} 
+🗺️ [Lihat Lokasi User](${gMaps})`;
+
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chat_id: CHAT_ID,
+                message_thread_id: TOPIC_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            })
+        });
+    }
+
+    function getHaversine(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+    function setLoading(show) {
+        document.getElementById('btnCheck').disabled = show;
+        document.getElementById('btnText').style.display = show ? 'none' : 'block';
+        document.getElementById('loader').style.display = show ? 'block' : 'none';
+        if(show) document.getElementById('result').style.display = 'none';
+    }
+</script>
+</body>
+</html>
