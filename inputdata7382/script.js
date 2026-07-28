@@ -174,7 +174,7 @@ function updateCountdownMonth() {
     const value = document.getElementById("cd-days");
     const box = document.getElementById("countdownMonth");
 
-    if (!label || !value || !box) return;
+    if (!value || !box) return; if(label) label.innerText = "SISA " + months[month];
 
     label.innerText = "SISA " + months[month];
     value.innerText = remain + " HARI";
