@@ -101,6 +101,7 @@ function lockAppAutomatically() {
 
 window.onload = () => {
     updateLiveDate();
+    updateCountdownMonth();
     loadDraft();
     loadLeadsDraft();
     resetInactivityTimer();
@@ -141,6 +142,44 @@ function updateLiveDate() {
 // --- LOGIKA AUTOCOMPLETE ALAMAT ---
 const alamatInput = document.getElementById('inputAlamat');
 const alamatSuggestions = document.getElementById('alamatSuggestions');
+
+
+
+function updateCountdownMonth() {
+
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const day = now.getDate();
+
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    const remain = lastDay - day;
+
+    const months = [
+        "JAN","FEB","MAR","APR","MEI","JUN",
+        "JUL","AGU","SEP","OKT","NOV","DES"
+    ];
+
+    const label = document.getElementById("cd-label");
+    const value = document.getElementById("cd-days");
+    const box = document.getElementById("countdownMonth");
+
+    if (!label || !value || !box) return;
+
+    label.innerText = "SISA " + months[month];
+    value.innerText = remain + " HARI";
+
+    if(remain > 10){
+        box.style.background="#16a34a";
+    }else if(remain > 5){
+        box.style.background="#ca8a04";
+    }else{
+        box.style.background="#dc2626";
+    }
+
+}
+
 
 if (alamatInput && alamatSuggestions) {
     alamatInput.addEventListener('input', function() {
@@ -334,6 +373,7 @@ function loadOfflineData() {
         generateHistoryFromData(fullRawData);
         triggerGradeCalc();
         updateBeltWidget(fullRawData, currentTotalSA);
+        refreshTotalDiterima();
 
         const dBulan = document.getElementById('displayBulan');
         if(dBulan) dBulan.innerText = "BULAN " + bnFull[now.getMonth()];
@@ -402,6 +442,7 @@ async function muatDataTabel(btnEl) {
         generateHistoryFromData(fullRawData); 
         triggerGradeCalc();
         updateBeltWidget(fullRawData, currentTotalSA);
+        refreshTotalDiterima();
         cekJanjiTemuLeads();
     } catch (e) { loadOfflineData(); } finally { if(btn) btn.innerText = "🔄 Sinkronisasi Data Aktif"; }
 }
@@ -774,7 +815,14 @@ function renderCard(item, mode) {
          data-tgl="${item.tanggal || '-'}"
          class="glass-card p-5 shadow-xl border-l-[12px] mb-4 ${cC}">
         <div class="mb-3 flex justify-between items-start">
-            <div><h3 class="font-black text-indigo-900 uppercase text-lg leading-tight blink-name">${item.nama}${pB}</h3></div>
+            
+<div class="flex flex-col items-start gap-1">
+    <h3 class="font-black text-indigo-900 uppercase text-lg leading-tight blink-name">
+        ${item.nama}
+    </h3>
+    ${pB}
+</div>
+
         </div>
         <div class="grid grid-cols-2 gap-x-2 gap-y-1 text-[11px] text-slate-600 bg-white/50 p-3 rounded-xl mb-3 border border-slate-200">
             <p class="col-span-2 flex items-center bg-white p-1.5 rounded border border-indigo-100 mb-1">
@@ -1704,3 +1752,47 @@ function hitungInsentifBelt(totalSubsAktif3Bln, currentMonthSA) {
     }
     return { nama: "DIBAWAH BIRU", bonus: 0, status: "BELUM MASUK TIER" };
 }
+
+
+
+function refreshTotalDiterima(){
+
+    const card=document.getElementById("card-total-diterima");
+    if(!card) return;
+
+    const hasil=hitungTotalDiterima();
+
+    const namaBulan=[
+        "",
+        "JAN","FEB","MAR","APR","MEI","JUN",
+        "JUL","AGU","SEP","OKT","NOV","DES"
+    ];
+
+    const bulanTransfer=
+        hasil.bulan===12 ? 1 : hasil.bulan+1;
+
+    const bulanSisa=
+        hasil.bulan-2<=0 ? hasil.bulan+10 : hasil.bulan-2;
+
+    card.innerHTML=`
+    <p class="text-green-100 font-bold uppercase text-xs mb-1">
+        TOTAL DITERIMA ${namaBulan[bulanTransfer]}
+    </p>
+
+    <h3 class="text-4xl font-black text-white">
+        Rp${hasil.total.toLocaleString('id-ID')}
+    </h3>
+
+    <div class="mt-3 text-white text-xs leading-6">
+        <div>
+            80% SA ${namaBulan[hasil.bulan]} :
+            <b>Rp${hasil.paidPertama.toLocaleString('id-ID')}</b>
+        </div>
+
+        <div>
+            20% SA ${namaBulan[bulanSisa]} :
+            <b>Rp${hasil.paidKetiga.toLocaleString('id-ID')}</b>
+        </div>
+    </div>`;
+}
+

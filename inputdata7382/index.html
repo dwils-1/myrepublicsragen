@@ -12,24 +12,75 @@
 <body>
 
     <div class="app-viewport">
-        <div class="top-nav">
-            <div class="flex flex-col">
-                <h1 class="text-white font-black text-xs tracking-tighter">MYREPUBLIC SYSTEM</h1>
-                <p id="currentDateDisplay" class="text-indigo-200 text-[9px] font-bold uppercase tracking-wider">Minggu, 18 Januari 2026</p>
-            </div>
-            <button onclick="window.open('https://sales.myrepublic.net.id/Login.jsp', '_blank')" class="portal-btn active:scale-95 transition-transform">🚀 PORTAL</button>
+        
+
+<div class="top-nav clean-header">
+
+    <div class="header-row">
+
+        <div class="header-left">
+
+            <h1>MYREPUBLIC SYSTEM</h1>
+
+            <p id="currentDateDisplay"></p>
+
         </div>
 
-        <div class="scrollable-content">
+        <div id="countdownMonth" class="header-count">
+
+            <span id="cd-days">0 HARI</span>
+
+        </div>
+
+    </div>
+
+    
+
+</div>
+
+<div class="scrollable-content">
+
+
             <div id="sectionTabel" class="w-full">
-                <div id="notifBilling" class="notif-banner" onclick="filterJatuhTempoHariIni()">
-                    <span class="text-xl">🔔</span>
-                    <div class="flex-1">
-                        <p id="notifText">Ada 0 Pelanggan masuk siklus tagihan hari ini!</p>
-                        <p class="text-[9px] opacity-70">KLIK UNTUK LIHAT DAFTAR</p>
-                    </div>
-                    <span class="bg-amber-600 text-white px-2 py-1 rounded-lg text-[10px]">CEK</span>
-                </div>
+                
+<div id="notifBilling" class="notif-banner" onclick="filterJatuhTempoHariIni()">
+
+    <span class="text-xl">🔔</span>
+
+    <div class="notif-body">
+
+        <div class="notif-text">
+
+            <p id="notifText">Ada 0 Pelanggan masuk siklus tagihan hari ini!</p>
+
+            <p class="notif-sub">KLIK UNTUK LIHAT DAFTAR</p>
+
+        </div>
+
+        <div class="notif-actions">
+
+            <button id="btnTelegramTest"
+                onclick="event.stopPropagation();testTelegram();"
+                class="btn-report-sm">
+
+                📤 KIRIM REPORT
+
+            </button>
+
+            <button
+                onclick="event.stopPropagation();filterJatuhTempoHariIni();"
+                class="btn-cek-sm">
+
+                CEK
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 
                 <div id="janjitemu" class="notif-banner" style="background: #4338ca; color: white; border-color: #3730a3;" onclick="lihatDaftarJanjiTemuHariIni()">
                     <span class="text-xl">🤝</span>
@@ -511,6 +562,8 @@
     </div>
 </div>
 
-    <script src="script.js"></script>
+    <script src="config.js"></script>
+<script src="telegram.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

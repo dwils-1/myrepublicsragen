@@ -2,15 +2,26 @@
     --app-height: 100%;
 }
 
-body { 
-    background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%); 
-    height: 100vh;
-    height: -webkit-fill-available;
-    font-family: 'Segoe UI', sans-serif; 
-    overflow: hidden; 
-    display: flex;
-    justify-content: center;
+
+body{
+    background:
+        radial-gradient(circle at 15% 20%, rgba(111,60,195,.20), transparent 35%),
+        radial-gradient(circle at 80% 65%, rgba(91,45,163,.18), transparent 40%),
+        linear-gradient(
+            180deg,
+            #5B2DA3 0%,
+            #43207E 45%,
+            #2E165E 100%
+        );
+
+    height:100vh;
+    height:-webkit-fill-available;
+    font-family:'Segoe UI',sans-serif;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
 }
+
 
 .app-viewport {
     width: 100%;
@@ -214,3 +225,611 @@ td { padding: 15px; text-align: center; border: 1px solid #e2e8f0; font-weight: 
 .belt-BIRU { background: #2563eb !important; color: white !important; }
 .belt-COKELAT { background: #78350f !important; color: white !important; }
 .belt-HITAM { background: #0f172a !important; color: white !important; }
+
+
+/* ===========================
+   HEADER MYREPUBLIC BARU
+=========================== */
+
+.top-nav-new{
+padding-top:8px;
+padding-bottom:8px;
+
+
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+
+}
+
+.top-nav-new>div{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+
+}
+
+.countdown-box{
+
+    width:72px;
+    height:72px;
+
+    background:#dc2626 !important;
+
+    border-radius:18px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    color:#fff;
+
+    flex-shrink:0;
+
+}
+
+.countdown-box #cd-label{
+
+    font-size:9px;
+    font-weight:900;
+
+}
+
+.countdown-box #cd-days{
+
+    font-size:15px;
+    font-weight:900;
+    line-height:1.1;
+
+}
+
+.report-btn{
+
+    width:100% !important;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:linear-gradient(90deg,#0ea5e9,#2563eb);
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:900;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    box-shadow:0 8px 20px rgba(37,99,235,.35);
+
+}
+
+
+
+/* ===== HEADER V3 ===== */
+
+.clean-header{
+
+padding:12px 18px 10px;
+
+background:linear-gradient(180deg,#6b3fb8,#5b2ea8);
+
+border-bottom:1px solid rgba(255,255,255,.12);
+
+}
+
+.header-row{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-bottom:8px;
+
+}
+
+.header-left h1{
+
+margin:0;
+
+font-size:15px;
+
+font-weight:900;
+
+color:#fff;
+
+}
+
+.header-left p{
+
+margin-top:6px;
+
+font-size:11px;
+
+font-weight:700;
+
+color:#d6d2ff;
+
+text-transform:uppercase;
+
+}
+
+.header-count{
+
+background:#dc2626;
+
+padding:4px 10px;
+
+border-radius:999px;
+
+color:#fff;
+
+font-weight:900;
+
+font-size:12px;
+
+box-shadow:0 6px 18px rgba(220,38,38,.35);
+
+}
+
+.header-report{
+
+width:100%;
+
+height:40px;
+
+border:none;
+
+border-radius:16px;
+
+background:linear-gradient(90deg,#0ea5e9,#2563eb);
+
+color:#fff;
+
+font-size:15px;
+
+font-weight:900;
+
+box-shadow:0 8px 20px rgba(37,99,235,.30);
+
+}
+
+
+
+.header-count{
+display:flex;
+align-items:center;
+justify-content:center;
+min-width:74px;
+height:28px;
+line-height:28px;
+}
+
+.header-count #cd-days{
+font-size:12px;
+font-weight:900;
+margin:0;
+padding:0;
+}
+
+.header-left{
+flex:1;
+}
+
+.header-row{
+gap:12px;
+}
+
+
+
+/* ===== HEADER FINAL ===== */
+
+.header-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+.header-left{
+    flex:1;
+}
+
+.header-count{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-width:82px;
+    height:30px;
+    border-radius:999px;
+}
+
+.header-action{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+
+.header-report{
+    flex:1;
+}
+
+.header-check{
+    width:82px;
+    height:40px;
+    border:none;
+    border-radius:16px;
+    background:#f59e0b;
+    color:#fff;
+    font-weight:900;
+}
+
+
+
+/* ===== REPORT DI BANNER ===== */
+
+.notif-action-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.notif-report-btn{
+
+    height:34px;
+    min-width:132px;
+
+    padding:0 14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:linear-gradient(90deg,#1992ff,#2563eb);
+
+    color:#fff;
+
+    font-size:12px;
+
+    font-weight:800;
+
+    box-shadow:0 4px 10px rgba(37,99,235,.25);
+
+}
+
+.notif-check-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    height:34px;
+
+    min-width:58px;
+
+    padding:0 16px;
+
+    background:#c56a00;
+
+    color:#fff;
+
+    border-radius:12px;
+
+    font-size:12px;
+
+    font-weight:800;
+
+}
+
+
+/* ===== NOTIF BILLING V2 ===== */
+
+#notifBilling{
+    display:flex !important;
+    align-items:flex-start !important;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+#notifBilling .flex-1{
+    width:100%;
+    order:1;
+}
+
+#notifBilling #notifText{
+    display:block;
+    font-size:17px;
+    font-weight:900;
+    line-height:1.35;
+    white-space:normal;
+    word-break:normal;
+    margin-bottom:4px;
+}
+
+#notifBilling .text-\[9px\]{
+    display:block;
+    font-size:11px !important;
+    font-weight:700;
+    opacity:.75;
+}
+
+#notifBilling .notif-actions{
+    order:2;
+    width:100%;
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:8px;
+    margin-top:10px;
+}
+
+#notifBilling #btnTelegramTest,
+#notifBilling .btn-report-sm{
+    height:36px;
+    padding:0 14px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(90deg,#1d9bf0,#2563eb);
+    color:#fff;
+    font-size:12px;
+    font-weight:800;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    white-space:nowrap;
+}
+
+#notifBilling .bg-amber-600,
+#notifBilling .btn-cek-sm{
+    height:36px;
+    min-width:72px;
+    border-radius:10px;
+    font-size:12px;
+    font-weight:800;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+
+/* ===== COMPACT BUTTONS ===== */
+
+#notifBilling .notif-actions{
+    gap:6px !important;
+}
+
+#notifBilling #btnTelegramTest,
+#notifBilling .btn-report-sm{
+    width:118px !important;
+    min-width:118px !important;
+    height:30px !important;
+    padding:0 10px !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+    border-radius:8px !important;
+}
+
+#notifBilling .bg-amber-600,
+#notifBilling .btn-cek-sm{
+    width:60px !important;
+    min-width:60px !important;
+    height:30px !important;
+    padding:0 !important;
+    font-size:11px !important;
+    font-weight:800 !important;
+    border-radius:8px !important;
+}
+
+#notifBilling #btnTelegramTest span{
+    font-size:11px !important;
+}
+
+
+/* ===== COMPACT BILLING TEXT ===== */
+
+#notifBilling #notifText{
+    font-size:13px !important;
+    font-weight:800 !important;
+    line-height:1.25 !important;
+    margin-bottom:2px !important;
+}
+
+#notifBilling .text-\[9px\]{
+    font-size:9px !important;
+    font-weight:600 !important;
+    letter-spacing:.2px;
+    opacity:.72 !important;
+}
+
+
+/* ===== TOMBOL CEK ===== */
+
+#notifBilling .bg-amber-600{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    width:58px !important;
+    min-width:58px !important;
+    height:30px !important;
+
+    padding:0 !important;
+    margin-left:6px !important;
+
+    background:#c76b00 !important;
+    color:#fff !important;
+
+    border-radius:9px !important;
+
+    font-size:11px !important;
+    font-weight:900 !important;
+    text-transform:uppercase;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.18);
+    cursor:pointer;
+    user-select:none;
+}
+
+#notifBilling .bg-amber-600:hover{
+    background:#b35f00 !important;
+}
+
+#notifBilling .bg-amber-600:active{
+    transform:scale(.96);
+}
+
+
+/* ===== CEK STYLE SAMA DENGAN KIRIM REPORT ===== */
+
+#notifBilling .bg-amber-600{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    width:60px !important;
+    height:30px !important;
+
+    padding:0 !important;
+    margin-left:6px !important;
+
+    background:linear-gradient(180deg,#d97706,#b45309) !important;
+    color:#fff !important;
+
+    border:0 !important;
+    border-radius:10px !important;
+
+    font-size:11px !important;
+    font-weight:900 !important;
+    line-height:1 !important;
+    text-decoration:none !important;
+
+    box-shadow:
+        0 3px 8px rgba(0,0,0,.18),
+        inset 0 1px 0 rgba(255,255,255,.25);
+
+    cursor:pointer;
+    transition:.15s;
+}
+
+#notifBilling .bg-amber-600:hover{
+    filter:brightness(1.05);
+}
+
+#notifBilling .bg-amber-600:active{
+    transform:scale(.96);
+}
+
+
+/* ===== FORCE BUTTON CEK ===== */
+
+#notifBilling .btn-cek-sm{
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    width:64px !important;
+    min-width:64px !important;
+    height:32px !important;
+
+    padding:0 10px !important;
+    margin-left:8px !important;
+
+    border:none !important;
+    border-radius:10px !important;
+
+    background:linear-gradient(180deg,#d97706,#b45309) !important;
+
+    color:#fff !important;
+    font-size:11px !important;
+    font-weight:900 !important;
+    line-height:1 !important;
+    text-transform:uppercase !important;
+
+    box-shadow:
+        0 4px 10px rgba(180,83,9,.35),
+        inset 0 1px 0 rgba(255,255,255,.20) !important;
+
+    cursor:pointer !important;
+}
+
+#notifBilling .btn-cek-sm:hover{
+    filter:brightness(1.05);
+}
+
+#notifBilling .btn-cek-sm:active{
+    transform:scale(.96);
+}
+
+
+/* ===== BUTTON PRESS EFFECT ===== */
+
+.btn-report-sm,
+.btn-cek-sm{
+
+    position:relative;
+    overflow:hidden;
+    transition:transform .12s ease,
+               filter .15s ease,
+               box-shadow .15s ease;
+
+}
+
+.btn-report-sm:active,
+.btn-cek-sm:active{
+
+    transform:scale(.96);
+    filter:brightness(.90);
+
+}
+
+.btn-report-sm::after,
+.btn-cek-sm::after{
+
+    content:"";
+    position:absolute;
+
+    left:-120%;
+    top:0;
+
+    width:120%;
+    height:100%;
+
+    background:
+    linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.35),
+        transparent
+    );
+
+    transition:left .45s;
+
+}
+
+.btn-report-sm:hover::after,
+.btn-cek-sm:hover::after{
+
+    left:120%;
+
+}
+
+.btn-click{
+
+    transform:scale(.95)!important;
+    filter:brightness(.88)!important;
+
+}
+

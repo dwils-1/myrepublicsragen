@@ -1,0 +1,9 @@
+# Backup file
+*.bak
+*.bak*
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+inputdata7382/config.js
