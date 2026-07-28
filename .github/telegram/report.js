@@ -148,7 +148,13 @@ async function main(){
 
     console.log(pesan);
 
-    await kirimTelegram(pesan);
+    const hasil = await kirimTelegram(pesan);
+
+    console.log(JSON.stringify(hasil, null, 2));
+
+    if (!hasil.ok) {
+        throw new Error(hasil.description);
+    }
 
     console.log('✓ Telegram berhasil dikirim');
 
