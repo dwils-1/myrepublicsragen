@@ -833,3 +833,69 @@ gap:12px;
 
 }
 
+
+/* ===========================
+   FINAL MOBILE POLISH
+=========================== */
+
+.header-row{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    gap:20px !important;
+}
+
+.header-left{
+    flex:1;
+}
+
+.header-count{
+    margin-left:auto !important;
+    margin-right:8px !important;
+    min-width:88px !important;
+    height:34px !important;
+    padding:0 14px !important;
+    border-radius:999px !important;
+    display:flex !important;
+    justify-content:center !important;
+    align-items:center !important;
+}
+
+.header-count #cd-days{
+    font-size:15px !important;
+    font-weight:900 !important;
+}
+
+#notifBilling{
+    display:flex !important;
+    align-items:center !important;
+    gap:12px !important;
+    padding:14px 16px !important;
+}
+
+#notifBilling .notif-body{
+    flex:1;
+}
+
+#notifBilling .notif-actions{
+    display:flex !important;
+    justify-content:flex-end !important;
+    align-items:center !important;
+    gap:8px !important;
+    margin-top:8px !important;
+}
+
+#notifBilling .btn-report-sm{
+    width:140px !important;
+    height:42px !important;
+    border-radius:12px !important;
+    font-size:13px !important;
+}
+
+#notifBilling .btn-cek-sm{
+    width:72px !important;
+    height:42px !important;
+    border-radius:12px !important;
+    font-size:13px !important;
+}
+
