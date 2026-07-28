@@ -1,0 +1,36 @@
+name: MyRepublic Telegram Report
+
+on:
+
+  workflow_dispatch:
+
+  schedule:
+
+    - cron: '0 5 * * *'
+
+jobs:
+
+  telegram-report:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run Telegram Report
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_THREAD_ID: ${{ secrets.TELEGRAM_THREAD_ID }}
+
+        run: |
+
+          node .github/telegram/report.js
+
