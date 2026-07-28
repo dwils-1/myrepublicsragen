@@ -156,6 +156,15 @@ function updateCountdownMonth() {
     const lastDay = new Date(year, month + 1, 0).getDate();
     const remain = lastDay - day;
 
+    console.log("===== COUNTDOWN DEBUG =====");
+    console.log("NOW      :", now.toString());
+    console.log("YEAR     :", year);
+    console.log("MONTH    :", month + 1);
+    console.log("DAY      :", day);
+    console.log("LAST DAY :", lastDay);
+    console.log("REMAIN   :", remain);
+
+
     const months = [
         "JAN","FEB","MAR","APR","MEI","JUN",
         "JUL","AGU","SEP","OKT","NOV","DES"
