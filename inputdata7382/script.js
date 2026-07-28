@@ -15,6 +15,58 @@ const SKEMA_DEKADE = {
     'ValueUp': { prices: { '30': 120000, '45': 145000, '60': 165000, '75': 185000 } }
 };
 
+
+
+const UPRES_RULE = {
+    MONTH12: [
+        {min:25,key:"75",max:2800000},
+        {min:20,key:"60",max:2100000},
+        {min:15,key:"45",max:1400000},
+        {min:10,key:"30",max:700000}
+    ],
+    MONTH3: [
+        {min:75,key:"75"},
+        {min:60,key:"60"},
+        {min:45,key:"45"},
+        {min:30,key:"30"}
+    ],
+    PAY_MONTH12:0.5,
+    FIRST_PAYMENT_PERCENT:0.8
+};
+
+const MAX_PAY_MAP = {
+    "30": 700000,
+    "45": 1400000,
+    "60": 2100000,
+    "75": 2800000
+};
+
+
+const MAP_KATEGORI = {
+                "50ring":"RingEco",
+                "pass75":"RingEco",
+                "eco100":"RingEco",
+
+                "sahabat100":"Jet",
+
+                "30valuelite":"ValueLite",
+                "neo100":"ValueLite",
+                "value30":"ValueLite",
+                "fast50":"ValueLite",
+
+                "velo150":"ValueUp",
+                "nova100":"ValueUp",
+                "nexus300":"ValueUp",
+                "gamer250":"ValueUp",
+                "prime500":"ValueUp",
+                "gamer500":"ValueUp",
+                "wonder750":"ValueUp",
+                "gamer750":"ValueUp",
+                "ultra1gbps":"ValueUp",
+                "gamer1gbps":"ValueUp"
+            }
+
+
 // --- HELPER TAHUN ---
 function isThisYear(dateString) {
     if (!dateString) return false;
@@ -369,13 +421,16 @@ function updateBeltWidget(dataFull, saBulanIni) {
         
         if (diffMonth >= 3) countSubs3Bln++; 
     });
+    const belt = hitungInsentifBelt(countSubs3Bln, saBulanIni);
 
-    let tier = { nama: "PUTIH", bonus: 0, minSA: 0 };
-    if (countSubs3Bln > 400) tier = { nama: "HITAM", bonus: 2000000, minSA: 14 };
-    else if (countSubs3Bln >= 251) tier = { nama: "COKELAT", bonus: 1300000, minSA: 12 };
-    else if (countSubs3Bln >= 151) tier = { nama: "BIRU", bonus: 800000, minSA: 11 };
-    else if (countSubs3Bln >= 101) tier = { nama: "HIJAU", bonus: 0, minSA: 0 };
-    else if (countSubs3Bln >= 26) tier = { nama: "KUNING", bonus: 0, minSA: 0 };
+    const tier = {
+        nama: belt.nama === "DIBAWAH BIRU" ? "PUTIH" : belt.nama,
+        bonus: belt.bonus,
+        minSA:
+            belt.nama === "BIRU" ? 11 :
+            belt.nama === "COKELAT" ? 12 :
+            belt.nama === "HITAM" ? 14 : 0
+    };
 
     const elSubs = document.getElementById('belt-total-subs');
     if(elSubs) elSubs.innerText = countSubs3Bln;
@@ -916,6 +971,44 @@ function renderRekapUI(d) {
     if(pText) pText.innerText = Math.round(pc) + '%';
 }
 
+
+
+function getActiveBracket(value, rules) {
+    for (const rule of rules) {
+        if (value >= rule.min) return rule.key;
+    }
+    return "0";
+}
+
+
+
+function hitungUpresBulanan(dataBulanan, activeBr){
+    if(activeBr==="0") return 0;
+
+    let total=0;
+
+    for(const kategori in SKEMA_DEKADE){
+        total += (dataBulanan[kategori] || 0) *
+                 SKEMA_DEKADE[kategori].prices[activeBr];
+    }
+
+    return total;
+}
+
+
+
+function bulanPaid3(bulan){
+    const urut = [
+        "JAN","FEB","MAR","APR","MEI","JUN",
+        "JUL","AGS","SEP","OKT","NOV","DES"
+    ];
+
+    const idx = urut.indexOf(String(bulan).toUpperCase());
+    if(idx === -1) return "-";
+
+    return urut[(idx + 2) % 12];
+}
+
 function hitungBonusDekade() {
     const q = document.querySelector('input[name="quarter"]:checked');
     if(!q) return alert("Pilih Quarter!");
@@ -939,10 +1032,10 @@ function hitungBonusDekade() {
         
         if(months.includes(m)) {
             const pkt = (item.paket || "").toLowerCase();
-            let cat = 'ValueUp';
-            if(pkt === '50ring' || pkt === 'Pass75' || pkt === 'Eco100') cat = 'RingEco';
-            else if(pkt === 'Sahabat100') cat = 'Jet';
-            else if(pkt === '30valuelite') cat = 'ValueLite';
+
+            ;
+
+            const cat = MAP_KATEGORI[pkt] || "ValueUp";
             
             statsT[cat]++; 
             mD[m][cat]++; 
@@ -960,34 +1053,29 @@ function hitungBonusDekade() {
 
     const tSQ = Object.values(statsT).reduce((a,b) => a+b, 0);
     let mBH = ""; let tDB = 0; let tFBQ = 0;
-    const MAX_PAY_MAP = { "30": 700000, "45": 1400000, "60": 2100000, "75": 2800000 };
 
     months.forEach((m, i) => {
         let monthlySA = mD[m].total;
         let activeBr = "0";
 
-        if (i < 2) {
-            activeBr = monthlySA >= 25 ? "75" : monthlySA >= 20 ? "60" : monthlySA >= 15 ? "45" : monthlySA >= 10 ? "30" : "0";
-        } else {
-            activeBr = tSQ >= 75 ? "75" : tSQ >= 60 ? "60" : tSQ >= 45 ? "45" : tSQ >= 30 ? "30" : "0";
-        }
+        activeBr = (i < 2)
+            ? getActiveBracket(monthlySA, UPRES_RULE.MONTH12)
+            : getActiveBracket(tSQ, UPRES_RULE.MONTH3);
 
-        let eBFB = 0; 
-        if(activeBr !== "0") {
-            for(let c in SKEMA_DEKADE) {
-                eBFB += (mD[m][c] || 0) * SKEMA_DEKADE[c].prices[activeBr];
-            }
-        }
+        let eBFB = hitungUpresBulanan(mD[m], activeBr);
         
         tFBQ += eBFB; 
-        let d = (i < 2) ? eBFB * 0.5 : 0; 
+        let d = (i < 2) ? eBFB * UPRES_RULE.PAY_MONTH12 : 0; 
         if (i < 2 && activeBr !== "0") {
             const cap = MAX_PAY_MAP[activeBr] || 0;
             if (d > cap) d = cap; 
         }
 
         tDB += d;
-        let thp = mD[m].insentif * 0.8;
+        let totalInsentif = mD[m].insentif;
+        let paidPertama = totalInsentif * UPRES_RULE.FIRST_PAYMENT_PERCENT;
+        let paidKetiga = totalInsentif - paidPertama;
+        let namaPaid3 = bulanPaid3(mN[m]);
 
         mBH += `
     <tr class="border-b">
@@ -997,7 +1085,10 @@ function hitungBonusDekade() {
         <td class="p-2 border text-slate-400" style="display: none;">Rp${eBFB.toLocaleString()}</td>
         <td class="p-2 border text-indigo-600">Rp${d.toLocaleString()}</td>
         <td class="p-2 border text-red-600">Rp${(mD[m].modal || 0).toLocaleString()}</td>
-        <td class="p-2 border text-emerald-700 font-black">Rp${thp.toLocaleString()}</td>
+        <td class="p-2 border text-emerald-700 font-black">Rp${paidPertama.toLocaleString()}
+            <br><span class="text-[9px] text-slate-500">
+            Sisa Paid ${namaPaid3}: Rp${paidKetiga.toLocaleString()}
+            </span></td>
     </tr>`;
     });
 
@@ -1014,10 +1105,83 @@ function hitungBonusDekade() {
     if(dkRp) dkRp.innerText = `Rp${Math.max(0, tFBQ - tDB).toLocaleString()}`;
     const dkTBody = document.getElementById('dk-table-body');
     if(dkTBody) dkTBody.innerHTML = dkTBodyHTML;
+    const card = document.getElementById('card-total-diterima');
+    if(card){
+        const hasil = hitungTotalDiterima(mD);
+        const namaBulan = ["","JAN","FEB","MAR","APR","MEI","JUN","JUL","AGU","SEP","OKT","NOV","DES"];
+
+        const bulanTransfer = hasil.bulan === 12 ? 1 : hasil.bulan + 1;
+        const bulanSisa = hasil.bulan - 2 <= 0 ? hasil.bulan + 10 : hasil.bulan - 2;
+
+        card.innerHTML = `
+        <p class="text-green-100 font-bold uppercase text-xs mb-1">
+            TOTAL DITERIMA ${namaBulan[bulanTransfer]}
+        </p>
+
+        <h3 class="text-4xl font-black text-white">
+            Rp${hasil.total.toLocaleString('id-ID')}
+        </h3>
+
+        <div class="mt-3 text-white text-xs leading-6">
+            <div>80% SA ${namaBulan[hasil.bulan]} : <b>Rp${hasil.paidPertama.toLocaleString('id-ID')}</b></div>
+            <div>20% SA ${namaBulan[bulanSisa]} : <b>Rp${hasil.paidKetiga.toLocaleString('id-ID')}</b></div>
+        </div>`;
+    }
+
     const hBonus = document.getElementById('hasilBonusDekade');
     if(hBonus) hBonus.classList.remove('hidden');
 }
 
+
+
+function hitungTotalDiterima(){
+
+    const now = new Date().getMonth()+1;
+
+    const bulanPaid3 = (now-2<=0) ? now+10 : now-2;
+
+    let insentifNow = 0;
+    let insentifPaid3 = 0;
+
+    fullRawData.forEach(item=>{
+
+        if(!item.tanggal || !isThisYear(item.tanggal)) return;
+
+        const cmd = String(item.command||"").toLowerCase();
+        if(cmd.includes("pending") || cmd.includes("progress")) return;
+
+        const sep = item.tanggal.includes("/") ? "/" : "-";
+        const p = item.tanggal.split(sep);
+
+        const bulan = parseInt(p[1]);
+
+        const bonus = parseInt(String(item.bonus||"0").replace(/\D/g,"")) || 0;
+
+        if(bulan===now)
+            insentifNow += bonus;
+
+        if(bulan===bulanPaid3)
+            insentifPaid3 += bonus;
+
+    });
+
+    const paidPertama = Math.round(
+        insentifNow * UPRES_RULE.FIRST_PAYMENT_PERCENT
+    );
+
+    const paidKetiga = Math.round(
+        insentifPaid3 * (1-UPRES_RULE.FIRST_PAYMENT_PERCENT)
+    );
+
+    return{
+        bulan:now,
+        bulanPaid3,
+        paidPertama,
+        paidKetiga,
+        total:paidPertama+paidKetiga
+    };
+
+}
 function handleBillingClick(id) { 
     openModal({ 
         title: '⚠️ VERIFIKASI', 
