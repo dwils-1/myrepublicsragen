@@ -176,7 +176,6 @@ function updateCountdownMonth() {
 
     if (!value || !box) return; if(label) label.innerText = "SISA " + months[month];
 
-    label.innerText = "SISA " + months[month];
     value.innerText = remain + " HARI";
 
     if(remain > 10){
