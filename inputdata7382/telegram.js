@@ -141,7 +141,8 @@ async function testTelegram(){
 
     data.forEach(item=>{
 
-        const cmd=(item.command||"").toLowerCase();
+        const cmd = String(item.command || "").trim().toLowerCase();
+        if (cmd.includes("off") || cmd.includes("pending")) return;
 
         if(cmd.includes("warning"))
             warning.push(item);
@@ -428,16 +429,16 @@ Terima kasih atas kepercayaan Bapak/Ibu menggunakan layanan MyRepublic.`
     pesan+="\n\n━━━━━━━━━━━━━━━━━━\n";
     pesan+="🤖 MyRepublic System";
 
-    const hasil=await kirimTelegram(pesan);
+    const popup=document.createElement("dialog");popup.innerHTML=`<div style="padding:24px;text-align:center;min-width:260px"><div style="width:52px;height:52px;margin:auto;border:5px solid #ddd;border-top:5px solid #0ea5e9;border-radius:50%;animation:spin 1s linear infinite"></div><p style="margin-top:16px;font-weight:bold">Mengirim laporan ke Telegram...</p><style>@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style></div>`;document.body.appendChild(popup);popup.showModal();const hasil=await kirimTelegram(pesan);popup.close();popup.remove();
 
     if(hasil && hasil.ok)
-        alert("✅ Report berhasil dikirim.");
+        alert("✅ Telegram Sukses!\n\nLaporan berhasil dikirim.");
     else
-        alert("❌ Report gagal.");
+        alert("❌ Telegram Gagal!\n\nPeriksa koneksi internet atau Bot Telegram.");
 
     }catch(err){
         console.error(err);
-        alert("ERROR: "+err.message);
+        alert("❌ Telegram Error!\n\n"+err.message);
     }
 
 }
