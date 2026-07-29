@@ -379,6 +379,7 @@ function loadOfflineData() {
         renderRekapUI(summaryObj);
         updateFastAndProgressCounts();
         generateHistoryFromData(fullRawData);
+        updateWarningAlert();
         triggerGradeCalc();
         updateBeltWidget(fullRawData, currentTotalSA);
         refreshTotalDiterima();
@@ -448,6 +449,7 @@ async function muatDataTabel(btnEl) {
         renderRekapUI(summary); 
         updateFastAndProgressCounts(); 
         generateHistoryFromData(fullRawData); 
+        updateWarningAlert();
         triggerGradeCalc();
         updateBeltWidget(fullRawData, currentTotalSA);
         refreshTotalDiterima();
@@ -772,6 +774,7 @@ function renderCard(item, mode) {
     let sL = (diffDays <= 10) ? `<span class="bg-red-600 text-white px-2 py-0.5 rounded text-[10px] font-black ml-2">${diffDays} HARI</span>` : (diffDays <= 60 ? '<span class="bg-orange-500 text-white px-2 py-0.5 rounded text-[10px] font-black ml-2">BARU</span>' : '<span class="bg-blue-600 text-white px-2 py-0.5 rounded text-[10px] font-black ml-2">LAMA</span>');
     
     if (mode === 'qc') cC = "card-sky border-sky-200";
+    if (mode === 'warning') cC = "card-red border-red-300";
     const cmdLow = (item.command || "").toLowerCase();
     const isP = cmdLow.includes('pending');
     const isProg = cmdLow.includes('progress');
@@ -784,6 +787,7 @@ function renderCard(item, mode) {
     }
     if(isP) pB += `<span class="pending-badge ml-2">PENDING</span>`;
     if(mode === 'qc') pB += `<span class="bg-sky-600 text-white px-2 py-0.5 rounded text-[9px] font-black ml-2">SIKLUS ${Math.floor(diffDays/30)} BULAN</span>`;
+    if(mode === 'warning') pB += `<span class="bg-red-600 text-white px-2 py-0.5 rounded text-[9px] font-black ml-2">🚨 WARNING</span>`;
 
     let hT = item.harga || "0";
     if (hT === "0" || hT === "" || hT === "Harga Tidak Ada") hT = "Cek Billing";
@@ -1346,9 +1350,9 @@ async function prosesWa(hp, id, nama, japo, paket, source = 'general') {
     const card = document.getElementById(`card-${id}`);
     const email = card ? card.getAttribute('data-email') || '-' : '-';
     const harga = card ? card.getAttribute('data-harga') || 'Cek Billing' : 'Cek Billing';
-    const alamat = card ? (card.querySelector('p:nth-child(8) b')?.innerText || '-') : '-';
-    const tgl = card ? (card.querySelector('p:nth-child(2) b')?.innerText || '-') : '-';
-    const cmd = card?.getAttribute('data-command').toLowerCase() || "";
+    const alamatNode = card ? card.querySelector('p:nth-child(8) b') : null; const alamat = alamatNode ? alamatNode.innerText : '-';
+    const tglNode = card ? card.querySelector('p:nth-child(2) b') : null; const tgl = tglNode ? tglNode.innerText : '-';
+    const cmd = card ? ((card.getAttribute('data-command') || '').toLowerCase()) : '';
     const isP = cmd.includes('pending');
     let mT = '📲 OPSI WA', hC = 'bg-green-600', tB = 'TEKS OTOMATIS';
     if (isP) { mT = '📲 FOLLOW UP PENDING'; hC = 'bg-amber-500'; tB = 'KIRIM PENAWARAN'; }
@@ -1802,5 +1806,239 @@ function refreshTotalDiterima(){
             <b>Rp${hasil.paidKetiga.toLocaleString('id-ID')}</b>
         </div>
     </div>`;
+}
+
+// ==============================
+// WARNING FOLLOW UP
+// ==============================
+
+function getWarningCustomers() {
+    if (!Array.isArray(fullRawData)) return [];
+
+    const today = new Date();
+    const todayDate = today.getDate();
+
+    return fullRawData.filter(item => {
+
+        const cmd = String(item.command || "").trim().toLowerCase();
+        if (cmd !== "warning") return false;
+
+        if (!item.tanggal) return false;
+
+        const sep = item.tanggal.includes("/") ? "/" : "-";
+        const p = item.tanggal.split(sep);
+
+        if (p.length < 3) return false;
+
+        const installDay = parseInt(p[0], 10);
+        if (isNaN(installDay)) return false;
+
+        return (
+            todayDate >= installDay &&
+            todayDate <= installDay + 6
+        );
+
+    });
+}
+
+function updateWarningAlert() {
+
+    const banner = document.getElementById("warningAlert");
+    const count = document.getElementById("warningCount");
+
+    if (!banner || !count) return;
+
+    const data = getWarningCustomers();
+
+    if (data.length === 0) {
+        banner.style.display = "none";
+        return;
+    }
+
+    count.textContent = data.length;
+    banner.style.display = "flex";
+}
+
+function lihatDaftarWarning() {
+
+    const list = getWarningCustomers();
+
+    const result = document.getElementById("resultsList");
+
+    if (!result) return;
+
+    if (list.length === 0) {
+        result.innerHTML = `
+        <div class="text-center text-white font-bold bg-red-600 rounded-xl p-4">
+            Tidak ada pelanggan Warning.
+        </div>`;
+        return;
+    }
+
+    let html = "";
+
+    list.forEach(item => {
+
+        html += `
+        <div class="glass-card p-4 mb-3">
+
+            <div class="font-black text-red-600">
+                🚨 ${item.nama}
+            </div>
+
+            <div class="text-xs mt-2">
+
+                <div>ID : ${item.idCst}</div>
+
+                <div>Pasang : ${item.tanggal}</div>
+
+                <div>Alamat : ${item.alamat || "-"}</div>
+
+                <div class="font-bold text-red-600">
+                    COMMAND : ${item.command}
+                </div>
+
+            </div>
+
+        </div>
+        `;
+
+    });
+
+    result.innerHTML = html;
+
+    const searchSection = document.getElementById("searchSection");
+    if (searchSection) searchSection.scrollIntoView({ behavior: "smooth" });
+
+}
+
+// ==============================
+// WARNING FOLLOW UP
+// ==============================
+
+function getWarningCustomers() {
+    if (!Array.isArray(fullRawData)) return [];
+
+    const today = new Date();
+    const todayDate = today.getDate();
+
+    return fullRawData.filter(item => {
+
+        const cmd = String(item.command || "").trim().toLowerCase();
+        if (cmd !== "warning") return false;
+        if (!item.tanggal) return false;
+
+        const sep = item.tanggal.includes("/") ? "/" : "-";
+        const p = item.tanggal.split(sep);
+
+        if (p.length < 3) return false;
+
+        const installDay = parseInt(p[0], 10);
+        if (isNaN(installDay)) return false;
+
+        return todayDate >= installDay && todayDate <= installDay + 6;
+    });
+}
+
+function updateWarningAlert() {
+
+    const banner = document.getElementById("warningAlert");
+    const count = document.getElementById("warningCount");
+
+    if (!banner || !count) return;
+
+    const data = getWarningCustomers();
+
+    if (data.length === 0) {
+        banner.style.display = "none";
+        return;
+    }
+
+    count.textContent = data.length;
+    banner.style.display = "flex";
+}
+
+function lihatDaftarWarning() {
+
+    const data = getWarningCustomers();
+
+    const list = document.getElementById("resultsList");
+
+    if (!list) return;
+
+    if (data.length === 0) {
+        list.innerHTML = "<p class='text-center text-white bg-red-600 rounded-xl p-4 font-bold'>Tidak ada pelanggan Warning.</p>";
+        return;
+    }
+
+    let html = "";
+
+    data.forEach(item => {
+
+        html += `
+        <div class="glass-card p-4 mb-3">
+            <h3 class="font-black text-red-600">🚨 ${item.nama}</h3>
+
+            <p><b>ID :</b> ${item.idCst}</p>
+
+            <p><b>Pasang :</b> ${item.tanggal}</p>
+
+            <p><b>Alamat :</b> ${item.alamat || "-"}</p>
+
+            <p class="font-bold text-red-600">${item.command}</p>
+        </div>
+        `;
+    });
+
+    list.innerHTML = html;
+}
+
+
+// ===============================
+// SELURUH DATA WARNING
+// ===============================
+
+function getAllWarningCustomers() {
+    return fullRawData.filter(item =>
+        String(item.command || "").trim().toLowerCase() === "warning"
+    );
+}
+
+function lihatDaftarWarning(){
+
+    const warningAktif = getWarningCustomers();
+    const semuaWarning = getAllWarningCustomers();
+
+    const aktifIds = new Set(
+        warningAktif.map(i => String(i.idCst))
+    );
+
+    const hasil = [
+        ...warningAktif,
+        ...semuaWarning.filter(i => !aktifIds.has(String(i.idCst)))
+    ];
+
+    const list = document.getElementById("resultsList");
+
+    if(!list) return;
+
+    if(hasil.length===0){
+        list.innerHTML="<p class='text-center text-white font-bold bg-red-600 rounded-xl p-4'>Tidak ada pelanggan WARNING.</p>";
+        return;
+    }
+
+    let html="";
+
+    hasil.forEach(item=>{
+
+        html += renderCard(item,"warning");
+
+    });
+
+    switchTab("cari");
+    list.innerHTML=html;
+
+    const s=document.getElementById("searchSection");
+    if(s) s.scrollIntoView({behavior:"smooth"});
 }
 

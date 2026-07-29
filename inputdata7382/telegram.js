@@ -302,11 +302,9 @@ async function testTelegram(){
                 encodeURIComponent(
 `${sapaan} Bapak/Ibu ${x.nama}.
 
-Saat ini layanan WiFi MyRepublic telah memasuki pembayaran bulan ke-${pembayaran}.
+Sebagai informasi, layanan MyRepublic Bapak/Ibu telah memasuki siklus pembayaran bulan ke-${pembayaran}.
 
-Tagihan untuk pembayaran bulan ke-${pembayaran} sudah dapat dilakukan mulai hari ini.
-
-Mohon melakukan pembayaran sebelum tanggal jatuh tempo agar layanan tetap aktif.
+Pembayaran tagihan sudah dapat dilakukan sesuai jadwal yang berlaku.
 
 Terima kasih atas kepercayaan Bapak/Ibu menggunakan layanan MyRepublic.`
                 );
@@ -397,11 +395,9 @@ Terima kasih atas kepercayaan Bapak/Ibu menggunakan layanan MyRepublic.`
                 encodeURIComponent(
                     `${sapaan} Bapak/Ibu ${x.nama}.
 
-Saat ini layanan WiFi MyRepublic telah memasuki pembayaran bulan ke-${pembayaran}.
+Sebagai informasi, layanan MyRepublic Bapak/Ibu telah memasuki siklus pembayaran bulan ke-${pembayaran}.
 
-Tagihan untuk pembayaran bulan ke-${pembayaran} sudah dapat dilakukan mulai hari ini.
-
-Mohon melakukan pembayaran sebelum tanggal jatuh tempo agar layanan tetap aktif.
+Pembayaran tagihan sudah dapat dilakukan sesuai jadwal yang berlaku.
 
 Terima kasih atas kepercayaan Bapak/Ibu menggunakan layanan MyRepublic.`
                 );
