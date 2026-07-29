@@ -111,7 +111,8 @@ async function main(){
     });
 
     const hasil = await kirimTelegram(pesan);
-    if(!hasil.ok) throw new Error(hasil.description);
+    console.log("Telegram response:", JSON.stringify(hasil, null, 2));
+    if (!hasil.ok) throw new Error(hasil.description || JSON.stringify(hasil));
 
     console.log("✓ Telegram berhasil dikirim dengan format website");
 }
