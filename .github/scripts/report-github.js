@@ -1,9 +1,13 @@
 const https = require("https");
-const { formatReport } = require("./formatter");
+const { formatReport } = require("../../inputdata7382/formatter-github.js");
 const { kirimTelegram } = require("./telegram-node");
 
-const DATA_URL="https://script.google.com/macros/s/AKfycbztPKpwv1jYnakn5P7vn_uupsZt5D7HoejadY7re7JKAKKWD8X6zYA6uFRdz8FMdP46/exec";
-const SUMMARY_URL=DATA_URL+"?action=getTableSummary";
+global.window = { ReportCore: {} };
+require("../../inputdata7382/report-core.js");
+
+const ReportCore = window.ReportCore;
+const DATA_URL = "https://script.google.com/macros/s/AKfycbztPKpwv1jYnakn5P7vn_uupsZt5D7HoejadY7re7JKAKKWD8X6zYA6uFRdz8FMdP46/exec";
+const SUMMARY_URL = DATA_URL + "?action=getTableSummary";
 
 function getJSON(url){
     return new Promise((resolve,reject)=>{
@@ -29,7 +33,6 @@ function info(item){
         const d=String(item.tanggal||"").includes("/")?
             new Date(p[2],p[1]-1,p[0]):
             new Date(p[0],p[1]-1,p[2]);
-
         const now=new Date();
 
         bulan=(now.getFullYear()-d.getFullYear())*12+
@@ -37,7 +40,6 @@ function info(item){
 
         if(now.getDate()<d.getDate()) bulan--;
         if(bulan<0) bulan=0;
-
     }catch(e){}
 
     return{
@@ -48,7 +50,6 @@ function info(item){
 }
 
 async function main(){
-
     const pelanggan=await getJSON(DATA_URL);
     const summary=await getJSON(SUMMARY_URL);
 
@@ -69,14 +70,15 @@ async function main(){
     const mapItem=x=>{
         const i=info(x);
         return{
-            nama:x.nama,
-            id:x.idCst,
-            alamat:x.alamat,
-            pembayaran:i.pembayaran,
-            status:i.status,
-            tanggalPasang:i.tanggal,
-            waLink:"https://wa.me/"+String(x.hp||"").replace(/\D/g,""),
-            detailLink:"https://myrepublicsragen.my.id/inputdata7382/?id="+x.idCst
+            nama: x.nama,
+            id: x.idCst,
+            alamat: x.alamat,
+            hp: x.hp, // Disertakan agar formatter bisa membuat link WhatsApp otomatis dengan benar
+            pembayaran: i.pembayaran,
+            status: i.status,
+            tanggalPasang: i.tanggal,
+            waLink: "https://wa.me/" + String(x.hp||"").replace(/\D/g,""),
+            detailLink: "https://myrepublicsragen.my.id/inputdata7382/?id=" + x.idCst
         };
     };
 
@@ -84,13 +86,13 @@ async function main(){
         tanggal:now.toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"}),
         totalSiklus:siklus.length,
         pelangganBaru:semua.filter(x=>{
-if(!x.tanggal)return false;
-const p=x.tanggal.includes("/")?x.tanggal.split("/"):x.tanggal.split("-");
-const d=x.tanggal.includes("/")?new Date(p[2],p[1]-1,p[0]):new Date(p[0],p[1]-1,p[2]);
-let bulan=(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth());
-if(now.getDate()<d.getDate())bulan--;
-return bulan<3;
-}).length,
+            if(!x.tanggal)return false;
+            const p=x.tanggal.includes("/")?x.tanggal.split("/"):x.tanggal.split("-");
+            const d=x.tanggal.includes("/")?new Date(p[2],p[1]-1,p[0]):new Date(p[0],p[1]-1,p[2]);
+            let bulan=(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth());
+            if(now.getDate()<d.getDate())bulan--;
+            return bulan<3;
+        }).length,
         saBulanIni:summary.totalSA,
         saBulanLalu:summary.pointKurang,
         targetKurang:Math.max((summary.pointKurang||0)-(summary.totalSA||0),0),
