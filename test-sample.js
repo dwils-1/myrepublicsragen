@@ -1,6 +1,5 @@
 const https = require("https");
-const { formatReport } = require("./formatter");
-const { kirimPesanTelegram } = require("./telegram"); // Menyesuaikan nama fungsi pengiriman telegram yang benar
+const { formatReport } = require("./inputdata7382/formatter-github.js");
 
 const DATA_URL = "https://script.google.com/macros/s/AKfycbztPKpwv1jYnakn5P7vn_uupsZt5D7HoejadY7re7JKAKKWD8X6zYA6uFRdz8FMdP46/exec";
 const SUMMARY_URL = DATA_URL + "?action=getTableSummary";
@@ -22,13 +21,12 @@ function getJSON(url){
 }
 
 async function main(){
-    console.log("Mengambil data...");
+    console.log("⏳ Mengambil data dari Google Apps Script...");
+    
     const pelanggan = await getJSON(DATA_URL);
     const summary = await getJSON(SUMMARY_URL);
 
     const semua = pelanggan.data || [];
-    console.log("Total Data :", semua.length);
-
     const now = new Date();
     const today = now.getDate();
 
@@ -71,15 +69,10 @@ async function main(){
         warning: warning.map(mapItem)
     });
 
+    console.log("\n================ HASIL FORMAT (SAMPLE) ================\n");
     console.log(pesan);
-
-    // Kirim menggunakan fungsi yang benar dari telegram.js
-    if (typeof kirimPesanTelegram === "function") {
-        await kirimPesanTelegram(pesan);
-        console.log("\n✓ Laporan berhasil dikirim ke Telegram!");
-    } else {
-        console.log("\n⚠️ Fungsi kirim Telegram tidak ditemukan, tetapi format laporan berhasil dicetak.");
-    }
+    console.log("\n=======================================================\n");
+    console.log("✓ Uji coba sample berhasil dicetak ke layar.");
 }
 
 main().catch(console.error);
