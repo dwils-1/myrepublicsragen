@@ -4,6 +4,8 @@
 
 async function kirimTelegram(pesan){
 
+    console.log("PANJANG PESAN:", pesan.length);
+
     if(!CONFIG.TELEGRAM.BOT_TOKEN){
         console.log("TOKEN TELEGRAM BELUM DIISI");
         return;
@@ -25,16 +27,7 @@ async function kirimTelegram(pesan){
         text:pesan
 
     };
-
     try{
-
-        const r=await fetch(url,{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify(body)
-        });
 
         if(pesan.length>3500){
 
@@ -63,6 +56,8 @@ async function kirimTelegram(pesan){
 
                 body.text=p;
 
+                console.count("FETCH BAGIAN");
+
                 const rr=await fetch(url,{
                     method:"POST",
                     headers:{
@@ -84,6 +79,15 @@ async function kirimTelegram(pesan){
 
         }
 
+        const r=await fetch(url,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(body)
+        });
+
+
         const data = await r.json();
 
         if(!r.ok){
@@ -93,17 +97,24 @@ async function kirimTelegram(pesan){
         }
 
         return data;
-
     }catch(e){
-
         console.log(e);
-
+    }finally{
+        __telegramSending=false;
     }
 
 }
 
 
+let __telegramSending=false;
+
 async function testTelegram(){
+    if(__telegramSending){
+        console.warn("Telegram masih diproses");
+        return;
+    }
+    __telegramSending=true;
+    console.count("TEST TELEGRAM DIPANGGIL");
 
     try{
 
@@ -430,6 +441,7 @@ Terima kasih atas kepercayaan Bapak/Ibu menggunakan layanan MyRepublic.`
     pesan+="🤖 MyRepublic System";
 
     const popup=document.createElement("dialog");popup.innerHTML=`<div style="padding:24px;text-align:center;min-width:260px"><div style="width:52px;height:52px;margin:auto;border:5px solid #ddd;border-top:5px solid #0ea5e9;border-radius:50%;animation:spin 1s linear infinite"></div><p style="margin-top:16px;font-weight:bold">Mengirim laporan ke Telegram...</p><style>@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}</style></div>`;document.body.appendChild(popup);popup.showModal();const hasil=await kirimTelegram(pesan);popup.close();popup.remove();
+    __telegramSending=false;
 
     if(hasil && hasil.ok)
         alert("✅ Telegram Sukses!\n\nLaporan berhasil dikirim.");
