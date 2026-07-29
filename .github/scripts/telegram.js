@@ -76,19 +76,57 @@ async function testTelegram(){
 
     const today=now.getDate();
 
-    let siklus = ReportCore.hitungSiklusHariIni(data);
-    let warning=ReportCore.hitungWarning(data);
+    let siklus=[];
+    let warning=[];
     let baru=0;
 
     data.forEach(item=>{
+
+        const cmd=(item.command||"").toLowerCase();
+
+        if(cmd.includes("warning"))
+            warning.push(item);
+
+        if(item.tanggal){
+
+            const p=item.tanggal.includes("/")
+                ? item.tanggal.split("/")
+                : item.tanggal.split("-");
+
+            let d;
+
+            if(item.tanggal.includes("/"))
+                d=parseInt(p[0]);
+            else
+                d=parseInt(p[2]);
+
+            if(d===today)
+                siklus.push(item);
+
+        }
 
         const t=item.tanggal.includes("/")
             ? item.tanggal.split("/")
             : item.tanggal.split("-");
 
-    });
+        let bulanSubs=0;
 
-    baru = ReportCore.hitungPelangganBaru(data);
+        try{
+
+            const pasang=item.tanggal.includes("/")
+                ? new Date(t[2],t[1]-1,t[0])
+                : new Date(t[0],t[1]-1,t[2]);
+
+            bulanSubs=Math.floor(
+                (now-pasang)/(1000*60*60*24*30)
+            );
+
+        }catch(e){}
+
+        if(bulanSubs<3)
+            baru++;
+
+    });
 
     const totalSA=summary.totalSA||0;
     const saLalu=summary.pointKurang||0;

@@ -1,7 +1,18 @@
-# Backup file
+# Backup
 *.bak
-*.bak*
-*.tmp
+*.bak.*
+backup/
+backup-*/
+coverage/
+
+# Diff
+*.diff
+
+# Logs
+*.log
+
+# Node
+node_modules/
 
 # OS
 .DS_Store

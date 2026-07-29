@@ -32,5 +32,5 @@ jobs:
 
         run: |
 
-          node .github/telegram/report.js
+          node .github/scripts/report-github.js
 
