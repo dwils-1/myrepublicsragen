@@ -1404,7 +1404,7 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
     const now = new Date();
     const hr = now.getHours();
     let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
-    const portalLink = "\n\nCek promo, ganti password, kendala: \n\nwww.myrepublicsragen.my.id";
+    const portalLink = "\n\n🌐 Cek promo, ganti password WiFi, dan informasi layanan lainnya di:\n\nsalesmyrepublic.my.id\n\nTerima kasih atas kepercayaan Bapak/Ibu menggunakan layanan MyRepublic.";
     let textMessage = "";
     
     // LOGIKA PENYUSUNAN PESAN
@@ -1424,7 +1424,7 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
         const selisih = tglJapo - tglHariIni;
         if (selisih >= 0 && selisih <= 5) textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nMengingatkan tagihan MyRepublic bulan ini sebesar *${harga}* sudah muncul. Jatuh tempo dalam *${selisih} hari lagi* (Tgl ${japo}). Mohon melakukan pembayaran tepat waktu agar terhindar dari isolir. 💳`;
         else if (tglHariIni > tglJapo && tglHariIni <= tglJapo + 5) textMessage = `Halo Selamat ${slm} Yth. Bpk/Ibu *${nama.toUpperCase()}*,\n\nKami informasikan bahwa tagihan Anda sebesar *${harga}* saat ini sudah *Melewati Jatuh Tempo*. Mohon segera dilakukan pembayaran hari ini untuk menghindari pemutusan layanan otomatis. 🙏`;
-        else textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah menjadi pelanggan setia MyRepublic.\n\nSebagai informasi, *ID Pelanggan: ${cleanId(id)}* saat ini telah memasuki periode pembayaran.\n\nPembayaran tagihan sudah dapat dilakukan sesuai jadwal yang berlaku agar layanan internet tetap aktif dan berjalan dengan baik.\n\nUntuk cek tagihan, promo, ganti password WiFi, dan informasi layanan lainnya, silakan kunjungi:\n\n🌐 www.myrepublicsragen.my.id\n\nTerima kasih atas kepercayaan Bapak/Ibu menggunakan layanan MyRepublic.`;
+        else textMessage = `Halo Selamat ${slm} Bpk/Ibu *${nama.toUpperCase()}*,\n\nTerima kasih telah menjadi pelanggan setia MyRepublic.\n\nSebagai informasi, *ID Pelanggan: ${cleanId(id)}* saat ini telah memasuki periode pembayaran.\n\nPembayaran tagihan sudah dapat dilakukan sesuai jadwal yang berlaku agar layanan internet tetap aktif dan berjalan dengan baik.\n\nTerima kasih atas kepercayaan Bapak/Ibu menggunakan layanan MyRepublic.`;
     }
     textMessage += portalLink;
     
