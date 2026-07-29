@@ -1,29 +1,9 @@
 function formatReport(data){
 
-    const garis = "━━━━━━━━━━━━━━━━━━━━━━";
+    const garis = "━━━━━━━━━━━━━━━━━━";
 
-    const siklus = (data.siklus || [])
-        .map(x => {
-
-            const wa = x.waLink
-                ? `<a href="${x.waLink}">WhatsApp</a>`
-                : "-";
-
-            const detail = x.detailLink
-                ? `<a href="${x.detailLink}">Buka Data</a>`
-                : "-";
-
-            return `• <b>${x.nama}</b>
-
-🆔 <code>${x.id}</code>
-📍 ${x.alamat}
-💬 ${wa} | 🔎 ${detail}`;
-
-        })
-        .join("\n\n") || "Tidak ada pelanggan siklus.";
-
-    const warning = (data.warning || [])
-        .map(x => {
+    const render = (list, kosong) =>
+        (list || []).map(x => {
 
             const wa = x.waLink
                 ? `<a href="${x.waLink}">WhatsApp</a>`
@@ -37,10 +17,12 @@ function formatReport(data){
 
 🆔 <code>${x.id}</code>
 📍 ${x.alamat}
+🏷️ ${x.status || "-"}
+💳 Pembayaran ke-${x.pembayaran || "-"}
+📅 Tanggal Pasang: ${x.tanggalPasang || "-"}
 💬 ${wa} | 🔎 ${detail}`;
 
-        })
-        .join("\n\n") || "Tidak ada pelanggan warning.";
+        }).join("\n\n") || kosong;
 
     return `🔔 <b>MYREPUBLIC SYSTEM</b>
 
@@ -55,28 +37,25 @@ ${garis}
 📈 SA Bulan Ini : <b>${data.saBulanIni}</b>
 📉 SA Bulan Lalu : <b>${data.saBulanLalu}</b>
 🎯 Target Kurang : <b>${data.targetKurang}</b>
-💰 Bonus Diterima : <b>${data.bonus}</b>
+💰 Bonus : <b>${data.bonus}</b>
 
 ${garis}
 
 👥 <b>PELANGGAN SIKLUS</b>
 
-${siklus}
+${render(data.siklus, "Tidak ada pelanggan siklus.")}
 
 ${garis}
 
 📢 <b>WARNING</b>
 
-${warning}
-
+${render(data.warning, "Tidak ada pelanggan warning.")}
 
 ${garis}
 
 🤖 <b>MyRepublic System</b>`;
-
 }
 
 module.exports = {
     formatReport
 };
-
