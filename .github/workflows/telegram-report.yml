@@ -1,0 +1,55 @@
+name: Telegram Report
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    # 07:00 WIB (UTC+7 = 00:00 UTC)
+    - cron: '0 0 * * *'
+
+    # 14:00 WIB (UTC+7 = 07:00 UTC)
+    - cron: '0 7 * * *'
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install playwright
+
+      - run: npx playwright install chromium
+
+      - name: Open Website
+        run: |
+          cat > run.js <<'EOF'
+          const { chromium } = require('playwright');
+
+          (async () => {
+            const browser = await chromium.launch({
+              headless: true
+            });
+
+            const page = await browser.newPage();
+
+            await page.goto(
+              'https://myrepublicsragen.my.id/inputdata7382/',
+              {
+                waitUntil: 'networkidle',
+                timeout: 120000
+              }
+            );
+
+            // beri waktu javascript selesai
+            await page.waitForTimeout(20000);
+
+            await browser.close();
+          })();
+          EOF
+
+          node run.js
