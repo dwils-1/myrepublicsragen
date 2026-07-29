@@ -1404,7 +1404,7 @@ async function executeWaAction(hp, id, nama, japo, paket, alamat, tgl, email, ha
     const now = new Date();
     const hr = now.getHours();
     let slm = (hr < 11) ? "Pagi" : (hr < 15) ? "Siang" : (hr < 18) ? "Sore" : "Malam";
-    const portalLink = "\n\n🌐 Cek promo, ganti password WiFi, dan informasi layanan lainnya di:\n\nsalesmyrepublic.my.id\n\nTerima kasih atas kepercayaan Bapak/Ibu menggunakan layanan MyRepublic.";
+    const portalLink = "\n\n🌐 Cek promo, ganti password WiFi, dan informasi layanan lainnya di:\n\nsalesmyrepublic.my.id";
     let textMessage = "";
     
     // LOGIKA PENYUSUNAN PESAN
