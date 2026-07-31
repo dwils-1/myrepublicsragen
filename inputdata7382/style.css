@@ -1035,3 +1035,39 @@ gap:12px;
     padding-right:0 !important;
 }
 
+
+
+/* ===========================================
+   BUTTON LOADING
+   =========================================== */
+
+.btn-loading{
+    background:#16a34a !important;
+    border-color:#16a34a !important;
+    color:#fff !important;
+    cursor:wait;
+    opacity:.95;
+    transition:background .2s ease;
+}
+
+.btn-loading .spinner{
+    display:inline-block;
+    width:16px;
+    height:16px;
+    margin-right:8px;
+    vertical-align:-3px;
+    border:2px solid rgba(255,255,255,.35);
+    border-top-color:#fff;
+    border-radius:50%;
+    animation:btnSpin .8s linear infinite;
+}
+
+@keyframes btnSpin{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
+    }
+}
+

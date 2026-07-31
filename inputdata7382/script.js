@@ -906,6 +906,51 @@ async function executeSetProgress(id) {
     } catch(e) { alert("Gagal server."); if(card) card.style.opacity = '1'; }
 }
 
+
+function isQualityCare(item, now = new Date()) {
+    const cmd = String(item.command || "").toLowerCase();
+    if (cmd.includes("pending") || cmd.includes("progress") || isAuditOFF(item))
+        return false;
+
+    const p = item.tanggal.includes("/")
+        ? item.tanggal.split("/")
+        : item.tanggal.split("-");
+
+    const installDay = (p[0].length === 4)
+        ? parseInt(p[2],10)
+        : parseInt(p[0],10);
+
+    let year = now.getFullYear();
+    let month = now.getMonth();
+
+    // billing bulan ini
+    let lastDay = new Date(year, month + 1, 0).getDate();
+    let billingDay = Math.min(installDay, lastDay);
+    let billing = new Date(year, month, billingDay);
+
+    // jika sudah lewat, gunakan billing bulan depan
+    if (billing < new Date(year, month, now.getDate())) {
+        month++;
+        if (month > 11) {
+            month = 0;
+            year++;
+        }
+
+        lastDay = new Date(year, month + 1, 0).getDate();
+        billingDay = Math.min(installDay, lastDay);
+        billing = new Date(year, month, billingDay);
+    }
+
+    billing.setDate(billing.getDate() - 7);
+
+    return (
+        billing.getFullYear() === now.getFullYear() &&
+        billing.getMonth() === now.getMonth() &&
+        billing.getDate() === now.getDate()
+    );
+}
+
+
 function cariDataRealTime() { 
     const dI = document.getElementById('dateInput');
     const uI = document.getElementById('userInput');
@@ -935,24 +980,7 @@ async function cariData(mode, btnEl) {
     if (mode === 'progress') items = items.filter(i => (i.command || "").toLowerCase().includes('progress'));
     else if (mode === 'pending') items = items.filter(i => (i.command || "").toLowerCase().includes('pending'));
     else if (mode === 'fast') { 
-        items = items.filter(i => {
-            const cmd = String(i.command || "").toLowerCase();
-            if (cmd.includes('pending') || cmd.includes('progress') || isAuditOFF(i)) return false;
-            const p = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
-            const d = (p[0].length === 4) ? new Date(p[0], p[1]-1, p[2]) : new Date(p[2], p[1]-1, p[0]);
-            return Math.ceil(Math.abs(new Date() - d) / (1000 * 60 * 60 * 24)) <= 10;
-        }); 
-    } else if (mode === 'qc') {
-        const now = new Date(); const tD = now.getDate();
-        items = items.filter(i => {
-            const cmd = String(i.command || "").toLowerCase(); if (cmd.includes('pending') || cmd.includes('progress') || isAuditOFF(i)) return false;
-            const p = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
-            const d = (p[0].length === 4) ? new Date(p[0], p[1]-1, p[2]) : new Date(p[2], p[1]-1, p[0]);
-            const diff = Math.ceil(Math.abs(now - d) / (1000 * 60 * 60 * 24));
-            const iD = (p[0].length === 4) ? parseInt(p[2]) : parseInt(p[0]);
-            let cD = iD - 7; if (cD <= 0) cD = 30 + cD;
-            return diff >= 20 && (tD === cD);
-        });
+        items = items.filter(i => isQualityCare(i));
     } else {
         if (query) {
             items = items.filter(i => !isAuditOFF(i) && (
@@ -989,6 +1017,7 @@ async function cariData(mode, btnEl) {
         if (g1.length > 0) { html += `<div class="fast-group-header" style="background:#f59e0b">⏳ FAST 2 (6-10 HARI)</div>`; g1.forEach(i => html += renderCard(i, 'fast')); }
         if (g2.length > 0) { html += `<div class="fast-group-header">🚀 FAST 1 (0-5 HARI)</div>`; g2.forEach(i => html += renderCard(i, 'fast')); }
     } else if (mode === 'qc') {
+        console.log("QC items:", items.length, items);
         if(items.length > 0) { html += `<div class="qc-group-header">💙 QUALITY CARE</div>`; items.forEach(i => html += renderCard(i, 'qc')); }
     } else if (mode === 'pending') {
         const now = new Date(); const cm = now.getMonth(); const cy = now.getFullYear();
@@ -1069,7 +1098,43 @@ function bulanPaid3(bulan){
     return urut[(idx + 2) % 12];
 }
 
-function hitungBonusDekade() {
+
+
+function startLoadingBonus(){
+
+    const btn = document.getElementById("btnHitungBonus");
+    if(!btn) return null;
+    if(btn.dataset.loading==="1") return null;
+
+    btn.dataset.loading = "1";
+    btn.dataset.text = btn.innerHTML;
+    btn.dataset.class = btn.className;
+
+    btn.disabled = true;
+
+    btn.className = "bg-green-600 text-white py-3 rounded-xl font-black text-[10px] uppercase shadow-md";
+
+    return btn;
+}
+
+function stopLoadingBonus(btn){
+
+    if(!btn) return;
+
+    btn.disabled = false;
+    btn.className = btn.dataset.class;
+    btn.innerHTML = btn.dataset.text;
+    btn.dataset.loading = "0";
+}
+
+async function hitungBonusDekade() {
+
+    const btnLoading = startLoadingBonus();
+
+    await new Promise(requestAnimationFrame);
+
+    try {
+
     const q = document.querySelector('input[name="quarter"]:checked');
     if(!q) return alert("Pilih Quarter!");
     const mN = ["", "JAN", "FEB", "MAR", "APR", "MEI", "JUN", "JUL", "AGU", "SEP", "OKT", "NOV", "DES"];
@@ -1190,6 +1255,14 @@ function hitungBonusDekade() {
 
     const hBonus = document.getElementById('hasilBonusDekade');
     if(hBonus) hBonus.classList.remove('hidden');
+
+    } finally {
+
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        stopLoadingBonus(btnLoading);
+
+    }
 }
 
 
@@ -1471,15 +1544,7 @@ async function updateFastAndProgressCounts() {
     });
     const tFC = document.getElementById('totalFastCount');
     if(tFC) tFC.innerText = fI.filter(i => !hiddenBillingIds.includes(i.idCst)).length;
-    const qI = fullRawData.filter(i => {
-        const cmd = String(i.command || "").toLowerCase(); if (cmd.includes('pending') || cmd.includes('progress') || isAuditOFF(i)) return false;
-        const p = i.tanggal.includes('/') ? i.tanggal.split('/') : i.tanggal.split('-');
-        const d = (p[0].length === 4) ? new Date(p[0], p[1]-1, p[2]) : new Date(p[2], p[1]-1, p[0]);
-        const diff = Math.ceil(Math.abs(now - d) / (1000 * 60 * 60 * 24));
-        const iD = (p[0].length === 4) ? parseInt(p[2]) : parseInt(p[0]);
-        let cD = iD - 7; if (cD <= 0) cD = 30 + cD;
-        return diff >= 20 && (tD === cD);
-    });
+    const qI = fullRawData.filter(i => isQualityCare(i));
     const tQC = document.getElementById('totalQcCount');
     if(tQC) tQC.innerText = qI.length;
 }
