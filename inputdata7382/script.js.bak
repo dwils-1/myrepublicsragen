@@ -1716,24 +1716,9 @@ async function executeSendComplaint(item, kendala) {
     const basePesan = `*COMPLAINT CUSTOMER*\n-----------------------------\n${hari}\n${tgl}\n\n• Nama: ${item.nama.toUpperCase()}\n• ID Pelanggan: ${item.idCst}\n• Paket: ${item.paket}\n• No HP: ${formatBeautifulNumber(item.hp)}\n• Alamat: ${item.alamat.toUpperCase()}\n\n⚠️ KENDALA:\n${kendala.toUpperCase()}\n\n-----------------------------\nMohon bantuannya mas @admin`;
     const followUpCustomerMsg = `Halo Selamat ${salamWaktu} Bpk/Ibu *${item.nama.trim().toUpperCase()}*, mengonfirmasi laporan kendala pada hari ${hari}, tanggal ${tgl}. Apakah koneksi internetnya saat ini sudah kembali lancar?`;
     const linkFollowUpCustomer = `https://api.whatsapp.com/send?phone=${getPureWaNumber(item.hp)}&text=${encodeURIComponent(followUpCustomerMsg)}`;
-    
-    const konfirmasiMsg = `Halo Selamat ${salamWaktu} Bpk/Ibu *${item.nama.trim().toUpperCase()}*.
-
-Laporan kendala yang Bpk/Ibu sampaikan sudah kami teruskan kepada tim penanganan untuk dilakukan pengecekan lebih lanjut.
-
-Apabila dalam waktu 1×24 jam kendala masih belum teratasi, silakan menghubungi saya kembali agar segera kami tindak lanjuti.
-
-Terima kasih.`;
-    const linkKonfirmasi = `https://api.whatsapp.com/send?phone=${getPureWaNumber(item.hp)}&text=${encodeURIComponent(konfirmasiMsg)}`;
-
-const followUpCSMsg = `Internet belum ada perubahan.\n\n• Nama: ${item.nama.toUpperCase()}\n• ID Pelanggan: ${item.idCst}\n• Alamat: ${item.alamat.toUpperCase()}\n• Kendala: ${kendala.toUpperCase()}\n• Tanggal Komplain: ${tgl}\n\n-----------------------------\nMohon bantuannya mas @admin`;
+    const followUpCSMsg = `Internet belum ada perubahan.\n\n• Nama: ${item.nama.toUpperCase()}\n• ID Pelanggan: ${item.idCst}\n• Alamat: ${item.alamat.toUpperCase()}\n• Kendala: ${kendala.toUpperCase()}\n• Tanggal Komplain: ${tgl}\n\n-----------------------------\nMohon bantuannya mas @admin`;
     const linkFollowUpCS = `https://wa.me/?text=${encodeURIComponent(followUpCSMsg)}`;
-    const pesanTelegram = `${basePesan}
-
-📲 [FOLLOW UP PELANGGAN](${linkFollowUpCustomer})
-🛠️ [RE-FOLLOW UP CS](${linkFollowUpCS})
-📢 [KONFIRMASI KE PELANGGAN](${linkKonfirmasi})
-📩 [KIRIM KE ADMIN](https://wa.me/?text=${encodeURIComponent(basePesan)})`;
+    const pesanTelegram = `${basePesan}\n\n📲 [FOLLOW UP PELANGGAN](${linkFollowUpCustomer})\n🛠️ [RE-FOLLOW UP CS](${linkFollowUpCS})`;
 
     const telTok = '8531770277:AAHeVSPnFszoaUxeGINKzF68EK0EiSX6j7c'; 
     const chatId = '-1003594385102'; 
@@ -1747,17 +1732,7 @@ const followUpCSMsg = `Internet belum ada perubahan.\n\n• Nama: ${item.nama.to
         }); 
     } catch (err) { console.error("Telegram Error"); }
 
-    const form = new URL("https://docs.google.com/forms/d/e/1FAIpQLSfChAaigYgyWvhuYp_U3hECJriyjhsHhcT0--hxwNtV-W2E4Q/viewform");
-
-    form.searchParams.set("usp", "pp_url");
-    form.searchParams.set("entry.739802718", "Fery");
-    form.searchParams.set("entry.1650728090", item.idCst || "");
-    form.searchParams.set("entry.806689272", item.nama || "");
-    form.searchParams.set("entry.136778382", getPureWaNumber(item.hp || ""));
-    form.searchParams.set("entry.1436416031", item.alamat || "");
-    form.searchParams.set("entry.1161812791", kendala || "");
-
-    window.open(form.toString(), "_blank");
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(basePesan)}`, '_blank');
 }
 
 function sensorEmail(email) {
