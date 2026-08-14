@@ -6,15 +6,15 @@
     <title>Panduan Ganti Nama & Password WiFi ZTE F670L</title>
     <style>
         :root {
-            --bg-canvas: #f0f2f5;
-            --accent-blue: #0061f2;
+            --bg-canvas: #f5eef7;
+            --accent-blue: #6A1B7B;
             --phone-frame: #1a1a1a;
-            --router-blue: #00a1e9;
+            --router-blue: #7B1FA2;
         }
 
         body {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-canvas);
+            background: linear-gradient(180deg, #f5eef7 0%, #eee1f2 100%);
             margin: 0;
             padding: 0;
             color: #333;
@@ -22,7 +22,7 @@
 
         /* --- HEADER --- */
         .header {
-            background: linear-gradient(135deg, #0061f2 0%, #002d5e 100%);
+            background: linear-gradient(135deg, #4A0E5C 0%, #6A1B7B 50%, #8E24AA 100%);
             color: white;
             text-align: center;
             padding: 30px 10px 40px;
@@ -52,7 +52,7 @@
 
         .tab-btn.active {
             color: var(--accent-blue);
-            border-bottom: 3px solid var(--accent-blue);
+            border-bottom: 3px solid #6A1B7B;
         }
 
         .tab-content {
@@ -76,7 +76,7 @@
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 25px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 16px rgba(74,14,92,0.10);
             border-left: 5px solid var(--accent-blue);
         }
 
@@ -163,7 +163,7 @@
         .login-btn {
             background: var(--router-blue);
             color: white;
-            border: 1px solid #0081bb;
+            border: 1px solid #6A1B7B;
             padding: 2px 15px;
             font-size: 11px;
             cursor: pointer;
@@ -234,6 +234,18 @@
             margin-top: 20px;
         }
 
+
+        .sim-btn:hover,
+        .login-btn:hover {
+            filter: brightness(0.92);
+            transform: translateY(-1px);
+        }
+
+        .sim-btn,
+        .login-btn {
+            transition: 0.2s ease;
+        }
+
         .sim-btn {
             background-color: var(--router-blue);
             color: white;
@@ -276,19 +288,1581 @@
         }
 
         footer { text-align: center; padding: 40px; font-size: 14px; color: #777; }
-    </style>
+    
+
+
+
+
+/* ============================================================
+   SYNC LANGKAH 04 -> LANGKAH 05
+   Kitab layout: STEP 05
+   ============================================================ */
+
+/*
+ * Step 04 dikenali dari dua router-simulation langsung
+ * di dalam step-card.
+ *
+ * Jangan gunakan selector .router-simulation secara global
+ * karena bisa memengaruhi komponen tutorial lain.
+ */
+
+.step-card:has(> .router-simulation:nth-of-type(2)) {
+
+    grid-template-columns:
+        minmax(280px, 0.72fr)
+        minmax(0, 1.28fr) !important;
+
+    align-items: start !important;
+
+    /*
+     * Ikuti tinggi alami konten, bukan memusatkan
+     * isi kolom kiri secara vertikal.
+     */
+    min-height: 0 !important;
+}
+
+
+/* ============================================================
+   KOLOM KIRI
+   ============================================================ */
+
+.step-card:has(> .router-simulation:nth-of-type(2))
+> .step-label {
+
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+
+    align-self: start !important;
+
+    margin-top: 0 !important;
+}
+
+.step-card:has(> .router-simulation:nth-of-type(2))
+> .step-title {
+
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+
+    align-self: start !important;
+
+    margin-top: 8px !important;
+}
+
+.step-card:has(> .router-simulation:nth-of-type(2))
+> p {
+
+    grid-column: 1 !important;
+
+    align-self: start !important;
+
+    margin-top: 10px !important;
+}
+
+
+/*
+ * Bila isi instruksi berupa lebih dari satu elemen,
+ * semuanya tetap berada di kolom kiri.
+ */
+
+.step-card:has(> .router-simulation:nth-of-type(2))
+> .step-text,
+.step-card:has(> .router-simulation:nth-of-type(2))
+> .step-description {
+
+    grid-column: 1 !important;
+
+    align-self: start !important;
+}
+
+
+/* ============================================================
+   PANEL KANAN
+   ============================================================ */
+
+.step-card:has(> .router-simulation:nth-of-type(2))
+> .router-simulation {
+
+    grid-column: 2 !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    box-sizing: border-box !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    align-self: start !important;
+}
+
+
+/*
+ * Panel pertama = SSID1 2.4GHz
+ * Panel kedua  = SSID5 5GHz
+ *
+ * Tetap atas-bawah seperti Step 05.
+ */
+
+.step-card:has(> .router-simulation:nth-of-type(2))
+> .router-simulation:nth-of-type(1) {
+
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+
+    margin-top: 0 !important;
+}
+
+.step-card:has(> .router-simulation:nth-of-type(2))
+> .router-simulation:nth-of-type(2) {
+
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+
+    margin-top: 16px !important;
+}
+
+
+/* ============================================================
+   SAMAKAN LEBAR ISI FORM DENGAN STEP 05
+   ============================================================ */
+
+.step-card:has(> .router-simulation:nth-of-type(2))
+> .router-simulation input,
+.step-card:has(> .router-simulation:nth-of-type(2))
+> .router-simulation select {
+
+    box-sizing: border-box !important;
+}
+
+
+/* ============================================================
+   TOMBOL APPLY / CANCEL
+   ============================================================ */
+
+.step-card:has(> .router-simulation:nth-of-type(2))
+> .router-simulation .sim-btn-group {
+
+    display: flex !important;
+
+    justify-content: flex-end !important;
+
+    align-items: center !important;
+
+    gap: 8px !important;
+
+    margin-top: 12px !important;
+}
+
+
+/* ============================================================
+   JIKA ROUTER SIMULATION MEMILIKI HEIGHT FIX
+   ============================================================ */
+
+.step-card:has(> .router-simulation:nth-of-type(2))
+> .router-simulation {
+
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+    .step-card:has(> .router-simulation:nth-of-type(2)) {
+
+        display: block !important;
+
+        min-height: 0 !important;
+    }
+
+    .step-card:has(> .router-simulation:nth-of-type(2))
+    > .step-label,
+    .step-card:has(> .router-simulation:nth-of-type(2))
+    > .step-title,
+    .step-card:has(> .router-simulation:nth-of-type(2))
+    > p,
+    .step-card:has(> .router-simulation:nth-of-type(2))
+    > .step-text,
+    .step-card:has(> .router-simulation:nth-of-type(2))
+    > .step-description {
+
+        display: block !important;
+
+        width: 100% !important;
+    }
+
+    .step-card:has(> .router-simulation:nth-of-type(2))
+    > .router-simulation {
+
+        width: 100% !important;
+
+        margin-top: 15px !important;
+    }
+
+    .step-card:has(> .router-simulation:nth-of-type(2))
+    > .router-simulation:nth-of-type(2) {
+
+        margin-top: 15px !important;
+    }
+}
+
+
+
+/* ============================================================
+   FINAL STEP 04 LAYOUT
+   Mengikuti komposisi LANGKAH 05
+   ============================================================ */
+
+/*
+ * IDENTIFIKASI:
+ * Step 04 = step-card yang memiliki dua router-simulation
+ * langsung.
+ *
+ * Tujuan:
+ *
+ * KIRI
+ *   LANGKAH 04
+ *   Nama & Password
+ *   instruksi
+ *
+ * KANAN
+ *   SSID1 (2.4GHz)
+ *   SSID5 (5GHz)
+ *
+ * Jangan mengubah screen4().
+ */
+
+
+/* ============================================================
+   CONTAINER UTAMA
+   ============================================================ */
+
+.step-card:has(> .router-simulation + .router-simulation) {
+
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(280px, 0.72fr)
+        minmax(0, 1.28fr) !important;
+
+    grid-template-rows:
+        auto
+        auto
+        1fr !important;
+
+    column-gap: 22px !important;
+
+    row-gap: 0 !important;
+
+    align-items: start !important;
+
+    height: auto !important;
+
+    min-height: 0 !important;
+}
+
+
+/* ============================================================
+   KOLOM KIRI
+   ============================================================ */
+
+/*
+ * LANGKAH 04
+ */
+
+.step-card:has(> .router-simulation + .router-simulation)
+> .step-label {
+
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+
+    align-self: start !important;
+
+    width: 100% !important;
+
+    margin: 0 !important;
+}
+
+
+/*
+ * Nama & Password
+ */
+
+.step-card:has(> .router-simulation + .router-simulation)
+> .step-title {
+
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+
+    align-self: start !important;
+
+    width: 100% !important;
+
+    margin-top: 12px !important;
+    margin-bottom: 0 !important;
+}
+
+
+/*
+ * Paragraf instruksi langsung.
+ *
+ * Kita paksa ke kiri supaya tidak ikut terdorong
+ * oleh tinggi router di kanan.
+ */
+
+.step-card:has(> .router-simulation + .router-simulation)
+> p {
+
+    grid-column: 1 !important;
+    grid-row: 3 !important;
+
+    align-self: start !important;
+
+    width: 100% !important;
+
+    margin-top: 10px !important;
+    margin-bottom: 0 !important;
+
+    line-height: 1.55 !important;
+}
+
+
+/* ============================================================
+   KANAN - SSID 2.4GHz
+   ============================================================ */
+
+.step-card:has(> .router-simulation + .router-simulation)
+> .router-simulation:nth-of-type(1) {
+
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+
+    align-self: start !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+}
+
+
+/* ============================================================
+   KANAN - SSID 5GHz
+   ============================================================ */
+
+.step-card:has(> .router-simulation + .router-simulation)
+> .router-simulation:nth-of-type(2) {
+
+    grid-column: 2 !important;
+    grid-row: 3 !important;
+
+    align-self: start !important;
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    margin-top: 16px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    box-sizing: border-box !important;
+}
+
+
+/* ============================================================
+   JANGAN BIARKAN ROUTER MENGATUR TINGGI BARIS KIRI
+   ============================================================ */
+
+.step-card:has(> .router-simulation + .router-simulation)
+> .router-simulation {
+
+    min-height: 0 !important;
+
+    height: auto !important;
+
+    align-self: start !important;
+}
+
+
+/* ============================================================
+   FORM DI DALAM ROUTER
+   ============================================================ */
+
+.step-card:has(> .router-simulation + .router-simulation)
+> .router-simulation input,
+.step-card:has(> .router-simulation + .router-simulation)
+> .router-simulation select {
+
+    box-sizing: border-box !important;
+
+    max-width: 100% !important;
+}
+
+
+/* ============================================================
+   BUTTON
+   ============================================================ */
+
+.step-card:has(> .router-simulation + .router-simulation)
+> .router-simulation .sim-btn-group {
+
+    display: flex !important;
+
+    justify-content: flex-end !important;
+
+    align-items: center !important;
+
+    gap: 8px !important;
+
+    margin-top: 12px !important;
+}
+
+
+/* ============================================================
+   DESKTOP - PROPORSI SEPERTI STEP 05
+   ============================================================ */
+
+@media (min-width: 769px) {
+
+    .step-card:has(> .router-simulation + .router-simulation)
+    > .step-label,
+    .step-card:has(> .router-simulation + .router-simulation)
+    > .step-title,
+    .step-card:has(> .router-simulation + .router-simulation)
+    > p {
+
+        text-align: left !important;
+    }
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+    .step-card:has(> .router-simulation + .router-simulation) {
+
+        display: block !important;
+
+        height: auto !important;
+
+        min-height: 0 !important;
+    }
+
+
+    .step-card:has(> .router-simulation + .router-simulation)
+    > .step-label,
+    .step-card:has(> .router-simulation + .router-simulation)
+    > .step-title,
+    .step-card:has(> .router-simulation + .router-simulation)
+    > p {
+
+        width: 100% !important;
+
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+
+    .step-card:has(> .router-simulation + .router-simulation)
+    > .router-simulation {
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        margin-top: 15px !important;
+    }
+
+
+    .step-card:has(> .router-simulation + .router-simulation)
+    > .router-simulation:nth-of-type(2) {
+
+        margin-top: 15px !important;
+    }
+}
+
+
+
+/* ============================================================
+   STEP 05 - REAL CLONE FROM STEP 04
+
+   Step 05 menggunakan panel ASLI Langkah 04.
+   Susunan:
+       SSID1 (2.4GHz)
+       SSID5 (5GHz)
+
+   Tidak horizontal.
+   ============================================================ */
+
+.step-card:has(> .tutorial-screen[data-router-screen="5"]) {
+    grid-template-columns:
+        minmax(280px, 0.72fr)
+        minmax(0, 1.28fr) !important;
+
+    align-items: start !important;
+}
+
+.step-card:has(> .tutorial-screen[data-router-screen="5"])
+> .tutorial-screen {
+    grid-column: 2 !important;
+    grid-row: 1 / span 5 !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    min-width: 0 !important;
+    min-height: 0 !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+    overflow: visible !important;
+}
+
+/*
+ * Wrapper hasil clone.
+ */
+.step5-real-router-copy {
+    display: flex !important;
+    flex-direction: column !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    gap: 18px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+}
+
+/*
+ * Dua panel LANGKAH 04 asli:
+ * panel 1 = SSID1 2.4GHz
+ * panel 2 = SSID5 5GHz
+ */
+.step5-real-router-copy
+> .step5-real-router-panel {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+
+    box-sizing: border-box !important;
+
+    flex: 0 0 auto !important;
+}
+
+/*
+ * Pastikan tombol Apply hasil clone mempunyai
+ * kotak merah yang jelas.
+ */
+.step5-real-router-copy
+.step5-apply-highlight {
+    outline: 4px solid red !important;
+    outline-offset: 2px !important;
+
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/*
+ * Jangan biarkan CSS SVG lama mengganggu Step 05.
+ */
+.step-card:has(> .tutorial-screen[data-router-screen="5"])
+svg {
+    display: none !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    .step-card:has(> .tutorial-screen[data-router-screen="5"]) {
+        display: block !important;
+    }
+
+    .step-card:has(> .tutorial-screen[data-router-screen="5"])
+    > .tutorial-screen {
+        width: 100% !important;
+        margin-top: 15px !important;
+    }
+
+    .step5-real-router-copy {
+        width: 100% !important;
+        gap: 14px !important;
+    }
+
+}
+
+
+
+/* ============================================================
+   CONSUL ORIGINAL UI STYLE
+   Tombol biru + teks Off hitam
+   ============================================================ */
+
+/* Tombol Apply / tombol aksi */
+.router-simulation button,
+.router-simulation input[type="button"],
+.router-simulation input[type="submit"],
+.step5-real-router-panel button,
+.step5-real-router-panel input[type="button"],
+.step5-real-router-panel input[type="submit"] {
+    background: #1677ff !important;
+    color: #ffffff !important;
+
+    border: 1px solid #1677ff !important;
+    border-radius: 3px !important;
+
+    font-weight: 500 !important;
+
+    cursor: pointer !important;
+}
+
+/* Hover */
+.router-simulation button:hover,
+.router-simulation input[type="button"]:hover,
+.router-simulation input[type="submit"]:hover,
+.step5-real-router-panel button:hover,
+.step5-real-router-panel input[type="button"]:hover,
+.step5-real-router-panel input[type="submit"]:hover {
+    background: #409eff !important;
+    border-color: #409eff !important;
+}
+
+/* ============================================================
+   TEKS OFF
+   ============================================================ */
+
+.router-simulation label,
+.step5-real-router-panel label {
+    color: #000000;
+}
+
+/*
+ * Jika "Off" dibuat sebagai teks biasa
+ */
+.router-simulation .off,
+.router-simulation .text-off,
+.router-simulation .status-off,
+.step5-real-router-panel .off,
+.step5-real-router-panel .text-off,
+.step5-real-router-panel .status-off {
+    color: #000000 !important;
+}
+
+/*
+ * Teks Off yang berada langsung sebagai span
+ */
+.router-simulation span,
+.step5-real-router-panel span {
+    color: #000000;
+}
+
+/*
+ * Jangan mengubah warna tombol biru menjadi hitam
+ * akibat aturan span di atas.
+ */
+.router-simulation button span,
+.step5-real-router-panel button span {
+    color: #ffffff !important;
+}
+
+/* ============================================================
+   RADIO OFF
+   ============================================================ */
+
+.router-simulation input[type="radio"] + label,
+.step5-real-router-panel input[type="radio"] + label {
+    color: #000000 !important;
+}
+
+/* ============================================================
+   HIGHLIGHT APPLY LANGKAH 05
+   Tetap merah seperti fungsi tutorial.
+   ============================================================ */
+
+.step5-real-router-panel .step5-apply-highlight {
+    outline: 4px solid red !important;
+    outline-offset: 2px !important;
+}
+
+
+
+/* ============================================================
+   STEP 05 - FOCUS APPLY TUTORIAL
+   ============================================================ */
+
+/*
+ * Step 05 adalah DEMO.
+ *
+ * Tujuan utama:
+ *     pengguna melihat dan memahami tombol APPLY.
+ *
+ * Jangan memberi highlight pada:
+ *     - SSID
+ *     - WPA
+ *     - input
+ *     - radio
+ *     - Cancel
+ *
+ * Fokus visual hanya APPLY.
+ */
+
+
+/* ============================================================
+   PANEL STEP 05
+   ============================================================ */
+
+.step5-real-router-copy {
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    gap: 18px !important;
+
+    width: 100% !important;
+}
+
+
+/* ============================================================
+   PANEL ROUTER TETAP SEPERTI CONSUL
+   ============================================================ */
+
+.step5-real-router-panel {
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    box-sizing: border-box !important;
+}
+
+
+/* ============================================================
+   APPLY = FOKUS UTAMA
+   ============================================================ */
+
+.step5-real-router-panel
+.step5-apply-highlight {
+
+    /*
+     * Warna tombol tetap biru Consul.
+     */
+    background: #1677ff !important;
+
+    color: #ffffff !important;
+
+    border: 1px solid #1677ff !important;
+
+    border-radius: 3px !important;
+
+
+    /*
+     * Fokus tutorial.
+     */
+    outline: 4px solid #ff0000 !important;
+
+    outline-offset: 3px !important;
+
+
+    /*
+     * Sedikit lebih menonjol.
+     */
+    box-shadow:
+        0 0 0 2px rgba(255, 0, 0, 0.15),
+        0 2px 5px rgba(0, 0, 0, 0.20) !important;
+
+
+    font-weight: 600 !important;
+
+    cursor: pointer !important;
+
+    position: relative !important;
+
+    z-index: 20 !important;
+}
+
+
+/* ============================================================
+   HOVER
+   ============================================================ */
+
+.step5-real-router-panel
+.step5-apply-highlight:hover {
+
+    background: #409eff !important;
+
+    border-color: #409eff !important;
+
+    outline-color: #ff0000 !important;
+}
+
+
+/* ============================================================
+   JANGAN HIGHLIGHT CANCEL
+   ============================================================ */
+
+.step5-real-router-panel button:not(
+    .step5-apply-highlight
+) {
+
+    outline: none !important;
+
+    box-shadow: none !important;
+}
+
+
+/* ============================================================
+   JANGAN HIGHLIGHT INPUT
+   ============================================================ */
+
+.step5-real-router-panel input,
+.step5-real-router-panel select {
+
+    box-shadow: none !important;
+}
+
+
+/* ============================================================
+   LABEL NORMAL
+   ============================================================ */
+
+.step5-real-router-panel label {
+
+    color: #000000 !important;
+
+    font-weight: normal !important;
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+    .step5-real-router-copy {
+
+        width: 100% !important;
+
+        gap: 15px !important;
+    }
+
+    .step5-real-router-panel
+    .step5-apply-highlight {
+
+        outline-width: 3px !important;
+
+        outline-offset: 3px !important;
+    }
+}
+
+
+
+
+
+/* ============================================================
+   HEADER BATIK MODERN - UNGU
+   CSS ONLY / TANPA GAMBAR
+   ============================================================ */
+
+.batik-header {
+    position: relative !important;
+
+    min-height: 238px;
+
+    padding: 0 !important;
+
+    display: flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    isolation: isolate;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            #35003f 0%,
+            #50005e 42%,
+            #700078 72%,
+            #8d008e 100%
+        ) !important;
+
+    box-shadow:
+        0 18px 40px rgba(65, 0, 75, .24);
+}
+
+
+/* ============================================================
+   POLA BATIK
+   ============================================================ */
+
+.batik-pattern {
+    position: absolute;
+
+    inset: -30px;
+
+    z-index: -2;
+
+    opacity: .34;
+
+    pointer-events: none;
+
+    background:
+
+        /* diamond besar */
+        linear-gradient(
+            45deg,
+            transparent 42%,
+            rgba(255,255,255,.18) 43%,
+            rgba(255,255,255,.18) 45%,
+            transparent 46%
+        ),
+
+        linear-gradient(
+            -45deg,
+            transparent 42%,
+            rgba(255,255,255,.14) 43%,
+            rgba(255,255,255,.14) 45%,
+            transparent 46%
+        ),
+
+        /* titik batik */
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.24) 0 2px,
+            transparent 2.5px
+        );
+
+    background-size:
+        74px 74px,
+        74px 74px,
+        37px 37px;
+
+    background-position:
+        0 0,
+        37px 37px,
+        18px 18px;
+
+    transform: rotate(-2deg) scale(1.08);
+}
+
+
+/* Lapisan motif kedua agar tidak terlihat seperti grid biasa */
+
+.batik-pattern::before,
+.batik-pattern::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+}
+
+.batik-pattern::before {
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 0 20%,
+            rgba(255,255,255,.10) 21%,
+            transparent 22%
+        );
+
+    background-size:
+        110px 76px;
+
+    opacity: .65;
+}
+
+.batik-pattern::after {
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent 0 35px,
+            rgba(255,255,255,.045) 36px,
+            transparent 37px 72px
+        );
+
+    opacity: .5;
+}
+
+
+/* ============================================================
+   GLOW HALUS
+   ============================================================ */
+
+.batik-glow {
+    position: absolute;
+
+    z-index: -1;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    filter: blur(12px);
+}
+
+.batik-glow-left {
+    width: 300px;
+    height: 300px;
+
+    left: -130px;
+    top: -170px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(211,65,230,.25),
+            transparent 68%
+        );
+}
+
+.batik-glow-right {
+    width: 360px;
+    height: 360px;
+
+    right: -170px;
+    bottom: -250px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(164,88,255,.22),
+            transparent 68%
+        );
+}
+
+
+/* ============================================================
+   HEADER CONTENT
+   ============================================================ */
+
+.modern-header-content {
+    width: min(900px, calc(100% - 32px));
+
+    padding: 35px 20px 42px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+}
+
+
+/* ============================================================
+   BRAND
+   ============================================================ */
+
+.modern-brand {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 8px 16px;
+
+    border:
+        1px solid rgba(255,255,255,.25);
+
+    border-radius: 999px;
+
+    background:
+        rgba(255,255,255,.10);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.16),
+        0 8px 24px rgba(0,0,0,.14);
+
+    backdrop-filter: blur(10px);
+}
+
+.modern-brand-icon {
+    font-size: 16px;
+}
+
+.modern-brand-name {
+    color: #fff;
+
+    font-size: 15px;
+
+    font-weight: 800;
+
+    letter-spacing: .2px;
+}
+
+.modern-status {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #d98cff;
+
+    box-shadow:
+        0 0 0 4px rgba(217,140,255,.13),
+        0 0 14px rgba(217,140,255,.7);
+}
+
+
+/* ============================================================
+   JUDUL
+   ============================================================ */
+
+.batik-header h1 {
+    margin: 20px 0 9px !important;
+
+    color: #fff !important;
+
+    font-size:
+        clamp(30px, 5vw, 46px) !important;
+
+    font-weight: 850 !important;
+
+    line-height: 1.05;
+
+    letter-spacing: -1px;
+
+    text-shadow:
+        0 4px 18px rgba(0,0,0,.20);
+}
+
+
+/* ============================================================
+   BADGE ROUTER
+   ============================================================ */
+
+.router-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 7px 16px;
+
+    color: #fff;
+
+    font-size: 11px;
+
+    font-weight: 750;
+
+    letter-spacing: 1px;
+
+    border-radius: 999px;
+
+    border:
+        1px solid rgba(255,255,255,.24);
+
+    background:
+        rgba(255,255,255,.09);
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.10);
+}
+
+
+/* ============================================================
+   KARTU TUTORIAL
+   TERPISAH DARI HEADER DAN TUTORIAL-SCREENS.JS
+   ============================================================ */
+
+.tutorial-intro-modern {
+    position: relative;
+
+    width:
+        min(900px, calc(100% - 32px));
+
+    margin:
+        -24px auto 27px;
+
+    padding:
+        20px 22px;
+
+    box-sizing: border-box;
+
+    display: grid;
+
+    grid-template-columns:
+        56px minmax(0, 1fr) auto;
+
+    align-items: center;
+
+    gap: 17px;
+
+    background:
+        #ffffff;
+
+    border:
+        1px solid #ead8ed;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 16px 38px rgba(71,0,80,.10),
+        0 3px 10px rgba(71,0,80,.04);
+
+    z-index: 20;
+}
+
+
+/* Garis ungu */
+
+.tutorial-intro-modern::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: 17px;
+    bottom: 17px;
+
+    width: 4px;
+
+    border-radius:
+        0 5px 5px 0;
+
+    background:
+        linear-gradient(
+            180deg,
+            #56005f,
+            #86008e,
+            #b82bc0
+        );
+}
+
+
+/* Ikon */
+
+.tutorial-intro-icon {
+    width: 52px;
+    height: 52px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius: 15px;
+
+    color: #fff;
+
+    background:
+        linear-gradient(
+            145deg,
+            #56005f,
+            #920099
+        );
+
+    box-shadow:
+        0 9px 20px rgba(117,0,126,.20);
+}
+
+.tutorial-intro-icon span {
+    font-size: 11px;
+
+    font-weight: 850;
+
+    letter-spacing: .5px;
+}
+
+
+/* Text */
+
+.tutorial-intro-label {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #85008c;
+
+    font-size: 9px;
+
+    font-weight: 850;
+
+    letter-spacing: 1.5px;
+}
+
+.tutorial-intro-text h2 {
+    margin: 0;
+
+    color: #2d0733;
+
+    font-size:
+        clamp(20px, 3vw, 27px);
+
+    line-height: 1.2;
+
+    font-weight: 800;
+}
+
+.tutorial-intro-text p {
+    margin: 7px 0 0;
+
+    color: #685b6b;
+
+    font-size: 13px;
+
+    line-height: 1.55;
+}
+
+
+/* Info kanan */
+
+.tutorial-intro-info {
+    min-width: 112px;
+
+    padding: 11px 13px;
+
+    border-radius: 13px;
+
+    text-align: center;
+
+    background:
+        #faf3fb;
+
+    border:
+        1px solid #ead7ed;
+}
+
+.tutorial-intro-info .intro-info-label {
+    display: block;
+
+    color: #9a7b9f;
+
+    font-size: 8px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.2px;
+}
+
+.tutorial-intro-info strong {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #710078;
+
+    font-size: 13px;
+}
+
+.tutorial-intro-info span:last-child {
+    display: block;
+
+    margin-top: 2px;
+
+    color: #8a758e;
+
+    font-size: 9px;
+}
+
+
+/* ============================================================
+   TAB
+   ============================================================ */
+
+.tab-container {
+    background:
+        rgba(255,255,255,.97) !important;
+
+    border-top:
+        1px solid rgba(112,0,120,.05);
+
+    border-bottom:
+        1px solid rgba(112,0,120,.10);
+
+    box-shadow:
+        0 7px 22px rgba(67,0,77,.06) !important;
+}
+
+.tab-btn {
+    position: relative;
+
+    border-radius:
+        9px !important;
+}
+
+.tab-btn.active {
+    color: #720078 !important;
+
+    border-bottom-color:
+        transparent !important;
+}
+
+.tab-btn.active::after {
+    content: "";
+
+    position: absolute;
+
+    left: 18px;
+    right: 18px;
+    bottom: 3px;
+
+    height: 3px;
+
+    border-radius: 999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #620069,
+            #98009d,
+            #c03bc7
+        );
+}
+
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+    .batik-header {
+        min-height: 205px;
+    }
+
+    .modern-header-content {
+        padding:
+            29px 15px 36px;
+    }
+
+    .batik-header h1 {
+        font-size: 30px !important;
+    }
+
+    .tutorial-intro-modern {
+        grid-template-columns:
+            48px minmax(0, 1fr);
+
+        margin-top: -18px;
+
+        padding: 17px;
+
+        gap: 12px;
+    }
+
+    .tutorial-intro-icon {
+        width: 46px;
+        height: 46px;
+    }
+
+    .tutorial-intro-info {
+        display: none;
+    }
+
+    .tutorial-intro-text h2 {
+        font-size: 20px;
+    }
+
+    .tutorial-intro-text p {
+        font-size: 12px;
+    }
+}
+
+
+</style>
 </head>
 <body>
 
-    <div class="header">
-        <h1 style="margin:0">Konfigurasi Router</h1>
-        <p style="opacity: 0.8">ZTE F670L - Ganti Nama & Password</p>
+    
+
+<header class="header modern-header batik-header">
+
+    <div class="batik-pattern" aria-hidden="true"></div>
+
+    <div class="batik-glow batik-glow-left" aria-hidden="true"></div>
+    <div class="batik-glow batik-glow-right" aria-hidden="true"></div>
+
+    <div class="modern-header-content">
+
+        <div class="modern-brand">
+            <span class="modern-brand-icon">🚀</span>
+            <span class="modern-brand-name">MyRepublic</span>
+            <span class="modern-status"></span>
+        </div>
+
+        <h1>Konfigurasi Router</h1>
+
+        <div class="router-badge">
+            ZTE F670L
+        </div>
+
     </div>
+
+</header>
+
+<section class="tutorial-intro-modern">
+
+    <div class="tutorial-intro-icon">
+        <span>WiFi</span>
+    </div>
+
+    <div class="tutorial-intro-text">
+
+        <span class="tutorial-intro-label">
+            PANDUAN KONFIGURASI
+        </span>
+
+        <h2>
+            Ganti Nama &amp; Password WiFi
+        </h2>
+
+        <p>
+            Ikuti langkah berikut untuk mengubah nama jaringan
+            <strong>SSID</strong> dan password WiFi
+            <strong>2.4GHz &amp; 5GHz</strong>.
+        </p>
+
+    </div>
+
+    <div class="tutorial-intro-info">
+        <span class="intro-info-label">PERANGKAT</span>
+        <strong>ZTE F670L</strong>
+        <span>2.4GHz + 5GHz</span>
+    </div>
+
+</section>
+
+
+
+
 
     <div class="tab-container">
         <button class="tab-btn active" onclick="openTab(event, 'langkah')">PANDUAN GAMBAR</button>
         <button class="tab-btn" onclick="openTab(event, 'video')">VIDEO TUTORIAL</button>
-    </div>
+    
+        <button
+            type="button"
+            class="tab-btn"
+            aria-selected="false"
+            onclick="openTab(event, 'keluhan')">
+            ❓ KELUHAN &amp; SOLUSI
+        </button>
+</div>
 
     <div id="langkah" class="tab-content active">
         <div class="container">
@@ -321,14 +1895,14 @@
                 <span class="step-label">LANGKAH 02</span>
                 <h3 class="step-title">Pengaturan WLAN</h3>
                 <p>Masuk ke menu <b>WLAN Settings.</b><br>Ikuti petunjuk warna merah.</p></br>
-                <img src="2.png" class="step-img">
+                <div class="tutorial-screen" data-router-screen="2" aria-label="Ilustrasi WLAN Setting ZTE F670L"></div>
             </div>
 
             <div class="step-card">
                 <span class="step-label">LANGKAH 03</span>
                 <h3 class="step-title">Pengaturan WLAN</h3>
                 <p>Pilih paling bawah</br><b>WLAN SSID Configuration.</b><br>Ikuti petunjuk  warna merah.</br></p>
-                <img src="3.png" class="step-img">
+                <div class="tutorial-screen" data-router-screen="3" aria-label="Ilustrasi WLAN SSID Configuration ZTE F670L"></div>
             </div>
 
             <div class="step-card">
@@ -338,7 +1912,7 @@
                 
                 <div class="router-simulation">
                     <div class="ssid-toggle-row">
-                        <span style="color: #00a1e9; font-size: 10px;">▼</span>
+                        <span style="color: #7B1FA2; font-size: 10px;">▼</span>
                         <span style="color: #333; font-size: 14px; text-decoration: underline; cursor: pointer; font-weight: bold;">SSID1 (2,4GHz)</span>
                     </div>
 
@@ -391,7 +1965,7 @@
 
                 <div class="router-simulation">
                     <div class="ssid-toggle-row">
-                        <span style="color: #00a1e9; font-size: 10px;">▼</span>
+                        <span style="color: #7B1FA2; font-size: 10px;">▼</span>
                         <span style="color: #333; font-size: 14px; text-decoration: underline; cursor: pointer; font-weight: bold;">SSID5 (5GHz)</span>
                     </div>
 
@@ -447,13 +2021,412 @@
                 <span class="step-label">LANGKAH 05</span>
                 <h3 class="step-title">Simpan</h3>
                 <p>Klik <b>APPLY</b> untuk menyimpan. <br>Perangkat akan terputus otomatis.</p>
-                <img src="4.png" class="step-img">
+                <div class="tutorial-screen" data-router-screen="5" aria-label="Ilustrasi proses Apply ZTE F670L"></div>
             </div>
         </div>
     </div>
     
     
-    <div id="video" class="tab-content">
+    
+
+<!-- KELUHAN_SOLUSI_START -->
+
+<div id="keluhan"
+     class="tab-content"
+     role="tabpanel"
+     aria-label="Keluhan dan Solusi">
+
+    <div class="container">
+
+        <div class="support-intro">
+            <div class="support-icon">❓</div>
+
+            <div>
+                <h2>Keluhan &amp; Solusi</h2>
+                <p>
+                    Temukan solusi untuk kendala yang sering terjadi
+                    saat melakukan pengaturan WiFi ZTE F670L.
+                </p>
+            </div>
+        </div>
+
+
+        <!-- 01 -->
+
+        <div class="problem-card">
+
+            <div class="problem-number">01</div>
+
+            <div class="problem-content">
+
+                <h3>Tidak Bisa Membuka 192.168.1.1</h3>
+
+                <span class="problem-label">KENDALA</span>
+
+                <p>
+                    Halaman login router tidak muncul ketika alamat
+                    192.168.1.1 dibuka.
+                </p>
+
+                <div class="solution-box">
+
+                    <strong>Solusi</strong>
+
+                    <ol>
+                        <li>
+                            Pastikan HP atau laptop terhubung ke WiFi
+                            router.
+                        </li>
+
+                        <li>
+                            Buka browser seperti Chrome, Safari,
+                            atau Firefox.
+                        </li>
+
+                        <li>
+                            Ketik <b>192.168.1.1</b> langsung pada
+                            address bar browser.
+                        </li>
+
+                        <li>
+                            Jangan mengetik alamat tersebut pada
+                            kolom pencarian Google.
+                        </li>
+
+                    </ol>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 02 -->
+
+        <div class="problem-card">
+
+            <div class="problem-number">02</div>
+
+            <div class="problem-content">
+
+                <h3>Nama WiFi Baru Tidak Muncul</h3>
+
+                <span class="problem-label">KENDALA</span>
+
+                <p>
+                    Setelah mengganti nama WiFi, jaringan dengan nama
+                    baru tidak terlihat pada HP atau laptop.
+                </p>
+
+                <div class="solution-box">
+
+                    <strong>Solusi</strong>
+
+                    <ol>
+                        <li>
+                            Pastikan SSID yang digunakan berada pada
+                            posisi <b>On</b>.
+                        </li>
+
+                        <li>
+                            Pastikan <b>SSID Hide</b> berada pada
+                            posisi <b>Off</b>.
+                        </li>
+
+                        <li>
+                            Klik tombol <b>Apply</b>.
+                        </li>
+
+                        <li>
+                            Matikan lalu nyalakan kembali WiFi pada
+                            perangkat.
+                        </li>
+
+                    </ol>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 03 -->
+
+        <div class="problem-card">
+
+            <div class="problem-number">03</div>
+
+            <div class="problem-content">
+
+                <h3>Password WiFi Tidak Bisa Digunakan</h3>
+
+                <span class="problem-label">KENDALA</span>
+
+                <p>
+                    Perangkat tidak dapat tersambung menggunakan
+                    password WiFi yang baru.
+                </p>
+
+                <div class="solution-box">
+
+                    <strong>Solusi</strong>
+
+                    <ol>
+                        <li>
+                            Periksa kembali password yang dimasukkan.
+                        </li>
+
+                        <li>
+                            Perhatikan huruf besar, huruf kecil,
+                            angka, dan simbol.
+                        </li>
+
+                        <li>
+                            Pilih jaringan WiFi kemudian gunakan
+                            opsi <b>Lupakan jaringan</b>.
+                        </li>
+
+                        <li>
+                            Sambungkan kembali menggunakan password
+                            baru.
+                        </li>
+
+                    </ol>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 04 -->
+
+        <div class="problem-card">
+
+            <div class="problem-number">04</div>
+
+            <div class="problem-content">
+
+                <h3>WiFi Terputus Setelah Klik Apply</h3>
+
+                <span class="problem-label">KENDALA</span>
+
+                <p>
+                    HP atau laptop terputus setelah konfigurasi
+                    disimpan.
+                </p>
+
+                <div class="solution-box">
+
+                    <strong>Solusi</strong>
+
+                    <ol>
+                        <li>
+                            Ini normal jika nama WiFi atau password
+                            telah berubah.
+                        </li>
+
+                        <li>
+                            Cari nama WiFi baru pada daftar jaringan.
+                        </li>
+
+                        <li>
+                            Masukkan password WiFi yang baru.
+                        </li>
+
+                        <li>
+                            Jika belum terlihat, refresh daftar WiFi
+                            atau tunggu beberapa saat.
+                        </li>
+
+                    </ol>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 05 -->
+
+        <div class="problem-card">
+
+            <div class="problem-number">05</div>
+
+            <div class="problem-content">
+
+                <h3>WiFi 5GHz Tidak Muncul</h3>
+
+                <span class="problem-label">KENDALA</span>
+
+                <p>
+                    Jaringan WiFi 5GHz tidak terlihat pada perangkat.
+                </p>
+
+                <div class="solution-box">
+
+                    <strong>Solusi</strong>
+
+                    <ol>
+                        <li>
+                            Pastikan <b>SSID5 (5GHz)</b> dalam posisi
+                            <b>On</b>.
+                        </li>
+
+                        <li>
+                            Pastikan <b>SSID Hide</b> dalam posisi
+                            <b>Off</b>.
+                        </li>
+
+                        <li>
+                            Klik <b>Apply</b>.
+                        </li>
+
+                        <li>
+                            Perangkat harus mendukung jaringan 5GHz
+                            agar dapat melihat jaringan tersebut.
+                        </li>
+
+                    </ol>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 06 -->
+
+        <div class="problem-card">
+
+            <div class="problem-number">06</div>
+
+            <div class="problem-content">
+
+                <h3>Terhubung WiFi Tetapi Tidak Ada Internet</h3>
+
+                <span class="problem-label">KENDALA</span>
+
+                <p>
+                    Perangkat berhasil tersambung ke WiFi tetapi
+                    internet tidak dapat digunakan.
+                </p>
+
+                <div class="solution-box">
+
+                    <strong>Solusi</strong>
+
+                    <ol>
+                        <li>
+                            Coba matikan dan nyalakan kembali WiFi
+                            pada perangkat.
+                        </li>
+
+                        <li>
+                            Coba sambungkan perangkat lain untuk
+                            memastikan masalah bukan hanya pada satu
+                            perangkat.
+                        </li>
+
+                        <li>
+                            Periksa indikator koneksi pada router.
+                        </li>
+
+                        <li>
+                            Jika semua perangkat tidak memiliki
+                            internet, hubungi support MyRepublic.
+                        </li>
+
+                    </ol>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- 07 -->
+
+        <div class="problem-card">
+
+            <div class="problem-number">07</div>
+
+            <div class="problem-content">
+
+                <h3>Perangkat Lama Tidak Bisa Terhubung</h3>
+
+                <span class="problem-label">KENDALA</span>
+
+                <p>
+                    Perangkat yang sebelumnya terhubung tidak bisa
+                    tersambung setelah password WiFi diganti.
+                </p>
+
+                <div class="solution-box">
+
+                    <strong>Solusi</strong>
+
+                    <ol>
+                        <li>
+                            Pilih jaringan WiFi lama pada perangkat.
+                        </li>
+
+                        <li>
+                            Pilih <b>Lupakan jaringan</b>.
+                        </li>
+
+                        <li>
+                            Cari kembali nama WiFi yang baru.
+                        </li>
+
+                        <li>
+                            Masukkan password baru.
+                        </li>
+
+                    </ol>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TIPS -->
+
+        <div class="support-note">
+
+            <div class="support-note-icon">💡</div>
+
+            <div>
+
+                <strong>Tips</strong>
+
+                <p>
+                    Setelah mengganti nama atau password WiFi,
+                    perangkat yang sebelumnya tersambung kemungkinan
+                    perlu dihubungkan kembali menggunakan informasi
+                    WiFi yang baru.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- KELUHAN_SOLUSI_END -->
+
+
+<div id="video" class="tab-content">
         <div class="container">
             <div class="phone-container">
                 <div class="phone-screen">
@@ -507,5 +2480,7 @@
         }, 2000);
     }
     </script>
+
+    <script src="tutorial-screens.js" defer></script>
 </body>
 </html>
