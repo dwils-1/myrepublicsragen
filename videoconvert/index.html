@@ -7,172 +7,169 @@
 <title>Video Converter Resize 50%</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background: #f3f4f6;
-        color: #111827;
-    }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f4f6;
+    color: #111827;
+}
 
-    .header {
-        background: #111827;
-        color: white;
-        text-align: center;
-        padding: 22px 15px;
-    }
+.header {
+    background: #111827;
+    color: white;
+    text-align: center;
+    padding: 22px 15px;
+}
 
-    .header h1 {
-        margin: 0;
-        font-size: 25px;
-    }
+.header h1 {
+    margin: 0;
+    font-size: 24px;
+}
 
-    .header p {
-        margin: 7px 0 0;
-        color: #d1d5db;
-        font-size: 14px;
-    }
+.header p {
+    margin: 7px 0 0;
+    color: #d1d5db;
+}
 
-    .container {
-        width: 92%;
-        max-width: 650px;
-        margin: 30px auto;
-        background: white;
-        padding: 25px;
-        border-radius: 16px;
-        box-shadow: 0 8px 25px rgba(0,0,0,.08);
-    }
+.container {
+    width: 92%;
+    max-width: 650px;
+    margin: 30px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.08);
+}
 
-    .upload-title {
-        font-size: 20px;
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
+.upload-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
 
-    .upload-box {
-        border: 2px dashed #9ca3af;
-        border-radius: 14px;
-        padding: 35px 20px;
-        text-align: center;
-        background: #f9fafb;
-    }
+.upload-box {
+    border: 2px dashed #9ca3af;
+    border-radius: 14px;
+    padding: 35px 20px;
+    text-align: center;
+    background: #f9fafb;
+}
 
-    .upload-icon {
-        font-size: 45px;
-        margin-bottom: 10px;
-    }
+.upload-icon {
+    font-size: 45px;
+}
 
-    .upload-box p {
-        margin: 8px 0;
-        color: #6b7280;
-    }
+.upload-box p {
+    color: #6b7280;
+}
 
-    .file-input {
-        margin-top: 15px;
-        width: 100%;
-    }
+.file-input {
+    width: 100%;
+    margin-top: 15px;
+}
 
-    video {
-        width: 100%;
-        max-height: 350px;
-        margin-top: 20px;
-        background: #000;
-        border-radius: 12px;
-    }
+video {
+    width: 100%;
+    max-height: 350px;
+    margin-top: 20px;
+    background: #000;
+    border-radius: 12px;
+}
 
-    .info {
-        margin-top: 18px;
-        padding: 15px;
-        background: #f3f4f6;
-        border-radius: 10px;
-        line-height: 1.7;
-        font-size: 14px;
-    }
+.info {
+    margin-top: 18px;
+    padding: 15px;
+    background: #f3f4f6;
+    border-radius: 10px;
+    line-height: 1.7;
+    font-size: 14px;
+}
 
-    button {
-        width: 100%;
-        padding: 15px;
-        margin-top: 20px;
-        border: none;
-        border-radius: 10px;
-        background: #2563eb;
-        color: white;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-    }
+.action-button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    border: 0;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
 
-    button:hover {
-        background: #1d4ed8;
-    }
+.action-button:hover {
+    background: #1d4ed8;
+}
 
-    button:disabled {
-        background: #9ca3af;
-        cursor: not-allowed;
-    }
+.action-button:disabled {
+    background: #9ca3af;
+}
 
-    progress {
-        width: 100%;
-        height: 20px;
-        margin-top: 20px;
-    }
+#downloadButton {
+    display: none;
+}
 
-    #status {
-        text-align: center;
-        margin-top: 12px;
-        font-size: 14px;
-        font-weight: bold;
-    }
+progress {
+    width: 100%;
+    height: 20px;
+    margin-top: 20px;
+}
 
-    #download {
-        display: none;
-        width: 100%;
-        padding: 15px;
-        margin-top: 15px;
-        background: #16a34a;
-        color: white;
-        text-align: center;
-        text-decoration: none;
-        border-radius: 10px;
-        font-weight: bold;
-    }
+#status {
+    text-align: center;
+    margin-top: 12px;
+    font-weight: bold;
+}
 
-    .footer {
-        text-align: center;
-        color: #6b7280;
-        font-size: 12px;
-        padding: 20px;
-    }
+.footer {
+    text-align: center;
+    color: #6b7280;
+    font-size: 12px;
+    padding: 20px;
+}
 </style>
 </head>
 
 <body>
 
-<!-- JUDUL -->
 <header class="header">
+
     <h1>🎬 Video Converter Resize 50%</h1>
-    <p>Perkecil resolusi video menjadi 50%</p>
+
+    <p>
+        MP4 / WebM → MP4 • Resolusi turun 50%
+    </p>
+
 </header>
 
 
 <div class="container">
 
-    <!-- UPLOAD VIDEO HPFA -->
     <div class="upload-title">
         📱 Upload Video HPFA
     </div>
 
+
     <div class="upload-box">
 
-        <div class="upload-icon">🎥</div>
+        <div class="upload-icon">
+            🎥
+        </div>
 
-        <strong>Pilih Video dari HP</strong>
+        <strong>
+            Pilih Video dari HP
+        </strong>
 
         <p>
-            Video akan diproses langsung di browser
+            MP4 atau WebM
         </p>
 
         <input
@@ -185,7 +182,6 @@
     </div>
 
 
-    <!-- PREVIEW -->
     <video
         id="videoPreview"
         controls
@@ -193,7 +189,6 @@
     </video>
 
 
-    <!-- INFO VIDEO -->
     <div
         id="videoInfo"
         class="info"
@@ -201,9 +196,9 @@
     </div>
 
 
-    <!-- BUTTON -->
     <button
         id="resizeButton"
+        class="action-button"
         disabled>
 
         🔽 Resize Turun 50%
@@ -211,7 +206,6 @@
     </button>
 
 
-    <!-- PROGRESS -->
     <progress
         id="progressBar"
         value="0"
@@ -220,14 +214,14 @@
     </progress>
 
 
-    <!-- STATUS -->
     <div id="status"></div>
 
 
-    <!-- DOWNLOAD -->
     <a
         id="downloadButton"
-        href="#">
+        class="action-button"
+        href="#"
+        download="video-resize-50.mp4">
 
         ⬇️ Download Video Hasil
 
@@ -239,6 +233,13 @@
 <div class="footer">
     Video Converter • Resize 50%
 </div>
+
+
+<!-- FFmpeg -->
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js"></script>
+
+<!-- FFmpeg Utility -->
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
 
 
 <script>
@@ -267,301 +268,447 @@ const downloadButton =
 
 let selectedFile = null;
 
+let outputURL = null;
 
-/* =========================
+let ffmpeg = null;
+
+let ffmpegLoaded = false;
+
+
+/* =====================================
    PILIH VIDEO
-========================= */
+===================================== */
 
-videoInput.addEventListener("change", function () {
+videoInput.addEventListener(
+    "change",
+    function() {
 
-    const file = this.files[0];
+        const file =
+            this.files[0];
 
-    if (!file) return;
-
-    selectedFile = file;
-
-    const videoURL =
-        URL.createObjectURL(file);
-
-    videoPreview.src = videoURL;
-
-    videoPreview.style.display = "block";
+        if (!file) return;
 
 
-    videoPreview.onloadedmetadata = function () {
-
-        const originalWidth =
-            videoPreview.videoWidth;
-
-        const originalHeight =
-            videoPreview.videoHeight;
+        selectedFile = file;
 
 
-        const newWidth =
-            Math.floor(originalWidth * 0.5);
-
-        const newHeight =
-            Math.floor(originalHeight * 0.5);
+        const videoURL =
+            URL.createObjectURL(file);
 
 
-        videoInfo.style.display = "block";
-
-        videoInfo.innerHTML = `
-
-            <b>Nama File:</b>
-            ${file.name}
-            <br>
-
-            <b>Ukuran File:</b>
-            ${(file.size / 1024 / 1024).toFixed(2)}
-            MB
-
-            <br>
-
-            <b>Resolusi Asli:</b>
-            ${originalWidth} × ${originalHeight}
-
-            <br>
-
-            <b>Resolusi Hasil:</b>
-            ${newWidth} × ${newHeight}
-
-            <br>
-
-            <b>Resize:</b>
-            50%
-
-        `;
-
-    };
+        videoPreview.src =
+            videoURL;
 
 
-    resizeButton.disabled = false;
-
-    downloadButton.style.display =
-        "none";
-
-    status.textContent = "";
-
-});
+        videoPreview.style.display =
+            "block";
 
 
-/* =========================
-   RESIZE VIDEO
-========================= */
+        videoPreview.onloadedmetadata =
+            function() {
+
+                const width =
+                    videoPreview.videoWidth;
+
+                const height =
+                    videoPreview.videoHeight;
+
+
+                const newWidth =
+                    Math.floor(width / 2);
+
+                const newHeight =
+                    Math.floor(height / 2);
+
+
+                videoInfo.style.display =
+                    "block";
+
+
+                videoInfo.innerHTML = `
+
+                    <b>Nama File:</b>
+                    ${file.name}
+
+                    <br>
+
+                    <b>Ukuran:</b>
+                    ${(file.size / 1024 / 1024).toFixed(2)}
+                    MB
+
+                    <br>
+
+                    <b>Resolusi Asli:</b>
+                    ${width} × ${height}
+
+                    <br>
+
+                    <b>Resolusi Hasil:</b>
+                    ${newWidth} × ${newHeight}
+
+                    <br>
+
+                    <b>Input:</b>
+                    ${file.type || "Video"}
+
+                    <br>
+
+                    <b>Output:</b>
+                    MP4
+
+                `;
+
+            };
+
+
+        resizeButton.disabled =
+            false;
+
+
+        downloadButton.style.display =
+            "none";
+
+
+        progressBar.style.display =
+            "none";
+
+
+        status.textContent =
+            "";
+
+    }
+);
+
+
+/* =====================================
+   LOAD FFMPEG
+===================================== */
+
+async function loadFFmpeg() {
+
+    if (ffmpegLoaded) {
+        return;
+    }
+
+
+    status.textContent =
+        "⏳ Menyiapkan converter...";
+
+
+    const {
+        FFmpeg
+    } = FFmpegWASM;
+
+
+    const {
+        toBlobURL
+    } = FFmpegUtil;
+
+
+    ffmpeg =
+        new FFmpeg();
+
+
+    ffmpeg.on(
+        "log",
+        ({ message }) => {
+
+            console.log(
+                "FFmpeg:",
+                message
+            );
+
+        }
+    );
+
+
+    ffmpeg.on(
+        "progress",
+        ({ progress }) => {
+
+            if (
+                progress >= 0 &&
+                progress <= 1
+            ) {
+
+                progressBar.value =
+                    progress * 100;
+
+                status.textContent =
+                    "⏳ Memproses " +
+                    Math.round(
+                        progress * 100
+                    ) +
+                    "%";
+
+            }
+
+        }
+    );
+
+
+    const baseURL =
+        "https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/umd";
+
+
+    await ffmpeg.load({
+
+        coreURL:
+            await toBlobURL(
+                `${baseURL}/ffmpeg-core.js`,
+                "text/javascript"
+            ),
+
+        wasmURL:
+            await toBlobURL(
+                `${baseURL}/ffmpeg-core.wasm`,
+                "application/wasm"
+            )
+
+    });
+
+
+    ffmpegLoaded =
+        true;
+
+}
+
+
+/* =====================================
+   RESIZE
+===================================== */
 
 resizeButton.addEventListener(
     "click",
-    async function () {
+    async function() {
 
-        if (!selectedFile) return;
+        if (!selectedFile) {
+            return;
+        }
 
 
-        resizeButton.disabled = true;
+        resizeButton.disabled =
+            true;
+
+
+        downloadButton.style.display =
+            "none";
+
 
         progressBar.style.display =
             "block";
 
-        progressBar.value = 0;
 
-        status.textContent =
-            "⏳ Sedang memproses video...";
+        progressBar.value =
+            0;
 
 
-        const video =
-            document.createElement("video");
+        try {
 
-        video.src =
-            URL.createObjectURL(selectedFile);
+            /* LOAD FFMPEG */
 
-        video.muted = true;
+            await loadFFmpeg();
 
 
-        await new Promise(resolve => {
+            status.textContent =
+                "⏳ Membaca video...";
 
-            video.onloadedmetadata =
-                resolve;
 
-        });
+            /*
+             * Tentukan ekstensi input
+             */
 
+            let inputName =
+                selectedFile.name
+                .toLowerCase();
 
-        /* RESIZE 50% */
 
-        const width =
-            Math.floor(video.videoWidth * 0.5);
+            let extension =
+                inputName
+                .split(".")
+                .pop();
 
-        const height =
-            Math.floor(video.videoHeight * 0.5);
-
-
-        /* CANVAS */
-
-        const canvas =
-            document.createElement("canvas");
-
-        canvas.width = width;
-        canvas.height = height;
-
-
-        const ctx =
-            canvas.getContext("2d");
-
-
-        /* VIDEO STREAM */
-
-        const stream =
-            canvas.captureStream(30);
-
-
-        /* MEDIA RECORDER */
-
-        let mimeType =
-            "video/webm;codecs=vp9";
-
-
-        if (
-            !MediaRecorder.isTypeSupported(
-                mimeType
-            )
-        ) {
-
-            mimeType =
-                "video/webm;codecs=vp8";
-
-        }
-
-
-        if (
-            !MediaRecorder.isTypeSupported(
-                mimeType
-            )
-        ) {
-
-            mimeType =
-                "video/webm";
-
-        }
-
-
-        const recorder =
-            new MediaRecorder(
-                stream,
-                {
-                    mimeType: mimeType,
-                    videoBitsPerSecond: 2500000
-                }
-            );
-
-
-        const chunks = [];
-
-
-        recorder.ondataavailable =
-            function (event) {
-
-                if (event.data.size > 0) {
-
-                    chunks.push(
-                        event.data
-                    );
-
-                }
-
-            };
-
-
-        recorder.onstop =
-            function () {
-
-                const blob =
-                    new Blob(
-                        chunks,
-                        {
-                            type: mimeType
-                        }
-                    );
-
-
-                const url =
-                    URL.createObjectURL(blob);
-
-
-                downloadButton.href =
-                    url;
-
-                downloadButton.download =
-                    "video-resize-50.webm";
-
-
-                downloadButton.style.display =
-                    "block";
-
-
-                progressBar.value =
-                    100;
-
-
-                status.textContent =
-                    "✅ Video selesai diproses!";
-
-
-                resizeButton.disabled =
-                    false;
-
-            };
-
-
-        /* MULAI */
-
-        recorder.start();
-
-        video.currentTime = 0;
-
-        await video.play();
-
-
-        function drawFrame() {
 
             if (
-                video.paused ||
-                video.ended
+                extension !== "mp4" &&
+                extension !== "webm" &&
+                extension !== "mov" &&
+                extension !== "mkv" &&
+                extension !== "avi"
             ) {
 
-                recorder.stop();
-
-                return;
+                extension =
+                    "mp4";
 
             }
 
 
-            ctx.drawImage(
-                video,
-                0,
-                0,
-                width,
-                height
+            const inputFile =
+                `input.${extension}`;
+
+
+            /*
+             * Masukkan file ke FFmpeg
+             */
+
+            await ffmpeg.writeFile(
+                inputFile,
+                await FFmpegUtil.fetchFile(
+                    selectedFile
+                )
             );
 
 
-            const percent =
-                (
-                    video.currentTime /
-                    video.duration
-                ) * 100;
+            status.textContent =
+                "⏳ Resize video 50%...";
+
+
+            /*
+             * PROSES
+             *
+             * scale=iw/2:ih/2
+             */
+
+            await ffmpeg.exec([
+
+                "-i",
+                inputFile,
+
+                "-vf",
+                "scale=trunc(iw/2/2)*2:trunc(ih/2/2)*2",
+
+                "-c:v",
+                "libx264",
+
+                "-preset",
+                "veryfast",
+
+                "-crf",
+                "23",
+
+                "-c:a",
+                "aac",
+
+                "-b:a",
+                "128k",
+
+                "-movflags",
+                "+faststart",
+
+                "output.mp4"
+
+            ]);
+
+
+            /*
+             * Ambil output
+             */
+
+            const data =
+                await ffmpeg.readFile(
+                    "output.mp4"
+                );
+
+
+            const result =
+                new Uint8Array(data);
+
+
+            const blob =
+                new Blob(
+                    [result],
+                    {
+                        type:
+                            "video/mp4"
+                    }
+                );
+
+
+            /*
+             * DOWNLOAD URL
+             */
+
+            if (outputURL) {
+
+                URL.revokeObjectURL(
+                    outputURL
+                );
+
+            }
+
+
+            outputURL =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            downloadButton.href =
+                outputURL;
+
+
+            downloadButton.download =
+                "video-resize-50.mp4";
+
+
+            downloadButton.style.display =
+                "block";
 
 
             progressBar.value =
-                percent;
+                100;
 
 
-            requestAnimationFrame(
-                drawFrame
+            status.textContent =
+                "✅ Selesai! Video MP4 siap di-download.";
+
+
+            /*
+             * Bersihkan file virtual
+             */
+
+            try {
+
+                await ffmpeg.deleteFile(
+                    inputFile
+                );
+
+                await ffmpeg.deleteFile(
+                    "output.mp4"
+                );
+
+            } catch(e) {
+
+                console.log(
+                    "Cleanup:",
+                    e
+                );
+
+            }
+
+
+        } catch(error) {
+
+            console.error(
+                "ERROR:",
+                error
+            );
+
+
+            status.textContent =
+                "❌ Gagal memproses video.";
+
+
+            alert(
+                "Gagal memproses video.\n\n" +
+                "Pastikan koneksi internet aktif saat pertama kali menjalankan converter."
             );
 
         }
 
 
-        drawFrame();
+        resizeButton.disabled =
+            false;
 
     }
 );
