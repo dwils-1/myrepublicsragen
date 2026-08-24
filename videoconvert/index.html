@@ -162,9 +162,39 @@ status.textContent = "";
    LOAD FFMPEG
 ========================= */
 
+async function toBlobURL(url, mimeType) {
+
+const response = await fetch(url, {
+    cache: "no-store"
+});
+
+if (!response.ok) {
+    throw new Error(
+        "Gagal mengambil " +
+        url +
+        " (HTTP " +
+        response.status +
+        ")"
+    );
+}
+
+const blob = await response.blob();
+
+return URL.createObjectURL(
+    new Blob(
+        [blob],
+        { type: mimeType }
+    )
+);
+
+}
+
+
 async function loadFFmpeg(){
 
-if(loaded)return;
+if(loaded)
+return;
+
 
 if(
 typeof FFmpegWASM === "undefined"
@@ -176,8 +206,10 @@ throw new Error(
 
 }
 
+
 const FFmpeg =
 FFmpegWASM.FFmpeg;
+
 
 ffmpeg =
 new FFmpeg();
@@ -199,42 +231,74 @@ ffmpeg.on(
 "progress",
 ({progress:p}) => {
 
-if(p >= 0 && p <= 1){
+if(
+p >= 0 &&
+p <= 1
+){
 
 progress.value =
 p * 100;
 
 status.textContent =
 "⏳ Memproses " +
-Math.round(p*100) +
+Math.round(p * 100) +
 "%";
 
 }
 
-}
+});
 
-);
+
+status.textContent =
+"⏳ Mengambil FFmpeg core...";
 
 
 /*
-CORE LOKAL
+==================================================
+LOCAL FILE → BLOB URL
+
+Ini memperbaiki error:
+
+Failed to fetch dynamically imported module
+==================================================
 */
+
+const coreURL =
+await toBlobURL(
+"./ffmpeg/ffmpeg-core.js?v=1",
+"text/javascript"
+);
+
+
+const wasmURL =
+await toBlobURL(
+"./ffmpeg/ffmpeg-core.wasm?v=1",
+"application/wasm"
+);
+
+
+status.textContent =
+"⏳ Menjalankan FFmpeg...";
+
 
 await ffmpeg.load({
 
 coreURL:
-"./ffmpeg/ffmpeg-core.js",
+coreURL,
 
 wasmURL:
-"./ffmpeg/ffmpeg-core.wasm"
+wasmURL
 
 });
 
 
 loaded = true;
 
-}
 
+status.textContent =
+"✅ Converter siap.";
+
+}
 
 /* =========================
    RESIZE
