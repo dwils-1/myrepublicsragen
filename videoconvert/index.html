@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video HPFA MyRepublic Convert</title>
+<style>
+:root {
+    --bg-color:#f8fafc; --card-bg:#fff; --text-color:#334155;
+    --primary-color:#2563eb; --primary-hover:#1d4ed8;
+    --border-color:#cbd5e1; --success-color:#16a34a;
+}
+body {
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    background:var(--bg-color); color:var(--text-color); margin:0;
+    padding:20px; display:flex; justify-content:center; align-items:center;
+    min-height:100vh;
+}
+.container {
+    background:var(--card-bg); padding:30px; border-radius:12px;
+    box-shadow:0 10px 25px -5px rgba(0,0,0,.05);
+    width:100%; max-width:600px; box-sizing:border-box;
+}
+h2 {text-align:center;color:#1e293b;margin-top:0;font-size:20px}
+.form-group{margin-bottom:18px}
+label{display:block;margin-bottom:6px;font-weight:600;font-size:14px}
+input[type=file]{width:100%;padding:10px;box-sizing:border-box;border:1px solid var(--border-color);border-radius:6px;font-size:14px}
+.btn{background:var(--primary-color);color:#fff;border:0;padding:12px 15px;width:100%;font-size:16px;font-weight:600;border-radius:6px;cursor:pointer}
+.btn:hover{background:var(--primary-hover)}
+.btn:disabled{background:#94a3b8;cursor:not-allowed}
+.btn-success{background:var(--success-color)}
+.progress-container{margin-top:15px;display:none}
+.progress-bar-bg{width:100%;background:#e2e8f0;border-radius:8px;overflow:hidden;height:16px}
+.progress-bar-fill{height:100%;width:0;background:var(--primary-color);transition:width .1s linear}
+.progress-text{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-top:6px;color:#475569}
+#status{margin-top:15px;font-weight:600;text-align:center;font-size:14px;color:var(--primary-color)}
+.preview-section{margin-bottom:15px;text-align:center}
+.result-container{margin-top:25px;text-align:center;border-top:1px solid #e2e8f0;padding-top:20px;display:none}
+video{width:100%;max-height:300px;background:#000;margin-top:10px;border-radius:6px}
+.note{font-size:12px;color:#64748b;line-height:1.5;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="container">
+    <h2>Video HPFA MyRepublic Convert</h2>
+
+    <div class="form-group">
+        <label for="uploader">Pilih File Video:</label>
+        <input type="file" id="uploader" accept="video/*">
+    </div>
+
+    <div class="preview-section" id="previewSection" style="display:none;">
+        <label style="text-align:left;">Preview Video Asli:</label>
+        <video id="sourceVideo" controls playsinline></video>
+    </div>
+
+    <button id="processBtn" class="btn">Mulai Proses Convert</button>
+
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <div class="progress-text">
+            <span id="progressStatusText">Menyiapkan encoder...</span>
+            <span id="progressPercent">0%</span>
+        </div>
+    </div>
+
+    <div id="status">Silakan pilih file video terlebih dahulu.</div>
+    <div class="note">
+    </div>
+
+    <div class="result-container" id="resultContainer">
+        <video id="outputVideo" controls playsinline></video>
+        <br><br>
+        <a id="downloadLink" style="display:none;text-decoration:none;"
+           download="hpfa-myrepublic-converted.mp4">
+            <button class="btn btn-success">Unduh Video MP4 Hasil</button>
+        </a>
+        <div class="note">
+        </div>
+    </div>
+</div>
+
+<!-- FFmpeg WebAssembly -->
+<script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+<script>
+let ffmpegModuleBlobURL = null;
+let ffmpegWorkerBlobURL = null;
+
+async function loadScriptFromBlob(url) {
+    return await new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = url;
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('Gagal memuat FFmpeg main module.'));
+        document.head.appendChild(s);
+    });
+}
+
+async function fetchTextAsBlobURL(url) {
+    const response = await fetch(url, { cache: 'force-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status} saat memuat ${url}`);
+    const text = await response.text();
+    return URL.createObjectURL(new Blob([text], { type: 'text/javascript' }));
+}
+
+async function ensureFFmpegLibrary() {
+    if (window.FFmpegWASM && window.FFmpegWASM.FFmpeg) return;
+
+    const bases = [
+        'https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd',
+        'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd'
+    ];
+
+    let lastError = null;
+
+    for (const base of bases) {
+        try {
+            // ffmpeg.wasm 0.12 UMD creates a secondary worker (814.ffmpeg.js).
+            // A browser page served from 127.0.0.1 cannot directly create that
+            // cross-origin Worker. The official workaround is to turn that
+            // worker script into a same-origin Blob URL and pass workerLoadURL.
+            const ffmpegJSResponse = await fetch(`${base}/ffmpeg.js`, {
+                cache: 'force-cache'
+            });
+            if (!ffmpegJSResponse.ok) throw new Error(`HTTP ${ffmpegJSResponse.status}`);
+            let source = await ffmpegJSResponse.text();
+
+            const target = 'new URL(e.p+e.u(814),e.b)';
+            if (!source.includes(target)) {
+                throw new Error('Versi FFmpeg tidak cocok: worker loader tidak ditemukan.');
+            }
+
+            source = source.replace(target, 'r.workerLoadURL');
+
+            const workerURL = await fetchTextAsBlobURL(
+                `${base}/814.ffmpeg.js`
+            );
+            const moduleURL = URL.createObjectURL(
+                new Blob([source], { type: 'text/javascript' })
+            );
+
+            await loadScriptFromBlob(moduleURL);
+
+            ffmpegModuleBlobURL = moduleURL;
+            ffmpegWorkerBlobURL = workerURL;
+            return;
+        } catch (e) {
+            console.error('FFmpeg main module gagal:', base, e);
+            lastError = e;
+        }
+    }
+
+    throw new Error(
+        'FFmpeg main module gagal dimuat: ' +
+        (lastError?.message || 'unknown error')
+    );
+}
+</script>
+
+<script>
+const uploader = document.getElementById('uploader');
+const processBtn = document.getElementById('processBtn');
+const statusDiv = document.getElementById('status');
+const sourceVideo = document.getElementById('sourceVideo');
+const previewSection = document.getElementById('previewSection');
+const outputVideo = document.getElementById('outputVideo');
+const downloadLink = document.getElementById('downloadLink');
+const resultContainer = document.getElementById('resultContainer');
+const progressContainer = document.getElementById('progressContainer');
+const progressBarFill = document.getElementById('progressBarFill');
+const progressPercent = document.getElementById('progressPercent');
+const progressStatusText = document.getElementById('progressStatusText');
+
+let fetchFile = null;
+let toBlobURL = null;
+
+let selectedFile = null;
+let sourceUrl = null;
+let outputUrl = null;
+let ffmpeg = null;
+
+function showError(message) {
+    const el = document.getElementById('status');
+    if (el) {
+        el.style.display = 'block';
+        el.style.color = '#dc2626';
+        el.textContent = 'Error: ' + message;
+    }
+}
+
+function setProgress(percent, text) {
+    const p = Math.max(0, Math.min(100, Math.round(percent)));
+    progressBarFill.style.width = p + '%';
+    progressPercent.textContent = p + '%';
+    progressStatusText.textContent = text;
+}
+
+async function loadFFmpeg() {
+    if (ffmpeg && ffmpeg.loaded) return;
+
+    setProgress(2, 'Menyiapkan encoder...');
+
+    await ensureFFmpegLibrary();
+
+    if (!window.FFmpegUtil) {
+        throw new Error('FFmpeg utility library tidak termuat.');
+    }
+
+    ({ fetchFile, toBlobURL } = window.FFmpegUtil);
+
+    if (!window.FFmpegWASM || !window.FFmpegWASM.FFmpeg) {
+        throw new Error('FFmpegWASM.FFmpeg tidak tersedia setelah module dimuat.');
+    }
+
+    ffmpeg = new window.FFmpegWASM.FFmpeg();
+
+    ffmpeg.on('progress', ({ progress }) => {
+        const p = Math.min(99, Math.max(3, progress * 100));
+        setProgress(p, 'Meng-encode H.264 + AAC...');
+    });
+
+    ffmpeg.on('log', ({ message }) => {
+        console.log('[FFmpeg]', message);
+    });
+
+    const coreBases = [
+        'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd',
+        'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd'
+    ];
+
+    let lastError = null;
+
+    for (const baseURL of coreBases) {
+        try {
+
+            const coreURL = await toBlobURL(
+                `${baseURL}/ffmpeg-core.js`,
+                'text/javascript'
+            );
+
+            const wasmURL = await toBlobURL(
+                `${baseURL}/ffmpeg-core.wasm`,
+                'application/wasm'
+            );
+
+            // Critical fix:
+            // workerLoadURL points to a Blob URL, so the Worker is created
+            // from the same origin (127.0.0.1) instead of unpkg/jsdelivr.
+            await ffmpeg.load({
+                coreURL,
+                wasmURL,
+                workerLoadURL: ffmpegWorkerBlobURL
+            });
+
+            return;
+        } catch (e) {
+            console.error('FFmpeg core gagal:', baseURL, e);
+            lastError = e;
+        }
+    }
+
+    throw new Error(
+        'FFmpeg core gagal dimuat: ' +
+        (lastError?.message || 'unknown error')
+    );
+}
+
+uploader.addEventListener('change', () => {
+    const file = uploader.files && uploader.files[0];
+
+    if (!file) {
+        selectedFile = null;
+        return;
+    }
+
+    selectedFile = file;
+
+    if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+    sourceUrl = URL.createObjectURL(file);
+
+    sourceVideo.src = sourceUrl;
+    sourceVideo.load();
+
+    previewSection.style.display = 'block';
+    processBtn.disabled = false;
+    resultContainer.style.display = 'none';
+    downloadLink.style.display = 'none';
+
+});
+
+processBtn.addEventListener('click', async () => {
+    const currentFile =
+        uploader.files && uploader.files.length > 0
+            ? uploader.files[0]
+            : selectedFile;
+
+    if (!currentFile) {
+        showError('Silakan pilih file video terlebih dahulu.');
+        return;
+    }
+
+    selectedFile = currentFile;
+
+    processBtn.disabled = true;
+    uploader.disabled = true;
+    resultContainer.style.display = 'none';
+    progressContainer.style.display = 'block';
+    setProgress(0, 'Menyiapkan...');
+
+    try {
+        await loadFFmpeg();
+
+        const inputName = 'input' + getExtension(selectedFile.name);
+
+        // Masukkan file asli ke filesystem virtual FFmpeg.
+        // Tanpa ini FFmpeg akan gagal dengan "ErrnoError: FS error".
+        await ffmpeg.writeFile(
+            inputName,
+            await fetchFile(selectedFile)
+        );
+
+        const now = new Date();
+        const dd = String(now.getDate()).padStart(2, '0');
+        const mm = String(now.getMonth() + 1).padStart(2, '0');
+        const yy = String(now.getFullYear()).slice(-2);
+        const hh = String(now.getHours()).padStart(2, '0');
+        const min = String(now.getMinutes()).padStart(2, '0');
+
+        const outputName =
+            `video_hep_${dd}${mm}${yy}_jam${hh}${min}.mp4`;
+        const tempName = 'hpfa-temp.mp4';
+
+        // BATAS KERAS: 14 MiB = 14 * 1024 * 1024 byte
+        const MAX_BYTES = 14 * 1024 * 1024;
+        const duration = Number(sourceVideo.duration);
+
+        if (!Number.isFinite(duration) || duration <= 0) {
+            throw new Error('Durasi video tidak dapat dibaca.');
+        }
+
+        // Audio AAC 64 kbps.
+        // Sisa budget diberikan ke video H.264.
+        const audioKbps = 64;
+
+        // Sisakan margin agar hasil akhir tidak menyentuh batas 14 MiB.
+        const targetBytes = MAX_BYTES * 0.92;
+
+        let videoKbps = Math.floor(
+            (targetBytes * 8 / duration / 1000) - audioKbps
+        );
+
+        // Batas bitrate awal.
+        videoKbps = Math.max(80, Math.min(videoKbps, 12000));
+
+        let blob = null;
+        let data = null;
+        let finalSize = 0;
+
+        // Encode ulang sampai benar-benar <= 14 MiB.
+        for (let attempt = 1; attempt <= 6; attempt++) {
+
+            try {
+                await ffmpeg.deleteFile(tempName);
+            } catch (_) {}
+
+            setProgress(
+                Math.min(95, attempt * 10),
+                `Mengompres video...`
+            );
+
+            const command = [
+                '-i', inputName,
+
+                // Maksimum 1920 pada sisi panjang, rasio tetap.
+                '-vf',
+                "scale='if(gt(iw,ih),min(iw,1920),-2)':'if(gt(iw,ih),-2,min(ih,1920))'",
+
+                '-r', '30',
+
+                // VIDEO BENAR-BENAR H.264
+                '-c:v', 'libx264',
+                '-b:v', `${videoKbps}k`,
+                '-maxrate', `${videoKbps}k`,
+                '-bufsize', `${Math.max(videoKbps * 2, 256)}k`,
+                '-pix_fmt', 'yuv420p',
+                '-preset', 'veryfast',
+
+                // AUDIO BENAR-BENAR AAC
+                '-c:a', 'aac',
+                '-b:a', `${audioKbps}k`,
+                '-ar', '48000',
+                '-ac', '2',
+
+                // MP4 asli, bukan rename WebM.
+                '-movflags', '+faststart',
+
+                '-y',
+                tempName
+            ];
+
+            await ffmpeg.exec(command);
+
+            data = await ffmpeg.readFile(tempName);
+            blob = new Blob([data.buffer], { type: 'video/mp4' });
+            finalSize = blob.size;
+
+            if (finalSize <= MAX_BYTES) {
+                break;
+            }
+
+            // Terlalu besar → turunkan bitrate dan encode ulang.
+            const reduction =
+                (MAX_BYTES / finalSize) * 0.90;
+
+            videoKbps = Math.max(
+                80,
+                Math.floor(videoKbps * reduction)
+            );
+        }
+
+        // Tidak boleh menghasilkan file >14 MiB.
+        if (!blob || finalSize > MAX_BYTES) {
+            throw new Error(
+                `Ukuran hasil ${formatBytes(finalSize)} melebihi batas 14 MB.`
+            );
+        }
+
+        // Simpan hasil yang SUDAH diverifikasi ke nama final.
+        try {
+            await ffmpeg.deleteFile(outputName);
+            await ffmpeg.deleteFile(tempName);
+        } catch (_) {}
+
+        await ffmpeg.writeFile(outputName, data);
+
+        const finalData = await ffmpeg.readFile(outputName);
+        blob = new Blob([finalData.buffer], {
+            type: 'video/mp4'
+        });
+
+        if (blob.size > MAX_BYTES) {
+            throw new Error('Ukuran MP4 hasil melebihi batas 14 MB.');
+        }
+
+        if (outputUrl) URL.revokeObjectURL(outputUrl);
+        outputUrl = URL.createObjectURL(blob);
+
+        outputVideo.src = outputUrl;
+        outputVideo.load();
+
+        downloadLink.href = outputUrl;
+        downloadLink.download = outputName;
+        downloadLink.style.display = 'block';
+
+        resultContainer.style.display = 'block';
+        setProgress(100, 'Selesai');
+
+        // Bersihkan file sementara dari virtual filesystem.
+        try {
+            await ffmpeg.deleteFile(inputName);
+            await ffmpeg.deleteFile(outputName);
+        } catch (e) {
+            console.warn('Cleanup:', e);
+        }
+
+    } catch (error) {
+        console.error('DETAIL ERROR:', error);
+        setProgress(0, 'Gagal');
+        const message = error && error.message ? error.message : String(error);
+        statusDiv.textContent = 'Gagal: ' + message;
+        alert(
+            'Konversi gagal.\\n\\n' +
+            message +
+            '\\n\\nJika gagal pada "Memuat encoder", biasanya CDN FFmpeg diblokir atau koneksi internet tidak bisa mengunduh file WASM.'
+        );
+    } finally {
+        processBtn.disabled = false;
+        uploader.disabled = false;
+    }
+});
+
+function getExtension(name) {
+    const match = name.toLowerCase().match(/\.[a-z0-9]+$/);
+    return match ? match[0] : '.mp4';
+}
+
+window.addEventListener('beforeunload', () => {
+    if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+    if (outputUrl) URL.revokeObjectURL(outputUrl);
+    if (ffmpegModuleBlobURL) URL.revokeObjectURL(ffmpegModuleBlobURL);
+    if (ffmpegWorkerBlobURL) URL.revokeObjectURL(ffmpegWorkerBlobURL);
+});
+</script>
+</body>
+</html>
