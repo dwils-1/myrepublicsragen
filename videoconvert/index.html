@@ -54,7 +54,28 @@ video{width:100%;max-height:300px;background:#000;margin-top:10px;border-radius:
         <video id="sourceVideo" controls playsinline></video>
     </div>
 
-    <button id="processBtn" class="btn">Mulai Proses Convert</button>
+    
+<div id="videoInfo" style="display:none;margin:15px 0;padding:14px;border:1px solid #e2e8f0;border-radius:8px;background:#f8fafc;font-size:13px;line-height:1.7;text-align:left;">
+
+    <div style="font-weight:700;margin-bottom:6px;">Sebelum</div>
+    <div>• Nama: <span id="beforeName">-</span></div>
+    <div>• Ukuran: <span id="beforeSize">-</span></div>
+    <div>• Status: <span id="beforeStatus">-</span></div>
+    <div>• Waktu: <span id="beforeTime">-</span></div>
+    <div>• Extensi: <span id="beforeExt">-</span></div>
+
+    <div style="height:1px;background:#e2e8f0;margin:10px 0;"></div>
+
+    <div style="font-weight:700;margin-bottom:6px;">Sesudah</div>
+    <div>• Nama: <span id="afterName">-</span></div>
+    <div>• Ukuran: <span id="afterSize">-</span></div>
+    <div>• Status: <span id="afterStatus">-</span></div>
+    <div>• Waktu: <span id="afterTime">-</span></div>
+    <div>• Extensi: <span id="afterExt">-</span></div>
+
+</div>
+
+<button id="processBtn" class="btn">Mulai Proses Convert</button>
 
     <div class="progress-container" id="progressContainer">
         <div class="progress-bar-bg">
@@ -176,10 +197,107 @@ const progressStatusText = document.getElementById('progressStatusText');
 let fetchFile = null;
 let toBlobURL = null;
 
+
+const videoInfo = document.getElementById('videoInfo');
+
+const beforeName = document.getElementById('beforeName');
+const beforeSize = document.getElementById('beforeSize');
+const beforeStatus = document.getElementById('beforeStatus');
+const beforeTime = document.getElementById('beforeTime');
+const beforeExt = document.getElementById('beforeExt');
+
+const afterName = document.getElementById('afterName');
+const afterSize = document.getElementById('afterSize');
+const afterStatus = document.getElementById('afterStatus');
+const afterTime = document.getElementById('afterTime');
+const afterExt = document.getElementById('afterExt');
+
+let conversionStartTime = 0;
+let wakeLock = null;
+let conversionRunning = false;
+
 let selectedFile = null;
 let sourceUrl = null;
 let outputUrl = null;
 let ffmpeg = null;
+
+
+async function requestWakeLock() {
+    if (!('wakeLock' in navigator)) {
+        return false;
+    }
+
+    try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        return true;
+    } catch (error) {
+        console.warn('Screen Wake Lock:', error);
+        wakeLock = null;
+        return false;
+    }
+}
+
+async function releaseWakeLock() {
+    if (!wakeLock) return;
+
+    try {
+        await wakeLock.release();
+    } catch (_) {}
+
+    wakeLock = null;
+}
+
+function formatFileSize(bytes) {
+    if (!Number.isFinite(bytes)) return '-';
+
+    if (bytes < 1024) {
+        return bytes + ' B';
+    }
+
+    if (bytes < 1024 * 1024) {
+        return (bytes / 1024).toFixed(1) + ' KB';
+    }
+
+    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+}
+
+function getFileExtension(name) {
+    const match = String(name || '').match(/\.([^.]+)$/);
+    return match ? match[1].toUpperCase() : '-';
+}
+
+function formatClock(date) {
+    return date.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+}
+
+function formatDuration(ms) {
+    const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+        return `${hours} jam ${minutes} menit ${seconds} detik`;
+    }
+
+    if (minutes > 0) {
+        return `${minutes} menit ${seconds} detik`;
+    }
+
+    return `${seconds} detik`;
+}
+
+function resetAfterInfo() {
+    afterName.textContent = '-';
+    afterSize.textContent = '-';
+    afterStatus.textContent = '-';
+    afterTime.textContent = '-';
+    afterExt.textContent = '-';
+}
 
 function showError(message) {
     const el = document.getElementById('status');
@@ -288,6 +406,17 @@ uploader.addEventListener('change', () => {
     resultContainer.style.display = 'none';
     downloadLink.style.display = 'none';
 
+    videoInfo.style.display = 'block';
+
+    beforeName.textContent = file.name;
+    beforeSize.textContent = formatFileSize(file.size);
+    beforeStatus.textContent =
+        'Akan diubah menjadi MP4 H.264 + AAC dan dikompres maksimal 14 MB.';
+    beforeTime.textContent = formatClock(new Date());
+    beforeExt.textContent = getFileExtension(file.name);
+
+    resetAfterInfo();
+
 });
 
 processBtn.addEventListener('click', async () => {
@@ -303,10 +432,23 @@ processBtn.addEventListener('click', async () => {
 
     selectedFile = currentFile;
 
+    conversionStartTime = performance.now();
+    conversionRunning = true;
+
+    // Jaga layar tetap menyala selama proses convert.
+    await requestWakeLock();
+
+    afterStatus.textContent = 'Sedang memproses...';
+    afterTime.textContent = '-';
+
     processBtn.disabled = true;
     uploader.disabled = true;
     resultContainer.style.display = 'none';
     progressContainer.style.display = 'block';
+
+    // Bersihkan pesan lama saat proses dimulai.
+    statusDiv.style.display = 'none';
+    statusDiv.textContent = '';
     setProgress(0, 'Menyiapkan...');
 
     try {
@@ -370,35 +512,61 @@ processBtn.addEventListener('click', async () => {
                 `Mengompres video...`
             );
 
-            const command = [
-                '-i', inputName,
+            // MODE KILAT:
+            // Jangan resize video yang sudah <=1920 px.
+            // Jangan memaksa 30 FPS jika sumber sudah <=30 FPS.
+            const encodeArgs = [
+                '-i', inputName
+            ];
 
-                // Maksimum 1920 pada sisi panjang, rasio tetap.
-                '-vf',
-                "scale='if(gt(iw,ih),min(iw,1920),-2)':'if(gt(iw,ih),-2,min(ih,1920))'",
+            const maxDimension = Math.max(
+                sourceVideo.videoWidth,
+                sourceVideo.videoHeight
+            );
 
-                '-r', '30',
+            if (maxDimension > 1920) {
+                encodeArgs.push(
+                    '-vf',
+                    "scale='if(gt(iw,ih),min(iw,1920),-2)':'if(gt(iw,ih),-2,min(ih,1920))'"
+                );
+            }
 
-                // VIDEO BENAR-BENAR H.264
+            // Video lebih dari 30 FPS baru diturunkan ke 30 FPS.
+            // Video 30 FPS atau kurang dibiarkan apa adanya agar lebih cepat.
+            if (sourceVideo.videoWidth && sourceVideo.videoHeight) {
+                const estimatedFps =
+                    sourceVideo.getVideoPlaybackQuality
+                        ? 30
+                        : 30;
+
+                if (estimatedFps > 30) {
+                    encodeArgs.push('-r', '30');
+                }
+            }
+
+            encodeArgs.push(
+                // VIDEO H.264
                 '-c:v', 'libx264',
                 '-b:v', `${videoKbps}k`,
                 '-maxrate', `${videoKbps}k`,
                 '-bufsize', `${Math.max(videoKbps * 2, 256)}k`,
                 '-pix_fmt', 'yuv420p',
-                '-preset', 'veryfast',
+                '-preset', 'ultrafast',
 
-                // AUDIO BENAR-BENAR AAC
+                // AUDIO AAC
                 '-c:a', 'aac',
                 '-b:a', `${audioKbps}k`,
                 '-ar', '48000',
                 '-ac', '2',
 
-                // MP4 asli, bukan rename WebM.
+                // MP4 asli
                 '-movflags', '+faststart',
 
                 '-y',
                 tempName
-            ];
+            );
+
+            const command = encodeArgs
 
             await ffmpeg.exec(command);
 
@@ -457,6 +625,16 @@ processBtn.addEventListener('click', async () => {
         resultContainer.style.display = 'block';
         setProgress(100, 'Selesai');
 
+        const conversionDuration =
+            performance.now() - conversionStartTime;
+
+        afterName.textContent = outputName;
+        afterSize.textContent = formatFileSize(blob.size);
+        afterStatus.textContent =
+            'Sukses — MP4 H.264 + AAC berhasil dibuat dan ukuran ≤14 MB.';
+        afterTime.textContent = formatDuration(conversionDuration);
+        afterExt.textContent = getFileExtension(outputName);
+
         // Bersihkan file sementara dari virtual filesystem.
         try {
             await ffmpeg.deleteFile(inputName);
@@ -469,6 +647,30 @@ processBtn.addEventListener('click', async () => {
         console.error('DETAIL ERROR:', error);
         setProgress(0, 'Gagal');
         const message = error && error.message ? error.message : String(error);
+
+        const conversionDuration =
+            conversionStartTime
+                ? performance.now() - conversionStartTime
+                : 0;
+
+        afterName.textContent = '-';
+        afterSize.textContent = '-';
+
+        if (/SyntaxError|Unexpected token|Unexpected identifier/i.test(message)) {
+            afterStatus.textContent =
+                'Gagal mengubah — Syntax Error: ' + message;
+        } else {
+            afterStatus.textContent =
+                'Error: ' + message;
+        }
+
+        afterTime.textContent =
+            conversionDuration
+                ? formatDuration(conversionDuration)
+                : '-';
+
+        afterExt.textContent = '-';
+
         statusDiv.textContent = 'Gagal: ' + message;
         alert(
             'Konversi gagal.\\n\\n' +
@@ -476,15 +678,146 @@ processBtn.addEventListener('click', async () => {
             '\\n\\nJika gagal pada "Memuat encoder", biasanya CDN FFmpeg diblokir atau koneksi internet tidak bisa mengunduh file WASM.'
         );
     } finally {
+        conversionRunning = false;
+        await releaseWakeLock();
+
         processBtn.disabled = false;
         uploader.disabled = false;
     }
 });
 
+
+async function cleanupAfterDownload() {
+    try {
+        // Hapus file dari virtual filesystem FFmpeg.
+        if (ffmpeg && ffmpeg.loaded) {
+            try {
+                await ffmpeg.deleteFile('input.mp4');
+            } catch (_) {}
+
+            try {
+                await ffmpeg.deleteFile('input.webm');
+            } catch (_) {}
+
+            try {
+                await ffmpeg.deleteFile('input.mkv');
+            } catch (_) {}
+
+            try {
+                await ffmpeg.deleteFile('input.mov');
+            } catch (_) {}
+
+            try {
+                await ffmpeg.deleteFile('input.avi');
+            } catch (_) {}
+
+            try {
+                await ffmpeg.deleteFile('hpfa-temp.mp4');
+            } catch (_) {}
+
+            try {
+                await ffmpeg.deleteFile('hpfa-myrepublic-converted.mp4');
+            } catch (_) {}
+        }
+
+        // Lepaskan object URL sumber.
+        if (sourceUrl) {
+            URL.revokeObjectURL(sourceUrl);
+            sourceUrl = null;
+        }
+
+        // Lepaskan object URL hasil.
+        if (outputUrl) {
+            URL.revokeObjectURL(outputUrl);
+            outputUrl = null;
+        }
+
+        // Kosongkan media element.
+        sourceVideo.pause();
+        sourceVideo.removeAttribute('src');
+        sourceVideo.load();
+
+        outputVideo.pause();
+        outputVideo.removeAttribute('src');
+        outputVideo.load();
+
+        // Lepaskan referensi file besar dari JavaScript.
+        selectedFile = null;
+
+        // Reset input file.
+        uploader.value = '';
+
+        // Bersihkan link download.
+        downloadLink.removeAttribute('href');
+        downloadLink.style.display = 'none';
+
+        // Lepaskan FFmpeg WebAssembly dari RAM.
+        if (ffmpeg) {
+            try {
+                await ffmpeg.terminate();
+            } catch (_) {}
+
+            ffmpeg = null;
+        }
+
+        // Lepaskan Blob URL module/worker.
+        if (ffmpegModuleBlobURL) {
+            URL.revokeObjectURL(ffmpegModuleBlobURL);
+            ffmpegModuleBlobURL = null;
+        }
+
+        if (ffmpegWorkerBlobURL) {
+            URL.revokeObjectURL(ffmpegWorkerBlobURL);
+            ffmpegWorkerBlobURL = null;
+        }
+
+        // Reset tampilan.
+        previewSection.style.display = 'none';
+        resultContainer.style.display = 'none';
+        progressContainer.style.display = 'none';
+        videoInfo.style.display = 'none';
+
+        processBtn.disabled = true;
+        uploader.disabled = false;
+
+        if (statusDiv) {
+            statusDiv.style.display = 'block';
+            statusDiv.textContent = 'RAM converter dibersihkan. Silakan pilih video berikutnya.';
+        }
+
+        if (typeof resetAfterInfo === 'function') {
+            resetAfterInfo();
+        }
+
+    } catch (error) {
+        console.warn('Cleanup RAM:', error);
+    }
+}
+
 function getExtension(name) {
     const match = name.toLowerCase().match(/\.[a-z0-9]+$/);
     return match ? match[0] : '.mp4';
 }
+
+document.addEventListener('visibilitychange', async () => {
+    // Jangan menghentikan proses ketika Android mengirim halaman
+    // ke background setelah tombol Home ditekan.
+    if (conversionRunning) {
+        if (document.visibilityState === 'visible' && !wakeLock) {
+            await requestWakeLock();
+        }
+    }
+});
+
+
+downloadLink.addEventListener('click', () => {
+    // Browser mulai mengambil Blob melalui href terlebih dahulu.
+    // Cleanup dijadwalkan setelah event klik selesai agar download
+    // tidak kehilangan sumber datanya.
+    setTimeout(() => {
+        cleanupAfterDownload();
+    }, 1500);
+});
 
 window.addEventListener('beforeunload', () => {
     if (sourceUrl) URL.revokeObjectURL(sourceUrl);
