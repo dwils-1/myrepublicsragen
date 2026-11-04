@@ -1283,6 +1283,11 @@
                 }
 
                 if (sendSuccess) {
+                    if (typeof gtag === "function") {
+                        gtag("event", "lead_form_submit", {
+                            form_type: currentType
+                        });
+                    }
                     alert('Data sukses terkirim tim Teknisi kami.');
                     document.getElementById('clientForm').reset();
                     toggleChatBox();

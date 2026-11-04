@@ -25,6 +25,15 @@
             
             waButton.href = "#";
             waButton.target = "_blank";
+
+            waButton.addEventListener("click", function() {
+                if (typeof gtag === "function" && waButton.href.startsWith("https://wa.me/")) {
+                    gtag("event", "whatsapp_click", {
+                        event_category: "engagement",
+                        event_label: "floating_whatsapp"
+                    });
+                }
+            });
             waButton.innerHTML = `<img src="/images/whatsapp-logo.svg" alt="Hubungi via WhatsApp" style="width: 160px; height: auto; margin: 0 auto;">`;
             
             // Efek interaksi tombol
