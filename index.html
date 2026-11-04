@@ -751,7 +751,12 @@
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
-    </style>
+    
+        .wilayah-grid > div {
+            flex: 0 0 min(82vw, 280px);
+            scroll-snap-align: start;
+        }
+</style>
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XCY7KPYQS2"></script>
@@ -872,7 +877,7 @@
                 Informasi MyRepublic Sragen ini ditujukan bagi masyarakat di berbagai wilayah Kabupaten Sragen.
                 Ketersediaan jaringan internet di setiap alamat perlu dikonfirmasi terlebih dahulu.
             </p>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px;margin-top:18px;">
+            <div class="wilayah-grid" style="display:flex;overflow-x:auto;gap:14px;margin-top:18px;padding-bottom:12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;">
 <div style="border:1px solid var(--border-color);border-radius:14px;padding:16px;background:var(--bg-input);"><h4 style="margin:0 0 10px;color:var(--primary-dark);">Sragen</h4><ul style="margin:0;padding-left:20px;line-height:1.8;"><li>Sragen Tengah <span style="color:var(--text-muted);font-size:.82em">(Kelurahan)</span></li><li>Sragen Wetan <span style="color:var(--text-muted);font-size:.82em">(Kelurahan)</span></li><li>Sragen Kulon <span style="color:var(--text-muted);font-size:.82em">(Kelurahan)</span></li><li>Sine <span style="color:var(--text-muted);font-size:.82em">(Kelurahan)</span></li><li>Nglorog <span style="color:var(--text-muted);font-size:.82em">(Kelurahan)</span></li><li>Karangtengah <span style="color:var(--text-muted);font-size:.82em">(Kelurahan)</span></li><li>Tangkil <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Kedungupit <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li></ul></div>
 <div style="border:1px solid var(--border-color);border-radius:14px;padding:16px;background:var(--bg-input);"><h4 style="margin:0 0 10px;color:var(--primary-dark);">Karangmalang</h4><ul style="margin:0;padding-left:20px;line-height:1.8;"><li>Kroyo <span style="color:var(--text-muted);font-size:.82em">(Kelurahan)</span></li><li>Plumbungan <span style="color:var(--text-muted);font-size:.82em">(Kelurahan)</span></li><li>Kedungwaduk <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Jurangjero <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Saradan <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Guworejo <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Puro <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Mojorejo <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Pelemgadung <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Plosokerep <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li></ul></div>
 <div style="border:1px solid var(--border-color);border-radius:14px;padding:16px;background:var(--bg-input);"><h4 style="margin:0 0 10px;color:var(--primary-dark);">Sidoharjo</h4><ul style="margin:0;padding-left:20px;line-height:1.8;"><li>Bentak <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Purwosuman <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Patihan <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Duyungan <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Jetak <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Tenggak <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Sidoharjo <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Singopadu <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Taraman <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Sribit <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Jambanan <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li><li>Pandak <span style="color:var(--text-muted);font-size:.82em">(Desa)</span></li></ul></div>
