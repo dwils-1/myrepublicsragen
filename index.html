@@ -858,6 +858,10 @@
         <div class="full-promo-container scroll-animate" id="full-promo-bottom"></div>
 <section id="wilayah-sragen" class="scroll-animate" style="margin:36px 0;">
             <h3 class="section-title">Wilayah Administratif Kabupaten Sragen</h3>
+            <button type="button" id="toggleWilayahBtn" class="btn-toggle-article" aria-controls="wilayahContent" aria-expanded="false" onclick="toggleWilayahContent()">
+                <span>Tampilkan Wilayah</span> ⌄
+            </button>
+            <div id="wilayahContent" hidden>
             <p style="line-height:1.8;color:var(--text-main);">
                 Informasi MyRepublic Sragen ini ditujukan bagi masyarakat di berbagai wilayah Kabupaten Sragen.
                 Ketersediaan jaringan internet di setiap alamat perlu dikonfirmasi terlebih dahulu.
@@ -888,6 +892,7 @@
                 Untuk mengetahui apakah alamat rumah dapat dilayani, silakan lakukan pengecekan lokasi melalui layanan konsultasi kami.
                 Penyebutan nama desa dan kelurahan di halaman ini bukan jaminan bahwa jaringan MyRepublic telah tersedia di wilayah tersebut.
             </p>
+                    </div>
         </section>
 
     </main>
@@ -1030,6 +1035,17 @@
                     card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
                 });
             });
+        }
+
+        function toggleWilayahContent() {
+            const content = document.getElementById('wilayahContent');
+            const button = document.getElementById('toggleWilayahBtn');
+            const isHidden = content.hidden;
+            content.hidden = !isHidden;
+            button.setAttribute('aria-expanded', String(isHidden));
+            button.innerHTML = isHidden
+                ? '<span>Sembunyikan Wilayah</span> ⌃'
+                : '<span>Tampilkan Wilayah</span> ⌄';
         }
 
         function toggleArticleContent() {
